@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# finzy — landing page
 
-## Getting Started
+Landing page di **finzy**, costruita con Next.js.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router + Turbopack)
+- **React 19**
+- **TypeScript**
+- **Tailwind CSS v4** (design tokens in `src/app/globals.css`)
+- **lucide-react** per le icone
+- `cn()` helper (`clsx` + `tailwind-merge`) in `src/lib/utils.ts`
+
+## Comandi
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm dev      # avvia il dev server su http://localhost:3000
+pnpm build    # build di produzione
+pnpm start    # avvia la build di produzione
+pnpm lint     # eslint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Struttura
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+src/
+├── app/
+│   ├── globals.css      # design tokens (colori, radius) + reset
+│   ├── layout.tsx       # root layout, font, metadata SEO
+│   └── page.tsx         # home: qui si compongono le sezioni
+├── components/
+│   ├── layout/          # header, footer, nav
+│   ├── sections/        # sezioni della landing (hero, features, ...)
+│   └── ui/              # primitive riutilizzabili (Container, Button, ...)
+└── lib/
+    └── utils.ts         # cn() e utility condivise
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Design tokens
 
-## Learn More
+I colori di brand sono definiti come CSS variables in `src/app/globals.css`
+(`--primary`, `--accent`, `--muted`, ...) e mappati su utility Tailwind
+(`bg-primary`, `text-muted-foreground`, ...). Sono valori placeholder:
+vanno sostituiti con i colori ufficiali di finzy.
 
-To learn more about Next.js, take a look at the following resources:
+## Come procediamo
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+La landing si costruisce una sezione alla volta. Ogni nuova sezione vive in
+`src/components/sections/` e viene composta dentro `src/app/page.tsx`.
