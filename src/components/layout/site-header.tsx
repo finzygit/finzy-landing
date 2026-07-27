@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { NavMenu } from "@/components/layout/nav-menu";
 import { cn } from "@/lib/utils";
 
@@ -22,7 +23,10 @@ export function SiteHeader({ className }: { className?: string }) {
         />
       </Link>
 
-      <NavMenu triggerClassName="h-11 w-11" />
+      <div className="flex items-center gap-1 sm:gap-2">
+        <LanguageSwitcher />
+        <NavMenu triggerClassName="h-11 w-11" />
+      </div>
     </header>
   );
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { TickerTrack } from "@/components/layout/market-ticker";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { NavMenu } from "@/components/layout/nav-menu";
 import { cn } from "@/lib/utils";
 
@@ -44,7 +45,10 @@ export function StickyNav() {
           <TickerTrack className="py-1" />
         </div>
 
-        <NavMenu triggerClassName="shrink-0" />
+        <div className="flex shrink-0 items-center gap-1">
+          <LanguageSwitcher />
+          <NavMenu triggerClassName="shrink-0" />
+        </div>
       </div>
     </div>
   );

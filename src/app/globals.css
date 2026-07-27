@@ -56,6 +56,7 @@
   --color-ring: var(--ring);
 
   --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -98,6 +99,57 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee {
     animation: none;
+  }
+}
+
+/* Cube-flip delle chip hero (Segnali / Mercati):
+   la card ruota su asse X ogni 5s mostrando la faccia inferiore.
+   Due facce (front + bottom) bastano: solo quelle sono visibili nei 90°. */
+.flip-scene {
+  perspective: 1200px;
+}
+
+.flip-cube {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* rotazione verso l'alto: il bordo superiore va indietro e la faccia
+   inferiore sale al posto di quella frontale ("on up way"). */
+.flip-cube[data-flip="true"] {
+  transform: rotateX(90deg);
+}
+
+/* snap istantaneo a 0° dopo il flip, senza animazione all'indietro */
+.flip-cube[data-snap="true"] {
+  transition: none;
+}
+
+.flip-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* --flip-half = metà altezza card (h-32 = 128px → 4rem) */
+.flip-face-front {
+  transform: rotateX(0deg) translateZ(var(--flip-half, 4rem));
+}
+
+.flip-face-bottom {
+  transform: rotateX(-90deg) translateZ(var(--flip-half, 4rem));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flip-cube {
+    transition: none;
+  }
+  .flip-cube[data-flip="true"] {
+    transform: none;
   }
 }
 

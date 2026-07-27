@@ -1,16 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import { TrendingDown, TrendingUp } from "lucide-react";
 import { MarketTicker } from "@/components/layout/market-ticker";
 import { SiteHeader } from "@/components/layout/site-header";
+import { FeatureHotspots } from "@/components/sections/feature-hotspots";
 import { Reveal } from "@/components/ui/reveal";
 import { CountUp } from "@/components/ui/count-up";
+import { FlipCard, type Trend } from "@/components/ui/flip-card";
 import { useLanguage } from "@/lib/i18n";
 
-const CARD_ICONS = [
-  { icon: TrendingUp, className: "text-[#7cf56b]" },
-  { icon: TrendingDown, className: "text-negative" },
+// Icona (trend) per faccia di ciascuna chip, nell'ordine delle tagline.
+const CARD_TRENDS: Trend[][] = [
+  ["up", "up", "up"], // Segnali
+  ["up", "down", "up"], // Mercati
 ];
 
 export function Hero() {
@@ -34,6 +36,9 @@ export function Hero() {
           <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/0 to-background/95" />
         </div>
 
+        {/* Pallini pulsanti con le funzionalità dell'app */}
+        <FeatureHotspots />
+
         <SiteHeader className="relative z-20" />
 
         {/* Contenuto in basso: box a sinistra, statistiche a destra */}
@@ -43,29 +48,15 @@ export function Hero() {
             className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"
           >
             <div className="flex gap-3 sm:gap-4">
-              {t.hero.cards.map((card, i) => {
-                const Icon = CARD_ICONS[i].icon;
-                return (
-                  <div
-                    key={card.label}
-                    className="flex h-32 w-[8.5rem] flex-col justify-between rounded-xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-sm sm:w-40"
-                  >
-                    <Icon
-                      className={CARD_ICONS[i].className}
-                      strokeWidth={2}
-                      size={22}
-                    />
-                    <div>
-                      <p className="text-xs text-muted-foreground">
-                        {card.label}
-                      </p>
-                      <p className="mt-1 text-sm leading-snug text-foreground">
-                        {card.title}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
+              {t.hero.cards.map((card, i) => (
+                <FlipCard
+                  key={card.label}
+                  label={card.label}
+                  titles={card.titles}
+                  trends={CARD_TRENDS[i] ?? []}
+                  delayMs={i * 700}
+                />
+              ))}
             </div>
 
             <div className="grid grid-cols-2 gap-x-8 gap-y-5 sm:flex sm:flex-wrap sm:items-end sm:gap-x-10 lg:justify-end">

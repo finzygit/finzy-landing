@@ -1,35 +1,76 @@
 "use client";
 
-import Image from "next/image";
+import type { ReactNode } from "react";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { useLanguage } from "@/lib/i18n";
-import { cn } from "@/lib/utils";
 
-type Logo = { src: string; alt: string; padClass?: string };
-
-const LOGOS: Logo[] = [
-  { src: "/adnkronos-logo.webp", alt: "Adnkronos" },
-  { src: "/mtnews-logo.webp", alt: "MT Newswires" },
-  { src: "/massive-logo.webp", alt: "Massive" },
-  // Logo molto largo: meno padding così riempie di più e non risulta piccolo.
-  { src: "/marketstack-logo.png", alt: "MarketStack", padClass: "px-3" },
+/**
+ * Wordmark testuali dei partner/fonti, ognuno con un font che richiama il logo
+ * reale del brand (heavy sans per benzinga/massive/Adnkronos, serif editoriale
+ * per Forbes e la Repubblica). Scorrono in continuo come il ticker di mercato.
+ */
+const BRANDS: { key: string; node: ReactNode }[] = [
+  {
+    key: "benzinga",
+    node: (
+      <span className="font-sans font-extrabold lowercase tracking-tight">
+        benzinga
+      </span>
+    ),
+  },
+  {
+    key: "mt-newswires",
+    node: (
+      <span className="font-sans">
+        <span className="font-extrabold">MT</span>
+        <span className="font-normal"> Newswires</span>
+      </span>
+    ),
+  },
+  {
+    key: "massive",
+    node: (
+      <span className="font-sans font-extrabold lowercase tracking-tight">
+        massive.com
+      </span>
+    ),
+  },
+  {
+    key: "adnkronos",
+    node: (
+      <span className="font-sans font-extrabold tracking-tight">Adnkronos</span>
+    ),
+  },
+  {
+    key: "forbes",
+    node: (
+      <span className="font-serif font-black tracking-tight">Forbes</span>
+    ),
+  },
+  {
+    key: "repubblica",
+    node: (
+      <span className="font-serif">
+        <span className="font-normal">la </span>
+        <span className="font-black">Repubblica</span>
+      </span>
+    ),
+  },
+  {
+    // Logo reale: serif elegante, "SanCarlo" (bordeaux) unito a "Invest" (grigio) + ®.
+    key: "san-carlo-invest",
+    node: (
+      <span className="font-serif font-bold tracking-tight">
+        <span className="text-white/65">SanCarlo</span>
+        <span className="text-white/40">Invest</span>
+        <sup className="ml-0.5 align-super text-[0.4em] font-normal text-white/40">
+          ®
+        </sup>
+      </span>
+    ),
+  },
 ];
-
-function LogoCard({ src, alt, padClass = "px-8" }: Logo) {
-  return (
-    <div
-      className={cn(
-        "flex h-32 items-center justify-center rounded-2xl bg-white shadow-lg shadow-black/20 ring-1 ring-white/10 transition-transform duration-200 hover:-translate-y-1",
-        padClass,
-      )}
-    >
-      <div className="relative h-14 w-full">
-        <Image src={src} alt={alt} fill sizes="240px" className="object-contain" />
-      </div>
-    </div>
-  );
-}
 
 export function Sources() {
   const { t } = useLanguage();
@@ -45,15 +86,22 @@ export function Sources() {
             {t.sources.subtitle}
           </p>
         </Reveal>
+      </Container>
 
-        <div className="mt-12 grid w-full max-w-5xl grid-cols-2 gap-5 sm:mt-16 lg:grid-cols-4">
-          {LOGOS.map((logo, i) => (
-            <Reveal key={logo.alt} delay={i * 90}>
-              <LogoCard {...logo} />
-            </Reveal>
+      {/* Fascia scorrevole dei wordmark (a tutta larghezza, con dissolvenza ai bordi) */}
+      <div className="mt-12 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_7%,black_93%,transparent)] sm:mt-16">
+        <div className="flex w-max animate-marquee items-center gap-16 text-2xl text-white/50 sm:gap-24 sm:text-3xl">
+          {[...BRANDS, ...BRANDS].map((b, i) => (
+            <span
+              key={`${b.key}-${i}`}
+              aria-hidden={i >= BRANDS.length}
+              className="whitespace-nowrap leading-none transition-colors duration-200 hover:text-white/80"
+            >
+              {b.node}
+            </span>
           ))}
         </div>
-      </Container>
+      </div>
     </section>
   );
 }
