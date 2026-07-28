@@ -10,7 +10,10 @@ import type { NextRequest } from "next/server";
 // Le trasformiamo tutte in 410 Gone così Google le rimuove in fretta
 // dall'indice (procedura consigliata da Google per i siti hackerati).
 // Sono tutti prefissi da e-commerce: un'app di finanza non li avrà mai.
-const HACK_QUERY = /^\?[a-z_]+\/\d/i;
+// Nella query string Next codifica lo slash come %2F, quindi usiamo un confine
+// di parola (\b) dopo la keyword: intercetta sia /?goods/123 sia /?goods%2F123.
+const HACK_QUERY =
+  /^\?(?:goods|detail|jp|shopdetail|shopping|category|animetitle)\b/i;
 const HACK_PATH =
   /\.html?$|^\/(?:goods|detail|jp|shopdetail|shopping|category|animetitle|product|item)(?:\/|$)/i;
 
