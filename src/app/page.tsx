@@ -6,6 +6,7 @@ import { About } from "@/components/sections/about";
 import { Sources } from "@/components/sections/sources";
 import { Story } from "@/components/sections/story";
 import { Features } from "@/components/sections/features";
+import { Pricing } from "@/components/sections/pricing";
 import { Contact } from "@/components/sections/contact";
 
 export default function Home() {
@@ -19,6 +20,7 @@ export default function Home() {
         <Sources />
         <Story />
         <Features />
+        <Pricing />
         <Contact />
       </main>
       <SiteFooter />

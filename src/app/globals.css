@@ -153,6 +153,31 @@ body {
   }
 }
 
+/* Onda "radar" dei pallini funzionalità: anello che si espande e sfuma. */
+@keyframes hotspot-ping {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.8;
+  }
+  70% {
+    opacity: 0;
+  }
+  100% {
+    transform: scale(3.6);
+    opacity: 0;
+  }
+}
+
+.animate-hotspot-ping {
+  animation: hotspot-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-hotspot-ping {
+    animation: none;
+  }
+}
+
 /* Galleggiamento lento (card flottanti) */
 @keyframes float {
   0%,
@@ -171,5 +196,103 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .animate-float {
     animation: none;
+  }
+}
+
+/* iPhone 16 Pro (Black Titanium) come vero volume 3D: fronte + retro + fianchi.
+   --d è lo spessore reale (8.25mm su 71.5mm di larghezza) in scala. */
+.phone-stage {
+  perspective: 1700px;
+  perspective-origin: 50% 44%;
+}
+
+.phone-device {
+  --w: 280px;
+  --h: 581px;
+  --d: 30px;
+  position: relative;
+  width: var(--w);
+  height: var(--h);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.phone-front,
+.phone-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 3.1rem;
+}
+
+.phone-front {
+  transform: translateZ(calc(var(--d) / 2));
+  padding: 11px;
+  background: linear-gradient(
+    150deg,
+    #3a3a3e 0%,
+    #131315 30%,
+    #2a2a2e 58%,
+    #060607 100%
+  );
+  box-shadow:
+    0 50px 90px -30px rgba(0, 0, 0, 0.85),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.phone-back {
+  transform: rotateY(180deg) translateZ(calc(var(--d) / 2));
+  background: linear-gradient(160deg, #141416, #050506);
+}
+
+.phone-side {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  width: var(--d);
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    #060607 0%,
+    #3a3a40 48%,
+    #1a1a1d 54%,
+    #060607 100%
+  );
+}
+
+.phone-side-right {
+  transform: translateX(-50%) rotateY(90deg) translateZ(calc(var(--w) / 2));
+}
+
+.phone-side-left {
+  transform: translateX(-50%) rotateY(-90deg) translateZ(calc(var(--w) / 2));
+}
+
+.phone-screen {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 2.5rem;
+  background: #000;
+}
+
+.phone-island {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 88px;
+  height: 25px;
+  border-radius: 999px;
+  background: #000;
+  z-index: 3;
+}
+
+@media (max-width: 480px) {
+  .phone-device {
+    --w: 232px;
+    --h: 477px;
+    --d: 26px;
   }
 }

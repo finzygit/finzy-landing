@@ -27,6 +27,9 @@ export const metadata: Metadata = {
   },
   description:
     "finzy ti aiuta a gestire spese, risparmi e obiettivi finanziari in un'unica app semplice e intelligente.",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
     locale: "it_IT",

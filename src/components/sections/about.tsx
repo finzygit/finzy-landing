@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { Container } from "@/components/ui/container";
 import { StoreButtons } from "@/components/ui/store-buttons";
 import { Reveal } from "@/components/ui/reveal";
+import { PhoneShowcase } from "@/components/sections/phone-showcase";
 import { useLanguage } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -27,21 +27,12 @@ export function About() {
           </p>
         </Reveal>
 
-        {/* Due colonne: screenshot a sinistra, box impilati a destra */}
+        {/* Due colonne: iPhone (scroll-driven) a sinistra, box impilati a destra */}
         <Reveal
           delay={100}
           className="mt-14 grid w-full items-center gap-10 lg:mt-16 lg:grid-cols-[1.35fr_1fr] lg:gap-14"
         >
-          <div className="flex justify-center lg:justify-start">
-            <Image
-              src="/screenshot.png"
-              alt="Le schermate dell'app Finzy: dettaglio titolo, Wallet e sezione Impara"
-              width={1536}
-              height={1152}
-              sizes="(max-width: 1024px) 100vw, 720px"
-              className="h-auto w-full max-w-2xl"
-            />
-          </div>
+          <PhoneShowcase />
 
           <div className="flex flex-col gap-5">
             {t.about.cards.map((card, i) => (
