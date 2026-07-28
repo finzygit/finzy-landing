@@ -42,7 +42,10 @@ export function FeatureHotspots() {
   }, [pinned]);
 
   return (
-    <div ref={rootRef} className="pointer-events-none absolute inset-0 z-[15]">
+    <div
+      ref={rootRef}
+      className="pointer-events-none absolute inset-0 z-[15] hidden lg:block"
+    >
       {SPOTS.map((spot, i) => {
         const feature = features[i];
         if (!feature) return null;

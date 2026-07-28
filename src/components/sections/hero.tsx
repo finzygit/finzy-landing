@@ -54,7 +54,6 @@ export function Hero() {
                   label={card.label}
                   titles={card.titles}
                   trends={CARD_TRENDS[i] ?? []}
-                  delayMs={i * 700}
                 />
               ))}
             </div>
