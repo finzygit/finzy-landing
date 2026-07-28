@@ -28,7 +28,7 @@ export function Contact() {
         <div className="mx-auto max-w-2xl">
           <Reveal>
             <p className={labelClass}>{t.contact.overline}</p>
-            <h2 className="mt-5 text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
+            <h2 className="mt-5 font-serif text-5xl leading-[1.05] sm:text-6xl">
               {t.contact.titleLine1}
               <br />
               {t.contact.titleLine2}
