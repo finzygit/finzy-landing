@@ -178,6 +178,98 @@ body {
   }
 }
 
+/* Popup giveaway: bordo turchese con fascio fucsia luminoso che scorre. */
+@property --gv-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.giveaway-card {
+  position: relative;
+  border-radius: 1.5rem;
+  padding: 2px; /* spessore del bordo */
+  isolation: isolate;
+}
+
+/* Anello (nitido): base turchese + fascio fucsia che ruota */
+.giveaway-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--gv-angle),
+    rgba(32, 229, 209, 0.35) 0deg,
+    rgba(32, 229, 209, 0.35) 235deg,
+    rgba(255, 61, 154, 0.6) 285deg,
+    #ff3d9a 310deg,
+    #ffd6ea 322deg,
+    #ff3d9a 334deg,
+    rgba(255, 61, 154, 0.6) 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: gv-rotate 4s linear infinite;
+  pointer-events: none;
+}
+
+/* Alone (sfocato): solo il fascio fucsia, con leggera pulsazione */
+.giveaway-card::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  z-index: 0;
+  border-radius: inherit;
+  padding: 7px;
+  background: conic-gradient(
+    from var(--gv-angle),
+    transparent 0deg,
+    transparent 265deg,
+    #ff3d9a 312deg,
+    #ff3d9a 332deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  filter: blur(9px);
+  animation:
+    gv-rotate 4s linear infinite,
+    gv-pulse 2.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes gv-rotate {
+  to {
+    --gv-angle: 360deg;
+  }
+}
+
+@keyframes gv-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .giveaway-card::before,
+  .giveaway-card::after {
+    animation: none;
+  }
+}
+
 /* Galleggiamento lento (card flottanti) */
 @keyframes float {
   0%,

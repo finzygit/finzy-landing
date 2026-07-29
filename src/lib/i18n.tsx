@@ -21,11 +21,28 @@ const it = {
     links: [
       { label: "Home", href: "/" },
       { label: "Cos'è Finzy", href: "#cos-e-finzy" },
-      { label: "Fonti", href: "#fonti" },
-      { label: "La nostra storia", href: "#storia" },
+      { label: "Funzionalità", href: "#funzionalita" },
+      { label: "Come funziona", href: "#processo" },
+      { label: "Learning", href: "#learning" },
+      { label: "Prezzi", href: "#prezzi" },
       { label: "Contatti", href: "#contatti" },
     ],
     cta: "Richiedi l'accesso",
+  },
+  giveaway: {
+    overline: "Giveaway ufficiale",
+    title: "Vinci un iPhone 17 Pro",
+    bodyPre:
+      "Iscriviti gratis a Finzy per partecipare all'estrazione di un iPhone 17 Pro. ",
+    highlight: "Nessun acquisto necessario",
+    bodyPost: ". Estrazione entro il 30 settembre 2026.",
+    cta: "Partecipa gratis",
+    fine: "Concorso soggetto a regolamento ufficiale. Termini e condizioni applicabili.",
+    close: "Chiudi",
+    bannerPre:
+      "Iscriviti gratis a Finzy e partecipi all'estrazione ufficiale di un iPhone 17 Pro. ",
+    bannerPost:
+      " — estrazione entro il 30 settembre 2026, con regolamento pubblico e vincitore verificato.",
   },
   hero: {
     cards: [
@@ -112,6 +129,76 @@ const it = {
       {
         title: "Accessibile a tutti",
         body: "Finzy rende la finanza chiara anche a chi non è esperto del settore.",
+      },
+    ],
+  },
+  process: {
+    overline: "Processo",
+    title: "Come funziona Finzy",
+    subtitle: "Quattro passi verso la finanza semplificata.",
+    steps: [
+      {
+        title: "Crea il tuo account",
+        body: "Registrati in pochi secondi con email o Google. Niente carte di credito per iniziare.",
+      },
+      {
+        title: "Configura il feed",
+        body: "Scegli i mercati, i titoli e i temi che ti interessano. Finzy si adatta ai tuoi interessi.",
+      },
+      {
+        title: "Ricevi segnali",
+        body: "Notifiche in tempo reale sulle opportunità e sui movimenti rilevanti dei tuoi titoli.",
+      },
+      {
+        title: "Agisci con fiducia",
+        body: "Riassunti AI chiari e dati aggiornati al minuto per decidere con sicurezza.",
+      },
+    ],
+  },
+  learning: {
+    overline: "Learning",
+    title: "Learning",
+    subtitle: "Impara la finanza mentre navighi. Senza noiosi corsi universitari.",
+    cards: [
+      {
+        title: "Guide finanziarie",
+        body: "Articoli chiari su concetti chiave: azioni, obbligazioni, ETF, diversificazione e gestione del rischio.",
+        badge: "50+ guide",
+      },
+      {
+        title: "Video lezioni",
+        body: "Brevi video di 3-5 minuti che spiegano strategie di investimento e analisi di mercato passo dopo passo.",
+        badge: "120+ video",
+      },
+      {
+        title: "Corsi base",
+        body: "Corsi strutturati per principianti: dalla terminologia di base alla costruzione di un portafoglio.",
+        badge: "8 corsi",
+      },
+    ],
+  },
+  testimonials: {
+    overline: "Testimonianze",
+    title: "Cosa dicono i nostri utenti",
+    subtitle: "La tua finestra semplice e personalizzata sul mondo della finanza.",
+    items: [
+      {
+        quote:
+          "Finzy mi fa risparmiare ore al giorno. I riassunti AI sono chiarissimi e finalmente capisco cosa succede nei mercati.",
+        name: "Alex",
+        role: "Trader privato",
+      },
+      {
+        quote:
+          "Il feed personalizzato mi tiene aggiornata solo sulle notizie che mi interessano. Zero rumore, solo ciò che conta.",
+        name: "Laura",
+        role: "Investitore",
+      },
+      {
+        quote:
+          "Le segnalazioni in tempo reale sono impressionanti. Catturo le opportunità prima che gli altri le vedano.",
+        name: "Mark",
+        role: "Analista finanziario",
       },
     ],
   },
@@ -230,11 +317,28 @@ const en: Dict = {
     links: [
       { label: "Home", href: "/" },
       { label: "What is Finzy", href: "#cos-e-finzy" },
-      { label: "Sources", href: "#fonti" },
-      { label: "Our story", href: "#storia" },
+      { label: "Features", href: "#funzionalita" },
+      { label: "How it works", href: "#processo" },
+      { label: "Learning", href: "#learning" },
+      { label: "Pricing", href: "#prezzi" },
       { label: "Contact", href: "#contatti" },
     ],
     cta: "Request access",
+  },
+  giveaway: {
+    overline: "Official giveaway",
+    title: "Win an iPhone 17 Pro",
+    bodyPre:
+      "Sign up to Finzy for free to enter the draw for an iPhone 17 Pro. ",
+    highlight: "No purchase necessary",
+    bodyPost: ". Draw by 30 September 2026.",
+    cta: "Enter for free",
+    fine: "Subject to official rules. Terms and conditions apply.",
+    close: "Close",
+    bannerPre:
+      "Sign up to Finzy for free and enter the official draw for an iPhone 17 Pro. ",
+    bannerPost:
+      " — draw by 30 September 2026, with public rules and a verified winner.",
   },
   hero: {
     cards: [
@@ -321,6 +425,76 @@ const en: Dict = {
       {
         title: "Accessible to everyone",
         body: "Finzy makes finance clear even for those who aren't industry experts.",
+      },
+    ],
+  },
+  process: {
+    overline: "Process",
+    title: "How Finzy works",
+    subtitle: "Four steps to simplified finance.",
+    steps: [
+      {
+        title: "Create your account",
+        body: "Sign up in seconds with email or Google. No credit card to get started.",
+      },
+      {
+        title: "Set up your feed",
+        body: "Choose the markets, stocks and topics you care about. Finzy adapts to your interests.",
+      },
+      {
+        title: "Get signals",
+        body: "Real-time notifications on opportunities and relevant moves in your stocks.",
+      },
+      {
+        title: "Act with confidence",
+        body: "Clear AI summaries and up-to-the-minute data to decide with confidence.",
+      },
+    ],
+  },
+  learning: {
+    overline: "Learning",
+    title: "Learning",
+    subtitle: "Learn finance while you browse. No boring university courses.",
+    cards: [
+      {
+        title: "Financial guides",
+        body: "Clear articles on key concepts: stocks, bonds, ETFs, diversification and risk management.",
+        badge: "50+ guides",
+      },
+      {
+        title: "Video lessons",
+        body: "Short 3–5 minute videos explaining investment strategies and market analysis step by step.",
+        badge: "120+ videos",
+      },
+      {
+        title: "Basic courses",
+        body: "Structured courses for beginners: from basic terminology to building a portfolio.",
+        badge: "8 courses",
+      },
+    ],
+  },
+  testimonials: {
+    overline: "Testimonials",
+    title: "What our users say",
+    subtitle: "Your simple, personalized window into the world of finance.",
+    items: [
+      {
+        quote:
+          "Finzy saves me hours every day. The AI summaries are crystal clear and I finally understand what's happening in the markets.",
+        name: "Alex",
+        role: "Private trader",
+      },
+      {
+        quote:
+          "The personalized feed keeps me updated only on the news I care about. Zero noise, only what matters.",
+        name: "Laura",
+        role: "Investor",
+      },
+      {
+        quote:
+          "The real-time alerts are impressive. I catch opportunities before others even see them.",
+        name: "Mark",
+        role: "Financial analyst",
       },
     ],
   },
@@ -436,11 +610,28 @@ const es: Dict = {
     links: [
       { label: "Inicio", href: "/" },
       { label: "¿Qué es Finzy?", href: "#cos-e-finzy" },
-      { label: "Fuentes", href: "#fonti" },
-      { label: "Nuestra historia", href: "#storia" },
+      { label: "Funciones", href: "#funzionalita" },
+      { label: "Cómo funciona", href: "#processo" },
+      { label: "Learning", href: "#learning" },
+      { label: "Precios", href: "#prezzi" },
       { label: "Contacto", href: "#contatti" },
     ],
     cta: "Solicitar acceso",
+  },
+  giveaway: {
+    overline: "Sorteo oficial",
+    title: "Gana un iPhone 17 Pro",
+    bodyPre:
+      "Regístrate gratis en Finzy para participar en el sorteo de un iPhone 17 Pro. ",
+    highlight: "Sin compra necesaria",
+    bodyPost: ". Sorteo antes del 30 de septiembre de 2026.",
+    cta: "Participa gratis",
+    fine: "Sujeto a las bases oficiales. Términos y condiciones aplicables.",
+    close: "Cerrar",
+    bannerPre:
+      "Regístrate gratis en Finzy y participa en el sorteo oficial de un iPhone 17 Pro. ",
+    bannerPost:
+      " — sorteo antes del 30 de septiembre de 2026, con bases públicas y ganador verificado.",
   },
   hero: {
     cards: [
@@ -527,6 +718,76 @@ const es: Dict = {
       {
         title: "Accesible para todos",
         body: "Finzy hace que las finanzas sean claras incluso para quienes no son expertos del sector.",
+      },
+    ],
+  },
+  process: {
+    overline: "Proceso",
+    title: "Cómo funciona Finzy",
+    subtitle: "Cuatro pasos hacia las finanzas simplificadas.",
+    steps: [
+      {
+        title: "Crea tu cuenta",
+        body: "Regístrate en segundos con email o Google. Sin tarjeta de crédito para empezar.",
+      },
+      {
+        title: "Configura tu feed",
+        body: "Elige los mercados, valores y temas que te interesan. Finzy se adapta a tus intereses.",
+      },
+      {
+        title: "Recibe señales",
+        body: "Notificaciones en tiempo real sobre oportunidades y movimientos relevantes de tus valores.",
+      },
+      {
+        title: "Actúa con confianza",
+        body: "Resúmenes con IA claros y datos al minuto para decidir con seguridad.",
+      },
+    ],
+  },
+  learning: {
+    overline: "Learning",
+    title: "Learning",
+    subtitle: "Aprende finanzas mientras navegas. Sin aburridos cursos universitarios.",
+    cards: [
+      {
+        title: "Guías financieras",
+        body: "Artículos claros sobre conceptos clave: acciones, bonos, ETF, diversificación y gestión del riesgo.",
+        badge: "50+ guías",
+      },
+      {
+        title: "Videolecciones",
+        body: "Vídeos breves de 3-5 minutos que explican estrategias de inversión y análisis de mercado paso a paso.",
+        badge: "120+ vídeos",
+      },
+      {
+        title: "Cursos básicos",
+        body: "Cursos estructurados para principiantes: desde la terminología básica hasta construir una cartera.",
+        badge: "8 cursos",
+      },
+    ],
+  },
+  testimonials: {
+    overline: "Testimonios",
+    title: "Lo que dicen nuestros usuarios",
+    subtitle: "Tu ventana simple y personalizada al mundo de las finanzas.",
+    items: [
+      {
+        quote:
+          "Finzy me ahorra horas cada día. Los resúmenes con IA son clarísimos y por fin entiendo lo que pasa en los mercados.",
+        name: "Alex",
+        role: "Trader particular",
+      },
+      {
+        quote:
+          "El feed personalizado me mantiene al día solo con las noticias que me interesan. Cero ruido, solo lo que importa.",
+        name: "Laura",
+        role: "Inversora",
+      },
+      {
+        quote:
+          "Las alertas en tiempo real son impresionantes. Capto las oportunidades antes de que los demás las vean.",
+        name: "Mark",
+        role: "Analista financiero",
       },
     ],
   },
@@ -643,11 +904,28 @@ const fr: Dict = {
     links: [
       { label: "Accueil", href: "/" },
       { label: "Qu'est-ce que Finzy", href: "#cos-e-finzy" },
-      { label: "Sources", href: "#fonti" },
-      { label: "Notre histoire", href: "#storia" },
+      { label: "Fonctionnalités", href: "#funzionalita" },
+      { label: "Comment ça marche", href: "#processo" },
+      { label: "Learning", href: "#learning" },
+      { label: "Tarifs", href: "#prezzi" },
       { label: "Contact", href: "#contatti" },
     ],
     cta: "Demander l'accès",
+  },
+  giveaway: {
+    overline: "Tirage officiel",
+    title: "Gagnez un iPhone 17 Pro",
+    bodyPre:
+      "Inscrivez-vous gratuitement à Finzy pour participer au tirage d'un iPhone 17 Pro. ",
+    highlight: "Sans obligation d'achat",
+    bodyPost: ". Tirage avant le 30 septembre 2026.",
+    cta: "Participer gratuitement",
+    fine: "Soumis au règlement officiel. Conditions générales applicables.",
+    close: "Fermer",
+    bannerPre:
+      "Inscrivez-vous gratuitement à Finzy et participez au tirage officiel d'un iPhone 17 Pro. ",
+    bannerPost:
+      " — tirage avant le 30 septembre 2026, avec règlement public et gagnant vérifié.",
   },
   hero: {
     cards: [
@@ -734,6 +1012,76 @@ const fr: Dict = {
       {
         title: "Accessible à tous",
         body: "Finzy rend la finance claire, même pour ceux qui ne sont pas experts du secteur.",
+      },
+    ],
+  },
+  process: {
+    overline: "Processus",
+    title: "Comment fonctionne Finzy",
+    subtitle: "Quatre étapes vers une finance simplifiée.",
+    steps: [
+      {
+        title: "Créez votre compte",
+        body: "Inscrivez-vous en quelques secondes avec e-mail ou Google. Aucune carte bancaire pour commencer.",
+      },
+      {
+        title: "Configurez votre flux",
+        body: "Choisissez les marchés, titres et thèmes qui vous intéressent. Finzy s'adapte à vos intérêts.",
+      },
+      {
+        title: "Recevez des signaux",
+        body: "Notifications en temps réel sur les opportunités et les mouvements pertinents de vos titres.",
+      },
+      {
+        title: "Agissez en confiance",
+        body: "Des résumés IA clairs et des données à la minute pour décider en toute confiance.",
+      },
+    ],
+  },
+  learning: {
+    overline: "Learning",
+    title: "Learning",
+    subtitle: "Apprenez la finance en naviguant. Sans cours universitaires ennuyeux.",
+    cards: [
+      {
+        title: "Guides financiers",
+        body: "Des articles clairs sur les concepts clés : actions, obligations, ETF, diversification et gestion du risque.",
+        badge: "50+ guides",
+      },
+      {
+        title: "Cours vidéo",
+        body: "De courtes vidéos de 3 à 5 minutes qui expliquent les stratégies d'investissement et l'analyse de marché pas à pas.",
+        badge: "120+ vidéos",
+      },
+      {
+        title: "Cours de base",
+        body: "Des cours structurés pour débutants : de la terminologie de base à la construction d'un portefeuille.",
+        badge: "8 cours",
+      },
+    ],
+  },
+  testimonials: {
+    overline: "Témoignages",
+    title: "Ce que disent nos utilisateurs",
+    subtitle: "Votre fenêtre simple et personnalisée sur le monde de la finance.",
+    items: [
+      {
+        quote:
+          "Finzy me fait gagner des heures chaque jour. Les résumés IA sont très clairs et je comprends enfin ce qui se passe sur les marchés.",
+        name: "Alex",
+        role: "Trader particulier",
+      },
+      {
+        quote:
+          "Le flux personnalisé me tient informée uniquement des actualités qui m'intéressent. Zéro bruit, seulement l'essentiel.",
+        name: "Laura",
+        role: "Investisseuse",
+      },
+      {
+        quote:
+          "Les alertes en temps réel sont impressionnantes. Je saisis les opportunités avant que les autres ne les voient.",
+        name: "Mark",
+        role: "Analyste financier",
       },
     ],
   },
@@ -850,11 +1198,28 @@ const pt: Dict = {
     links: [
       { label: "Início", href: "/" },
       { label: "O que é a Finzy", href: "#cos-e-finzy" },
-      { label: "Fontes", href: "#fonti" },
-      { label: "A nossa história", href: "#storia" },
+      { label: "Funcionalidades", href: "#funzionalita" },
+      { label: "Como funciona", href: "#processo" },
+      { label: "Learning", href: "#learning" },
+      { label: "Preços", href: "#prezzi" },
       { label: "Contacto", href: "#contatti" },
     ],
     cta: "Pedir acesso",
+  },
+  giveaway: {
+    overline: "Sorteio oficial",
+    title: "Ganha um iPhone 17 Pro",
+    bodyPre:
+      "Registe-se gratuitamente na Finzy para participar no sorteio de um iPhone 17 Pro. ",
+    highlight: "Sem compra necessária",
+    bodyPost: ". Sorteio até 30 de setembro de 2026.",
+    cta: "Participar grátis",
+    fine: "Sujeito a regulamento oficial. Termos e condições aplicáveis.",
+    close: "Fechar",
+    bannerPre:
+      "Registe-se gratuitamente na Finzy e participe no sorteio oficial de um iPhone 17 Pro. ",
+    bannerPost:
+      " — sorteio até 30 de setembro de 2026, com regulamento público e vencedor verificado.",
   },
   hero: {
     cards: [
@@ -941,6 +1306,76 @@ const pt: Dict = {
       {
         title: "Acessível a todos",
         body: "A Finzy torna as finanças claras mesmo para quem não é especialista do setor.",
+      },
+    ],
+  },
+  process: {
+    overline: "Processo",
+    title: "Como funciona a Finzy",
+    subtitle: "Quatro passos para finanças simplificadas.",
+    steps: [
+      {
+        title: "Crie a sua conta",
+        body: "Registe-se em segundos com email ou Google. Sem cartão de crédito para começar.",
+      },
+      {
+        title: "Configure o seu feed",
+        body: "Escolha os mercados, títulos e temas que lhe interessam. A Finzy adapta-se aos seus interesses.",
+      },
+      {
+        title: "Receba sinais",
+        body: "Notificações em tempo real sobre oportunidades e movimentos relevantes dos seus títulos.",
+      },
+      {
+        title: "Aja com confiança",
+        body: "Resumos com IA claros e dados ao minuto para decidir com segurança.",
+      },
+    ],
+  },
+  learning: {
+    overline: "Learning",
+    title: "Learning",
+    subtitle: "Aprenda finanças enquanto navega. Sem cursos universitários aborrecidos.",
+    cards: [
+      {
+        title: "Guias financeiros",
+        body: "Artigos claros sobre conceitos-chave: ações, obrigações, ETF, diversificação e gestão de risco.",
+        badge: "50+ guias",
+      },
+      {
+        title: "Vídeo-aulas",
+        body: "Vídeos curtos de 3-5 minutos que explicam estratégias de investimento e análise de mercado passo a passo.",
+        badge: "120+ vídeos",
+      },
+      {
+        title: "Cursos base",
+        body: "Cursos estruturados para iniciantes: da terminologia básica à construção de uma carteira.",
+        badge: "8 cursos",
+      },
+    ],
+  },
+  testimonials: {
+    overline: "Testemunhos",
+    title: "O que dizem os nossos utilizadores",
+    subtitle: "A sua janela simples e personalizada para o mundo das finanças.",
+    items: [
+      {
+        quote:
+          "A Finzy poupa-me horas por dia. Os resumos com IA são claríssimos e finalmente percebo o que acontece nos mercados.",
+        name: "Alex",
+        role: "Trader particular",
+      },
+      {
+        quote:
+          "O feed personalizado mantém-me atualizada apenas sobre as notícias que me interessam. Zero ruído, só o que importa.",
+        name: "Laura",
+        role: "Investidora",
+      },
+      {
+        quote:
+          "Os alertas em tempo real são impressionantes. Aproveito as oportunidades antes de os outros as verem.",
+        name: "Mark",
+        role: "Analista financeiro",
       },
     ],
   },

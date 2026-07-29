@@ -46,7 +46,7 @@ export function Story() {
           <Reveal delay={120} className="relative">
             <div className="relative aspect-[6/5] w-full overflow-hidden rounded-3xl">
               <Image
-                src="/corals.webp"
+                src="/graph.webp"
                 alt={t.story.imageAlt}
                 fill
                 sizes="(max-width: 1024px) 100vw, 600px"

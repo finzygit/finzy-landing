@@ -1,19 +1,18 @@
 "use client";
 
-import { Bot, Newspaper, Settings, Target, TrendingUp, Zap } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { useLanguage } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
-// Icona + colore per ciascuna card (nell'ordine di t.features.items).
+// Emoji + colore badge per ciascuna card (nell'ordine di t.features.items).
 const ICONS = [
-  { Icon: Newspaper, color: "text-blue-400", bg: "bg-blue-500/10" },
-  { Icon: Settings, color: "text-orange-400", bg: "bg-orange-500/10" },
-  { Icon: TrendingUp, color: "text-red-400", bg: "bg-red-500/10" },
-  { Icon: Bot, color: "text-[#7cf56b]", bg: "bg-[#7cf56b]/10" },
-  { Icon: Zap, color: "text-amber-400", bg: "bg-amber-400/10" },
-  { Icon: Target, color: "text-primary", bg: "bg-primary/10" },
+  { emoji: "📰", bg: "bg-blue-500/10" },
+  { emoji: "⚙️", bg: "bg-orange-500/10" },
+  { emoji: "📈", bg: "bg-red-500/10" },
+  { emoji: "🤖", bg: "bg-[#7cf56b]/10" },
+  { emoji: "⚡", bg: "bg-amber-400/10" },
+  { emoji: "🎯", bg: "bg-primary/10" },
 ];
 
 export function Features() {
@@ -36,17 +35,17 @@ export function Features() {
 
         <div className="mt-12 grid gap-5 sm:mt-16 sm:grid-cols-2 lg:grid-cols-3">
           {t.features.items.map((item, i) => {
-            const { Icon, color, bg } = ICONS[i] ?? ICONS[0];
+            const { emoji, bg } = ICONS[i] ?? ICONS[0];
             return (
               <Reveal key={item.title} delay={(i % 3) * 90} className="h-full">
                 <div className="h-full rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.05] to-white/[0.015] p-6 shadow-lg shadow-black/20 transition-colors duration-200 hover:border-white/10 sm:p-7">
                   <div
                     className={cn(
-                      "flex h-11 w-11 items-center justify-center rounded-xl",
+                      "flex h-11 w-11 items-center justify-center rounded-xl text-2xl",
                       bg,
                     )}
                   >
-                    <Icon className={color} size={20} strokeWidth={2} />
+                    <span aria-hidden>{emoji}</span>
                   </div>
                   <h3 className="mt-5 text-lg font-bold text-foreground">
                     {item.title}

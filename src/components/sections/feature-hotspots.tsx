@@ -63,24 +63,24 @@ export function FeatureHotspots() {
               aria-label={feature.title}
               aria-expanded={open}
               onClick={() => setPinned((p) => (p === i ? null : i))}
-              className="relative flex h-8 w-8 items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="relative flex h-8 w-8 items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3D9A] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               {/* Onde radar concentriche (due, sfalsate) */}
               <span
                 aria-hidden
-                className="animate-hotspot-ping absolute inset-0 rounded-full border border-primary/70"
+                className="animate-hotspot-ping absolute inset-0 rounded-full border border-[#FF3D9A]/70"
               />
               <span
                 aria-hidden
-                className="animate-hotspot-ping absolute inset-0 rounded-full border border-primary/50"
+                className="animate-hotspot-ping absolute inset-0 rounded-full border border-[#FF3D9A]/50"
                 style={{ animationDelay: "1.2s" }}
               />
               {/* Puntino pieno al centro */}
               <span
                 aria-hidden
                 className={cn(
-                  "relative inline-flex rounded-full bg-primary shadow-[0_0_12px_3px_rgba(32,229,209,0.75)] transition-all duration-200",
-                  open ? "h-4 w-4 ring-2 ring-primary/50" : "h-3 w-3",
+                  "relative inline-flex rounded-full bg-[#FF3D9A] shadow-[0_0_12px_3px_rgba(255,61,154,0.75)] transition-all duration-200",
+                  open ? "h-4 w-4 ring-2 ring-[#FF3D9A]/50" : "h-3 w-3",
                 )}
               />
             </button>
@@ -102,7 +102,7 @@ export function FeatureHotspots() {
             >
               <span
                 aria-hidden
-                className="mb-3 inline-flex h-2.5 w-2.5 rounded-full bg-primary shadow-[0_0_10px_2px_rgba(32,229,209,0.7)]"
+                className="mb-3 inline-flex h-2.5 w-2.5 rounded-full bg-[#FF3D9A] shadow-[0_0_10px_2px_rgba(255,61,154,0.7)]"
               />
               <p className="text-sm font-semibold text-foreground">
                 {feature.title}
