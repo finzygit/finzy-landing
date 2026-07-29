@@ -71,6 +71,13 @@ html {
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
+    scroll-snap-type: y proximity;
+  }
+
+  /* Aggancio dolce alle sezioni: scorrendo oltre un certo punto ci si allinea
+     automaticamente alla sezione successiva (proximity = non forzato). */
+  main > section {
+    scroll-snap-align: start;
   }
 }
 

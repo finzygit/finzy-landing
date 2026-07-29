@@ -7,12 +7,10 @@ import { X } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
-const STORAGE_KEY = "finzy-giveaway-dismissed";
-
 /**
  * Popup giveaway: tema turchese con bordo fucsia luminoso che scorre (classe
- * `.giveaway-card` in globals.css). Si apre una volta dopo qualche secondo dal
- * caricamento; la chiusura viene ricordata in localStorage. Portal su body.
+ * `.giveaway-card` in globals.css). Si apre quando la 4ª sezione (Story) entra
+ * in vista, a ogni caricamento della pagina. Portal su body.
  */
 export function GiveawayPopup() {
   const { t } = useLanguage();
@@ -23,9 +21,21 @@ export function GiveawayPopup() {
   useEffect(() => setMounted(true), []);
 
   useEffect(() => {
-    if (window.localStorage.getItem(STORAGE_KEY)) return;
-    const id = setTimeout(() => setOpen(true), 3500);
-    return () => clearTimeout(id);
+    const target = document.getElementById("storia");
+    if (!target) return;
+    let triggered = false;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !triggered) {
+          triggered = true;
+          setOpen(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.35 },
+    );
+    io.observe(target);
+    return () => io.disconnect();
   }, []);
 
   useEffect(() => {
@@ -43,10 +53,7 @@ export function GiveawayPopup() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  const close = () => {
-    setOpen(false);
-    window.localStorage.setItem(STORAGE_KEY, "1");
-  };
+  const close = () => setOpen(false);
 
   if (!mounted) return null;
 

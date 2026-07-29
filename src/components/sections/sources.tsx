@@ -71,11 +71,11 @@ export function Sources() {
   return (
     <section
       id="fonti"
-      className="relative overflow-hidden bg-background py-14 sm:py-16"
+      className="relative overflow-hidden bg-background py-16 sm:py-20"
     >
       {/* Fascia scorrevole dei wordmark (a tutta larghezza, con dissolvenza ai bordi) */}
       <div className="w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_7%,black_93%,transparent)]">
-        <div className="flex w-max animate-marquee items-center gap-16 text-3xl text-white/50 sm:gap-24 sm:text-4xl">
+        <div className="flex w-max animate-marquee items-center gap-16 text-4xl text-white/55 sm:gap-28 sm:text-5xl">
           {[...BRANDS, ...BRANDS].map((b, i) => (
             <span
               key={`${b.key}-${i}`}
