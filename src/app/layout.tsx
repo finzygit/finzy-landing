@@ -30,6 +30,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  icons: {
+    icon: "/finzy-favicon.png",
+    shortcut: "/finzy-favicon.png",
+    apple: "/finzy-favicon.png",
+  },
   openGraph: {
     type: "website",
     locale: "it_IT",

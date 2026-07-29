@@ -75,7 +75,7 @@ export function Sources() {
     >
       {/* Fascia scorrevole dei wordmark (a tutta larghezza, con dissolvenza ai bordi) */}
       <div className="w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_7%,black_93%,transparent)]">
-        <div className="flex w-max animate-marquee items-center gap-16 text-4xl text-white/55 sm:gap-28 sm:text-5xl">
+        <div className="flex w-max animate-marquee items-center gap-20 text-5xl text-white/55 sm:gap-32 sm:text-6xl">
           {[...BRANDS, ...BRANDS].map((b, i) => (
             <span
               key={`${b.key}-${i}`}
