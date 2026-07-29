@@ -102,6 +102,15 @@ export function GiveawayPopup() {
             {g.cta}
           </Link>
           <p className="mt-5 text-xs text-muted-foreground">{g.fine}</p>
+
+          <details className="mt-3 text-left">
+            <summary className="cursor-pointer list-none text-center text-xs font-medium text-primary/80 transition-colors hover:text-primary">
+              {g.rulesLabel}
+            </summary>
+            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+              {g.rules}
+            </p>
+          </details>
         </div>
       </div>
     </div>,

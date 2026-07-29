@@ -1,9 +1,4 @@
-"use client";
-
 import type { ReactNode } from "react";
-import { Container } from "@/components/ui/container";
-import { Reveal } from "@/components/ui/reveal";
-import { useLanguage } from "@/lib/i18n";
 
 /**
  * Wordmark testuali dei partner/fonti, ognuno con un font che richiama il logo
@@ -73,24 +68,14 @@ const BRANDS: { key: string; node: ReactNode }[] = [
 ];
 
 export function Sources() {
-  const { t } = useLanguage();
-
   return (
-    <section id="fonti" className="relative bg-background py-20 sm:py-28 lg:py-32">
-      <Container className="flex flex-col items-center">
-        <Reveal className="flex w-full flex-col items-center">
-          <h2 className="text-center font-serif text-4xl leading-tight sm:text-5xl">
-            {t.sources.title}
-          </h2>
-          <p className="mt-4 max-w-2xl text-center text-lg text-primary sm:text-xl">
-            {t.sources.subtitle}
-          </p>
-        </Reveal>
-      </Container>
-
+    <section
+      id="fonti"
+      className="relative overflow-hidden bg-background py-14 sm:py-16"
+    >
       {/* Fascia scorrevole dei wordmark (a tutta larghezza, con dissolvenza ai bordi) */}
-      <div className="mt-12 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_7%,black_93%,transparent)] sm:mt-16">
-        <div className="flex w-max animate-marquee items-center gap-16 text-2xl text-white/50 sm:gap-24 sm:text-3xl">
+      <div className="w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_7%,black_93%,transparent)]">
+        <div className="flex w-max animate-marquee items-center gap-16 text-3xl text-white/50 sm:gap-24 sm:text-4xl">
           {[...BRANDS, ...BRANDS].map((b, i) => (
             <span
               key={`${b.key}-${i}`}

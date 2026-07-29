@@ -33,7 +33,7 @@ function formatPrice(q: Quote) {
 function QuoteItem({ q }: { q: Quote }) {
   const up = q.change >= 0;
   return (
-    <span className="inline-flex items-center gap-2 text-xs tracking-wide">
+    <span className="inline-flex items-center gap-2 text-sm tracking-wide">
       <span className="font-medium text-muted-foreground">{q.label}</span>
       <span className="tabular-nums text-foreground/90">{formatPrice(q)}</span>
       <span
@@ -42,7 +42,7 @@ function QuoteItem({ q }: { q: Quote }) {
           up ? "text-positive" : "text-negative",
         )}
       >
-        <span aria-hidden className="text-[0.6rem] leading-none">
+        <span aria-hidden className="text-[0.65rem] leading-none">
           {up ? "▲" : "▼"}
         </span>
         {`${up ? "+" : ""}${q.change.toFixed(2)}%`}
@@ -88,7 +88,7 @@ export function TickerTrack({ className }: { className?: string }) {
 export function MarketTicker() {
   return (
     <div className="relative z-30 overflow-hidden border-b border-white/5 bg-[#05070a]">
-      <TickerTrack className="py-2 pl-10" />
+      <TickerTrack className="py-3 pl-10" />
     </div>
   );
 }
