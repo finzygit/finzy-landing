@@ -134,11 +134,8 @@ export function Process() {
             {t.process.overline}
           </p>
           <h2 className="mt-4 text-center font-serif text-4xl leading-tight sm:text-5xl">
-            {t.process.title}
-          </h2>
-          <p className="mt-5 text-center text-lg text-primary sm:mt-4 sm:text-xl">
             {t.process.subtitle}
-          </p>
+          </h2>
         </Reveal>
 
         <div

@@ -160,7 +160,7 @@ const it = {
   },
   learning: {
     overline: "Learning",
-    title: "Learning",
+    title: "Impara con Finzy",
     subtitle: "Impara la finanza mentre navighi. Senza noiosi corsi universitari.",
     cards: [
       {
@@ -457,7 +457,7 @@ const en: Dict = {
   },
   learning: {
     overline: "Learning",
-    title: "Learning",
+    title: "Learn with Finzy",
     subtitle: "Learn finance while you browse. No boring university courses.",
     cards: [
       {
@@ -751,7 +751,7 @@ const es: Dict = {
   },
   learning: {
     overline: "Learning",
-    title: "Learning",
+    title: "Aprende con Finzy",
     subtitle: "Aprende finanzas mientras navegas. Sin aburridos cursos universitarios.",
     cards: [
       {
@@ -1046,7 +1046,7 @@ const fr: Dict = {
   },
   learning: {
     overline: "Learning",
-    title: "Learning",
+    title: "Apprenez avec Finzy",
     subtitle: "Apprenez la finance en naviguant. Sans cours universitaires ennuyeux.",
     cards: [
       {
@@ -1341,7 +1341,7 @@ const pt: Dict = {
   },
   learning: {
     overline: "Learning",
-    title: "Learning",
+    title: "Aprenda com o Finzy",
     subtitle: "Aprenda finanças enquanto navega. Sem cursos universitários aborrecidos.",
     cards: [
       {

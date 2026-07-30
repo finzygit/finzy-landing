@@ -14,23 +14,28 @@ export function SiteFooter() {
       <Container>
         {/* Brand + navigazione */}
         <div className="flex flex-col gap-12 lg:flex-row lg:justify-between">
-          <div className="max-w-sm">
+          <div className="flex justify-center lg:block">
             <Image
               src="/logo.png"
               alt="finzy"
               width={742}
               height={1024}
-              className="h-10 w-auto"
+              className="h-32 w-auto sm:h-36"
             />
-            <p className="mt-5 leading-relaxed text-muted-foreground">
-              {t.footer.tagline}
-            </p>
           </div>
 
-          <div className="flex gap-16 sm:gap-24">
-            {t.footer.columns.map((col) => (
-              <nav key={col.title} aria-label={col.title}>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
+          <div className="flex w-full justify-between gap-16 lg:w-auto lg:gap-24">
+            {t.footer.columns.map((col, i) => (
+              <nav
+                key={col.title}
+                aria-label={col.title}
+                className={
+                  i === t.footer.columns.length - 1
+                    ? "text-right lg:text-left"
+                    : undefined
+                }
+              >
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
                   {col.title}
                 </p>
                 <ul className="mt-4 space-y-3">
