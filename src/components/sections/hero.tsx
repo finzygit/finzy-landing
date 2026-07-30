@@ -23,17 +23,18 @@ export function Hero() {
       <MarketTicker />
 
       <div className="relative flex flex-1 flex-col">
-        {/* Immagine di sfondo + sfumature per la leggibilità */}
-        <div className="absolute inset-0">
+        {/* Immagine di sfondo allineata in alto (spostata su, cielo clippato)
+            + sfumatura che la fonde sul nero verso il basso */}
+        <div className="absolute inset-0 overflow-hidden">
           <Image
             src="/hero-img.png"
             alt=""
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center"
+            className="-translate-y-[15%] object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/0 to-background/95" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/55 via-transparent via-45% to-background to-[85%]" />
         </div>
 
         {/* Pallini pulsanti con le funzionalità dell'app */}

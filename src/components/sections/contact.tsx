@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
+import { StoreButtons } from "@/components/ui/store-buttons";
 import { useLanguage } from "@/lib/i18n";
 
 const fieldWrap = "flex flex-col gap-3";
@@ -73,28 +74,22 @@ export function Contact() {
                   />
                 </div>
 
-                <div className={fieldWrap}>
-                  <label htmlFor="contact-goal" className={labelClass}>
-                    {t.contact.goal.label}
-                  </label>
-                  <textarea
-                    id="contact-goal"
-                    name="goal"
-                    rows={3}
-                    placeholder={t.contact.goal.placeholder}
-                    className={`${inputClass} resize-none`}
-                  />
-                </div>
-
                 <button
                   type="submit"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/25 px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/25 px-5 py-2.5 text-[0.8rem] font-medium text-foreground transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {t.contact.submit}
-                  <ArrowUpRight className="h-4 w-4" strokeWidth={2} />
+                  <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
                 </button>
               </form>
             )}
+          </Reveal>
+
+          <Reveal delay={160}>
+            <div className="mt-14 border-t border-white/10 pt-10">
+              <p className={labelClass}>{t.contact.storesLabel}</p>
+              <StoreButtons className="mt-6 justify-start!" />
+            </div>
           </Reveal>
         </div>
       </Container>

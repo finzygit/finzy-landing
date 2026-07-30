@@ -24,15 +24,12 @@ export function Testimonials() {
     >
       <Container>
         <Reveal className="flex flex-col items-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary">
             {t.testimonials.overline}
           </p>
           <h2 className="mt-4 text-center font-serif text-4xl leading-tight sm:text-5xl">
             {t.testimonials.title}
           </h2>
-          <p className="mt-4 max-w-2xl text-center text-lg text-primary sm:text-xl">
-            {t.testimonials.subtitle}
-          </p>
         </Reveal>
 
         <div className="mt-12 grid gap-5 sm:mt-16 lg:grid-cols-3">
@@ -54,10 +51,7 @@ export function Testimonials() {
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary/40 to-[#FF3D9A]/40 text-sm font-bold text-white">
                     {initials(item.name)}
                   </div>
-                  <div>
-                    <p className="font-semibold text-foreground">{item.name}</p>
-                    <p className="text-sm text-muted-foreground">{item.role}</p>
-                  </div>
+                  <p className="font-semibold text-foreground">{item.name}</p>
                 </div>
               </div>
             </Reveal>

@@ -25,10 +25,13 @@ export function Features() {
     >
       <Container>
         <Reveal className="flex flex-col items-center">
-          <h2 className="text-center font-serif text-4xl leading-tight sm:text-5xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary">
+            {t.features.overline}
+          </p>
+          <h2 className="mt-4 text-center font-serif text-4xl leading-tight sm:text-5xl">
             {t.features.title}
           </h2>
-          <p className="mt-4 max-w-2xl text-center text-lg text-muted-foreground">
+          <p className="mt-5 max-w-2xl text-center text-lg text-muted-foreground sm:mt-4">
             {t.features.subtitle}
           </p>
         </Reveal>

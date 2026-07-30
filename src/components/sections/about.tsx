@@ -22,7 +22,7 @@ export function About() {
           <h2 className="text-center font-serif text-4xl leading-tight sm:text-5xl">
             {t.about.title}
           </h2>
-          <p className="mt-4 max-w-2xl text-center text-lg text-primary sm:text-xl">
+          <p className="mt-5 max-w-2xl text-center text-lg text-primary sm:mt-4 sm:text-xl">
             {t.about.subtitle}
           </p>
         </Reveal>
@@ -38,17 +38,17 @@ export function About() {
             {t.about.cards.map((card, i) => (
               <div
                 key={card.title}
-                className="rounded-2xl border border-white/10 bg-navy/40 p-7 sm:p-8"
+                className="rounded-2xl border border-white/10 bg-navy/40 p-5 sm:p-8"
               >
                 <h3
                   className={cn(
-                    "text-lg font-semibold sm:text-xl",
+                    "text-base font-semibold sm:text-xl",
                     CARD_TITLE_CLASSES[i],
                   )}
                 >
                   {card.title}
                 </h3>
-                <p className="mt-4 leading-relaxed text-muted-foreground">
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-base">
                   {card.body}
                 </p>
               </div>

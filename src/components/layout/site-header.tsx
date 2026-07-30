@@ -19,7 +19,7 @@ export function SiteHeader({ className }: { className?: string }) {
           width={742}
           height={1024}
           priority
-          className="h-16 w-auto sm:h-20 lg:h-24"
+          className="h-20 w-auto sm:h-24 lg:h-32"
         />
       </Link>
 

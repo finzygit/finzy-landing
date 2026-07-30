@@ -17,13 +17,13 @@ export function Learning() {
     >
       <Container>
         <Reveal className="flex flex-col items-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary">
             {t.learning.overline}
           </p>
           <h2 className="mt-4 text-center font-serif text-4xl leading-tight sm:text-5xl">
             {t.learning.title}
           </h2>
-          <p className="mt-4 max-w-2xl text-center text-lg text-primary sm:text-xl">
+          <p className="mt-5 max-w-2xl text-center text-lg text-primary sm:mt-4 sm:text-xl">
             {t.learning.subtitle}
           </p>
         </Reveal>

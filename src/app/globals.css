@@ -81,12 +81,77 @@ html {
   }
 }
 
+/* Su mobile l'aggancio è più deciso: ogni scroll porta alla sezione
+   successiva, così non serve scorrere tante volte. */
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-snap-type: y mandatory;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* --- Sfondo dinamico delle sezioni ----------------------------------------
+   Ogni sezione (tranne l'hero, che ha già la sua immagine) sfuma nel nero in
+   alto e in basso, con un alone turchese di brand dietro l'area di contenuto.
+   L'alone si sposta a sinistra/destra alternando le sezioni, con un secondo
+   alone freddo (teal/navy) nell'angolo opposto: così lo sfondo "respira"
+   durante lo scroll invece di restare piatto. */
+main > section:not(:first-child) {
+  background-color: var(--background);
+}
+
+main > section:not(:first-child):nth-of-type(odd) {
+  background-image:
+    linear-gradient(
+      to bottom,
+      var(--background) 0%,
+      transparent 22%,
+      transparent 78%,
+      var(--background) 100%
+    ),
+    radial-gradient(
+      ellipse 80% 55% at 32% 40%,
+      rgba(32, 229, 209, 0.11),
+      transparent 66%
+    ),
+    radial-gradient(
+      ellipse 55% 45% at 88% 82%,
+      rgba(5, 91, 100, 0.3),
+      transparent 72%
+    );
+}
+
+main > section:not(:first-child):nth-of-type(even) {
+  background-image:
+    linear-gradient(
+      to bottom,
+      var(--background) 0%,
+      transparent 22%,
+      transparent 78%,
+      var(--background) 100%
+    ),
+    radial-gradient(
+      ellipse 80% 55% at 68% 40%,
+      rgba(32, 229, 209, 0.11),
+      transparent 66%
+    ),
+    radial-gradient(
+      ellipse 55% 45% at 12% 82%,
+      rgba(8, 31, 61, 0.42),
+      transparent 72%
+    );
+}
+
+/* La fascia dei brand (sources) resta su nero pieno, senza alone. */
+#fonti {
+  background-image: none;
 }
 
 /* Ticker di mercato: scorrimento orizzontale continuo */

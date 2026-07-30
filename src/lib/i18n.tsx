@@ -105,8 +105,9 @@ const it = {
     ],
   },
   features: {
+    overline: "Funzionalità",
     title: "Tutto ciò che ti serve, in un'app",
-    subtitle: "La tua finestra semplice e personalizzata sul mondo della finanza.",
+    subtitle: "Dalle notizie agli avvisi sui prezzi: gli strumenti giusti per decidere con lucidità.",
     items: [
       {
         title: "Notizie personalizzate",
@@ -182,25 +183,22 @@ const it = {
   testimonials: {
     overline: "Testimonianze",
     title: "Cosa dicono i nostri utenti",
-    subtitle: "La tua finestra semplice e personalizzata sul mondo della finanza.",
+    subtitle: "Migliaia di persone usano Finzy ogni giorno per restare sul pezzo.",
     items: [
       {
         quote:
           "Finzy mi fa risparmiare ore al giorno. I riassunti AI sono chiarissimi e finalmente capisco cosa succede nei mercati.",
-        name: "Alex",
-        role: "Trader privato",
+        name: "Alessandro M.",
       },
       {
         quote:
-          "Il feed personalizzato mi tiene aggiornata solo sulle notizie che mi interessano. Zero rumore, solo ciò che conta.",
-        name: "Laura",
-        role: "Investitore",
+          "Il feed personalizzato mi tiene aggiornato solo sulle notizie che mi interessano. Zero rumore, solo ciò che conta.",
+        name: "Carlo C.",
       },
       {
         quote:
           "Le segnalazioni in tempo reale sono impressionanti. Catturo le opportunità prima che gli altri le vedano.",
-        name: "Mark",
-        role: "Analista finanziario",
+        name: "Giacomo M.",
       },
     ],
   },
@@ -214,7 +212,7 @@ const it = {
     titleLine2: "resa semplice",
     body: "Abbiamo creato finzy per rendere la speculazione semplice. Segnali intelligenti, dati di flusso in tempo reale e la calma per restare lucido quando il mercato accelera.",
     stats: [
-      { value: "1500+", label: "Notizie analizzate" },
+      { value: "250+", label: "notizie selezionate per te" },
       { value: "60 sec", label: "Per restare aggiornato" },
       { value: "12+", label: "Mercati monitorati" },
     ],
@@ -278,6 +276,7 @@ const it = {
       placeholder: "Raccontaci la tua strategia di mercato…",
     },
     submit: "Richiedi l'accesso",
+    storesLabel: "Preferisci scaricare l'app?",
     success:
       "Grazie! Abbiamo ricevuto la tua richiesta — ti contatteremo presto.",
   },
@@ -403,8 +402,9 @@ const en: Dict = {
     ],
   },
   features: {
+    overline: "Features",
     title: "Everything you need, in one app",
-    subtitle: "Your simple, personalized window into the world of finance.",
+    subtitle: "From news to price alerts: the right tools to decide with clarity.",
     items: [
       {
         title: "Personalized news",
@@ -480,25 +480,22 @@ const en: Dict = {
   testimonials: {
     overline: "Testimonials",
     title: "What our users say",
-    subtitle: "Your simple, personalized window into the world of finance.",
+    subtitle: "Thousands of people rely on Finzy every day to stay on top of the markets.",
     items: [
       {
         quote:
           "Finzy saves me hours every day. The AI summaries are crystal clear and I finally understand what's happening in the markets.",
-        name: "Alex",
-        role: "Private trader",
+        name: "Alessandro M.",
       },
       {
         quote:
           "The personalized feed keeps me updated only on the news I care about. Zero noise, only what matters.",
-        name: "Laura",
-        role: "Investor",
+        name: "Carlo C.",
       },
       {
         quote:
           "The real-time alerts are impressive. I catch opportunities before others even see them.",
-        name: "Mark",
-        role: "Financial analyst",
+        name: "Giacomo M.",
       },
     ],
   },
@@ -512,7 +509,7 @@ const en: Dict = {
     titleLine2: "made simple",
     body: "We built finzy to make speculation effortless. Smart signals, real-time flow data, and the calm to keep you steady when the market surges.",
     stats: [
-      { value: "1500+", label: "News analyzed" },
+      { value: "250+", label: "news selected for you" },
       { value: "60 sec", label: "To stay up to date" },
       { value: "12+", label: "Markets monitored" },
     ],
@@ -576,6 +573,7 @@ const en: Dict = {
       placeholder: "Tell us about your market strategy…",
     },
     submit: "Request access",
+    storesLabel: "Prefer to download the app?",
     success: "Thanks! We've received your request — we'll be in touch soon.",
   },
   footer: {
@@ -698,8 +696,9 @@ const es: Dict = {
     ],
   },
   features: {
+    overline: "Funciones",
     title: "Todo lo que necesitas, en una app",
-    subtitle: "Tu ventana simple y personalizada al mundo de las finanzas.",
+    subtitle: "De las noticias a las alertas de precio: las herramientas para decidir con claridad.",
     items: [
       {
         title: "Noticias personalizadas",
@@ -775,25 +774,22 @@ const es: Dict = {
   testimonials: {
     overline: "Testimonios",
     title: "Lo que dicen nuestros usuarios",
-    subtitle: "Tu ventana simple y personalizada al mundo de las finanzas.",
+    subtitle: "Miles de personas usan Finzy cada día para estar al día de los mercados.",
     items: [
       {
         quote:
           "Finzy me ahorra horas cada día. Los resúmenes con IA son clarísimos y por fin entiendo lo que pasa en los mercados.",
-        name: "Alex",
-        role: "Trader particular",
+        name: "Alessandro M.",
       },
       {
         quote:
           "El feed personalizado me mantiene al día solo con las noticias que me interesan. Cero ruido, solo lo que importa.",
-        name: "Laura",
-        role: "Inversora",
+        name: "Carlo C.",
       },
       {
         quote:
           "Las alertas en tiempo real son impresionantes. Capto las oportunidades antes de que los demás las vean.",
-        name: "Mark",
-        role: "Analista financiero",
+        name: "Giacomo M.",
       },
     ],
   },
@@ -807,7 +803,7 @@ const es: Dict = {
     titleLine2: "hecha simple",
     body: "Creamos finzy para hacer que la especulación sea sencilla. Señales inteligentes, datos de flujo en tiempo real y la calma para mantenerte firme cuando el mercado se acelera.",
     stats: [
-      { value: "1500+", label: "Noticias analizadas" },
+      { value: "250+", label: "noticias seleccionadas para ti" },
       { value: "60 sec", label: "Para estar al día" },
       { value: "12+", label: "Mercados monitoreados" },
     ],
@@ -871,6 +867,7 @@ const es: Dict = {
       placeholder: "Cuéntanos tu estrategia de mercado…",
     },
     submit: "Solicitar acceso",
+    storesLabel: "¿Prefieres descargar la app?",
     success:
       "¡Gracias! Hemos recibido tu solicitud, nos pondremos en contacto pronto.",
   },
@@ -994,8 +991,9 @@ const fr: Dict = {
     ],
   },
   features: {
+    overline: "Fonctionnalités",
     title: "Tout ce qu'il vous faut, dans une seule app",
-    subtitle: "Votre fenêtre simple et personnalisée sur le monde de la finance.",
+    subtitle: "Des actualités aux alertes de prix : les bons outils pour décider avec clarté.",
     items: [
       {
         title: "Actualités personnalisées",
@@ -1071,25 +1069,22 @@ const fr: Dict = {
   testimonials: {
     overline: "Témoignages",
     title: "Ce que disent nos utilisateurs",
-    subtitle: "Votre fenêtre simple et personnalisée sur le monde de la finance.",
+    subtitle: "Des milliers de personnes utilisent Finzy chaque jour pour rester informées.",
     items: [
       {
         quote:
           "Finzy me fait gagner des heures chaque jour. Les résumés IA sont très clairs et je comprends enfin ce qui se passe sur les marchés.",
-        name: "Alex",
-        role: "Trader particulier",
+        name: "Alessandro M.",
       },
       {
         quote:
-          "Le flux personnalisé me tient informée uniquement des actualités qui m'intéressent. Zéro bruit, seulement l'essentiel.",
-        name: "Laura",
-        role: "Investisseuse",
+          "Le flux personnalisé me tient informé uniquement des actualités qui m'intéressent. Zéro bruit, seulement l'essentiel.",
+        name: "Carlo C.",
       },
       {
         quote:
           "Les alertes en temps réel sont impressionnantes. Je saisis les opportunités avant que les autres ne les voient.",
-        name: "Mark",
-        role: "Analyste financier",
+        name: "Giacomo M.",
       },
     ],
   },
@@ -1103,7 +1098,7 @@ const fr: Dict = {
     titleLine2: "rendue simple",
     body: "Nous avons créé finzy pour rendre la spéculation simple. Des signaux intelligents, des données de flux en temps réel et le calme pour rester lucide quand le marché s'emballe.",
     stats: [
-      { value: "1500+", label: "Actualités analysées" },
+      { value: "250+", label: "actualités sélectionnées pour vous" },
       { value: "60 sec", label: "Pour rester à jour" },
       { value: "12+", label: "Marchés suivis" },
     ],
@@ -1167,6 +1162,7 @@ const fr: Dict = {
       placeholder: "Parlez-nous de votre stratégie de marché…",
     },
     submit: "Demander l'accès",
+    storesLabel: "Vous préférez télécharger l'app ?",
     success:
       "Merci ! Nous avons bien reçu votre demande — nous vous contacterons bientôt.",
   },
@@ -1290,8 +1286,9 @@ const pt: Dict = {
     ],
   },
   features: {
+    overline: "Funcionalidades",
     title: "Tudo o que precisa, numa só app",
-    subtitle: "A sua janela simples e personalizada para o mundo das finanças.",
+    subtitle: "Das notícias aos alertas de preço: as ferramentas certas para decidir com clareza.",
     items: [
       {
         title: "Notícias personalizadas",
@@ -1367,25 +1364,22 @@ const pt: Dict = {
   testimonials: {
     overline: "Testemunhos",
     title: "O que dizem os nossos utilizadores",
-    subtitle: "A sua janela simples e personalizada para o mundo das finanças.",
+    subtitle: "Milhares de pessoas usam o Finzy todos os dias para se manterem a par.",
     items: [
       {
         quote:
           "A Finzy poupa-me horas por dia. Os resumos com IA são claríssimos e finalmente percebo o que acontece nos mercados.",
-        name: "Alex",
-        role: "Trader particular",
+        name: "Alessandro M.",
       },
       {
         quote:
-          "O feed personalizado mantém-me atualizada apenas sobre as notícias que me interessam. Zero ruído, só o que importa.",
-        name: "Laura",
-        role: "Investidora",
+          "O feed personalizado mantém-me atualizado apenas sobre as notícias que me interessam. Zero ruído, só o que importa.",
+        name: "Carlo C.",
       },
       {
         quote:
           "Os alertas em tempo real são impressionantes. Aproveito as oportunidades antes de os outros as verem.",
-        name: "Mark",
-        role: "Analista financeiro",
+        name: "Giacomo M.",
       },
     ],
   },
@@ -1399,7 +1393,7 @@ const pt: Dict = {
     titleLine2: "tornada simples",
     body: "Criámos a finzy para tornar a especulação simples. Sinais inteligentes, dados de fluxo em tempo real e a calma para se manter firme quando o mercado acelera.",
     stats: [
-      { value: "1500+", label: "Notícias analisadas" },
+      { value: "250+", label: "notícias selecionadas para si" },
       { value: "60 sec", label: "Para se manter atualizado" },
       { value: "12+", label: "Mercados monitorizados" },
     ],
@@ -1463,6 +1457,7 @@ const pt: Dict = {
       placeholder: "Fale-nos da sua estratégia de mercado…",
     },
     submit: "Pedir acesso",
+    storesLabel: "Prefere descarregar a app?",
     success:
       "Obrigado! Recebemos o seu pedido — entraremos em contacto em breve.",
   },
