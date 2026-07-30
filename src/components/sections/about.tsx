@@ -3,7 +3,7 @@
 import { Container } from "@/components/ui/container";
 import { StoreButtons } from "@/components/ui/store-buttons";
 import { Reveal } from "@/components/ui/reveal";
-import { PhoneShowcase } from "@/components/sections/phone-showcase";
+import { PhoneParallax } from "@/components/sections/phone-parallax";
 import { useLanguage } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -17,7 +17,10 @@ export function About() {
       id="cos-e-finzy"
       className="relative bg-background py-20 sm:py-28 lg:py-32"
     >
-      <Container className="flex flex-col items-center">
+      {/* iPhone decorativi ai lati, tra sfondo e contenuto */}
+      <PhoneParallax />
+
+      <Container className="relative z-10 flex flex-col items-center">
         <Reveal className="flex w-full flex-col items-center">
           <h2 className="text-center font-display text-4xl leading-tight sm:text-5xl">
             {t.about.title}
@@ -27,14 +30,9 @@ export function About() {
           </p>
         </Reveal>
 
-        {/* Due colonne: iPhone (scroll-driven) a sinistra, box impilati a destra */}
-        <Reveal
-          delay={100}
-          className="mt-14 grid w-full items-center gap-10 lg:mt-16 lg:grid-cols-[1.35fr_1fr] lg:gap-14"
-        >
-          <PhoneShowcase />
-
-          <div className="flex flex-col gap-5 px-4 sm:px-0">
+        {/* Box affiancati al centro, tra i due iPhone in parallasse */}
+        <Reveal delay={100} className="mt-14 w-full max-w-4xl lg:mt-16">
+          <div className="grid gap-5 px-4 sm:grid-cols-2 sm:px-0">
             {t.about.cards.map((card, i) => (
               <div
                 key={card.title}
