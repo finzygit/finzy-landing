@@ -33,18 +33,18 @@ const it = {
     overline: "Giveaway ufficiale",
     title: "Vinci un iPhone 17 Pro",
     bodyPre: "Il ",
-    highlight: "10.000° iscritto",
+    highlight: "10.000° abbonato Unlimited",
     bodyPost:
-      " a Finzy vince un iPhone 17 Pro — assegnato per ordine di registrazione e verificato pubblicamente. Nessun acquisto richiesto.",
-    cta: "Iscriviti gratis",
+      " vince un iPhone 17 Pro — assegnato per ordine di sottoscrizione, verificato pubblicamente.",
+    cta: "Partecipa anche tu",
     fine: "Concorso soggetto a regolamento ufficiale. Termini e condizioni applicabili.",
     close: "Chiudi",
     bannerPre: "Il ",
     bannerPost:
-      " a Finzy vince un iPhone 17 Pro. Il vincitore è determinato dall'ordine di registrazione, verificato e annunciato pubblicamente. Nessun acquisto richiesto.",
+      " vince un iPhone 17 Pro. Il vincitore è determinato dall'ordine cronologico di sottoscrizione dell'abbonamento Unlimited, verificato e annunciato pubblicamente.",
     rulesLabel: "Regolamento del concorso",
     rules:
-      "Vince l'utente numero 10.000 che completa l'iscrizione gratuita a Finzy, individuato in base all'ordine cronologico di registrazione. La partecipazione è gratuita e non richiede alcun acquisto. Il vincitore sarà contattato via email e annunciato pubblicamente. Concorso soggetto a termini e condizioni completi.",
+      "Vince l'utente numero 10.000 che attiva l'abbonamento Unlimited su Finzy, individuato in base all'ordine cronologico di sottoscrizione. Il vincitore sarà contattato via email e annunciato pubblicamente. Concorso soggetto a termini e condizioni completi.",
   },
   hero: {
     cards: [
@@ -331,18 +331,18 @@ const en: Dict = {
     overline: "Official giveaway",
     title: "Win an iPhone 17 Pro",
     bodyPre: "The ",
-    highlight: "10,000th sign-up",
+    highlight: "10,000th Unlimited subscriber",
     bodyPost:
-      " to Finzy wins an iPhone 17 Pro — awarded by registration order and verified publicly. No purchase required.",
-    cta: "Sign up free",
+      " wins an iPhone 17 Pro — awarded by subscription order and verified publicly.",
+    cta: "Take part",
     fine: "Subject to official rules. Terms and conditions apply.",
     close: "Close",
     bannerPre: "The ",
     bannerPost:
-      " to Finzy wins an iPhone 17 Pro. The winner is determined by registration order, verified and announced publicly. No purchase required.",
+      " wins an iPhone 17 Pro. The winner is determined by chronological Unlimited subscription order, verified and announced publicly.",
     rulesLabel: "Giveaway rules",
     rules:
-      "The 10,000th user to complete free registration on Finzy wins, determined by chronological registration order. Entry is free and requires no purchase. The winner will be contacted by email and announced publicly. Subject to full terms and conditions.",
+      "The 10,000th user to activate the Unlimited subscription on Finzy wins, determined by chronological subscription order. The winner will be contacted by email and announced publicly. Subject to full terms and conditions.",
   },
   hero: {
     cards: [
@@ -626,18 +626,18 @@ const es: Dict = {
     overline: "Sorteo oficial",
     title: "Gana un iPhone 17 Pro",
     bodyPre: "El ",
-    highlight: "usuario n.º 10.000",
+    highlight: "suscriptor Unlimited n.º 10.000",
     bodyPost:
-      " en registrarse en Finzy gana un iPhone 17 Pro — asignado por orden de registro y verificado públicamente. Sin compra necesaria.",
-    cta: "Regístrate gratis",
+      " gana un iPhone 17 Pro — asignado por orden de suscripción y verificado públicamente.",
+    cta: "Participa tú también",
     fine: "Sujeto a las bases oficiales. Términos y condiciones aplicables.",
     close: "Cerrar",
     bannerPre: "El ",
     bannerPost:
-      " en registrarse en Finzy gana un iPhone 17 Pro. El ganador se determina por orden de registro, verificado y anunciado públicamente. Sin compra necesaria.",
+      " gana un iPhone 17 Pro. El ganador se determina por orden cronológico de suscripción a Unlimited, verificado y anunciado públicamente.",
     rulesLabel: "Bases del sorteo",
     rules:
-      "Gana el usuario número 10.000 que complete el registro gratuito en Finzy, determinado por el orden cronológico de registro. La participación es gratuita y no requiere ninguna compra. El ganador será contactado por email y anunciado públicamente. Sujeto a los términos y condiciones completos.",
+      "Gana el usuario número 10.000 que activa la suscripción Unlimited en Finzy, determinado por el orden cronológico de suscripción. El ganador será contactado por email y anunciado públicamente. Sujeto a los términos y condiciones completos.",
   },
   hero: {
     cards: [
@@ -922,18 +922,18 @@ const fr: Dict = {
     overline: "Tirage officiel",
     title: "Gagnez un iPhone 17 Pro",
     bodyPre: "Le ",
-    highlight: "10 000e inscrit",
+    highlight: "10 000e abonné Unlimited",
     bodyPost:
-      " à Finzy gagne un iPhone 17 Pro — attribué selon l'ordre d'inscription et vérifié publiquement. Sans obligation d'achat.",
-    cta: "Inscription gratuite",
+      " gagne un iPhone 17 Pro — attribué selon l'ordre d'abonnement et vérifié publiquement.",
+    cta: "Participez vous aussi",
     fine: "Soumis au règlement officiel. Conditions générales applicables.",
     close: "Fermer",
     bannerPre: "Le ",
     bannerPost:
-      " à Finzy gagne un iPhone 17 Pro. Le gagnant est déterminé selon l'ordre d'inscription, vérifié et annoncé publiquement. Sans obligation d'achat.",
+      " gagne un iPhone 17 Pro. Le gagnant est déterminé selon l'ordre chronologique d'abonnement à Unlimited, vérifié et annoncé publiquement.",
     rulesLabel: "Règlement du jeu",
     rules:
-      "Le 10 000e utilisateur à finaliser son inscription gratuite sur Finzy gagne, déterminé selon l'ordre chronologique d'inscription. La participation est gratuite et sans obligation d'achat. Le gagnant sera contacté par e-mail et annoncé publiquement. Soumis aux conditions générales complètes.",
+      "Le 10 000e utilisateur à activer l'abonnement Unlimited sur Finzy gagne, déterminé selon l'ordre chronologique d'abonnement. Le gagnant sera contacté par e-mail et annoncé publiquement. Soumis aux conditions générales complètes.",
   },
   hero: {
     cards: [
@@ -1218,18 +1218,18 @@ const pt: Dict = {
     overline: "Sorteio oficial",
     title: "Ganha um iPhone 17 Pro",
     bodyPre: "O ",
-    highlight: "10.000.º inscrito",
+    highlight: "10.000.º assinante Unlimited",
     bodyPost:
-      " na Finzy ganha um iPhone 17 Pro — atribuído por ordem de registo e verificado publicamente. Sem compra necessária.",
-    cta: "Registo grátis",
+      " ganha um iPhone 17 Pro — atribuído por ordem de subscrição e verificado publicamente.",
+    cta: "Participa também",
     fine: "Sujeito a regulamento oficial. Termos e condições aplicáveis.",
     close: "Fechar",
     bannerPre: "O ",
     bannerPost:
-      " na Finzy ganha um iPhone 17 Pro. O vencedor é determinado pela ordem de registo, verificado e anunciado publicamente. Sem compra necessária.",
+      " ganha um iPhone 17 Pro. O vencedor é determinado pela ordem cronológica de subscrição do Unlimited, verificado e anunciado publicamente.",
     rulesLabel: "Regulamento do sorteio",
     rules:
-      "Ganha o utilizador número 10.000 que conclui o registo gratuito na Finzy, determinado pela ordem cronológica de registo. A participação é gratuita e não exige qualquer compra. O vencedor será contactado por email e anunciado publicamente. Sujeito aos termos e condições completos.",
+      "Ganha o utilizador número 10.000 que ativa a subscrição Unlimited na Finzy, determinado pela ordem cronológica de subscrição. O vencedor será contactado por email e anunciado publicamente. Sujeito aos termos e condições completos.",
   },
   hero: {
     cards: [

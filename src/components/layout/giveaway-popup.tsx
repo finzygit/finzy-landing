@@ -75,11 +75,11 @@ export function GiveawayPopup() {
         aria-modal="true"
         aria-label={g.title}
         className={cn(
-          "giveaway-card relative w-full max-w-md transition-all duration-300 ease-out",
+          "giveaway-card relative w-full max-w-sm transition-all duration-300 ease-out",
           open ? "translate-y-0 scale-100" : "translate-y-4 scale-95",
         )}
       >
-        <div className="relative z-[2] overflow-hidden rounded-[calc(1.5rem-2px)] bg-[#08141d] px-8 py-9 text-center sm:px-10">
+        <div className="relative z-[2] overflow-hidden rounded-[calc(1.5rem-2px)] bg-[#08141d] px-6 py-7 text-center sm:px-8">
           <button
             type="button"
             aria-label={g.close}
@@ -89,13 +89,10 @@ export function GiveawayPopup() {
             <X className="h-5 w-5" strokeWidth={2} />
           </button>
 
-          <div className="mb-4 text-5xl" aria-hidden>
-            📱
-          </div>
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary">
             {g.overline}
           </p>
-          <h3 className="mt-3 text-3xl font-bold text-[#FF3D9A]">{g.title}</h3>
+          <h3 className="mt-2 text-2xl font-bold text-[#FF3D9A]">{g.title}</h3>
           <p className="mx-auto mt-4 max-w-sm leading-relaxed text-foreground/85">
             {g.bodyPre}
             <span className="font-semibold text-[#FF3D9A]">{g.highlight}</span>
@@ -104,7 +101,7 @@ export function GiveawayPopup() {
           <Link
             href="#contatti"
             onClick={close}
-            className="mt-7 inline-flex w-full items-center justify-center rounded-full bg-primary px-6 py-3.5 font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
           >
             {g.cta}
           </Link>

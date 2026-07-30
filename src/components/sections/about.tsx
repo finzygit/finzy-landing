@@ -34,7 +34,7 @@ export function About() {
         >
           <PhoneShowcase />
 
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-5 px-4 sm:px-0">
             {t.about.cards.map((card, i) => (
               <div
                 key={card.title}
