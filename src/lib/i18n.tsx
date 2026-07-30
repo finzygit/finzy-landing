@@ -277,6 +277,7 @@ const it = {
     },
     submit: "Richiedi l'accesso",
     storesLabel: "Preferisci scaricare l'app?",
+    privacyNote: "I tuoi dati sono al sicuro. Niente spam, mai.",
     success:
       "Grazie! Abbiamo ricevuto la tua richiesta — ti contatteremo presto.",
   },
@@ -574,6 +575,7 @@ const en: Dict = {
     },
     submit: "Request access",
     storesLabel: "Prefer to download the app?",
+    privacyNote: "Your data is safe. No spam, ever.",
     success: "Thanks! We've received your request — we'll be in touch soon.",
   },
   footer: {
@@ -868,6 +870,7 @@ const es: Dict = {
     },
     submit: "Solicitar acceso",
     storesLabel: "¿Prefieres descargar la app?",
+    privacyNote: "Tus datos están seguros. Sin spam, nunca.",
     success:
       "¡Gracias! Hemos recibido tu solicitud, nos pondremos en contacto pronto.",
   },
@@ -1163,6 +1166,7 @@ const fr: Dict = {
     },
     submit: "Demander l'accès",
     storesLabel: "Vous préférez télécharger l'app ?",
+    privacyNote: "Vos données sont en sécurité. Jamais de spam.",
     success:
       "Merci ! Nous avons bien reçu votre demande — nous vous contacterons bientôt.",
   },
@@ -1458,6 +1462,7 @@ const pt: Dict = {
     },
     submit: "Pedir acesso",
     storesLabel: "Prefere descarregar a app?",
+    privacyNote: "Os teus dados estão seguros. Nunca spam.",
     success:
       "Obrigado! Recebemos o seu pedido — entraremos em contacto em breve.",
   },

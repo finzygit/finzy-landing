@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, Playfair_Display, Poppins } from "next/font/google";
 import { LanguageProvider } from "@/lib/i18n";
 import "./globals.css";
 
@@ -9,7 +9,15 @@ const inter = Inter({
   display: "swap",
 });
 
-// Serif editoriale per i wordmark di Forbes e la Repubblica (fascia fonti).
+// Font dei titoli: sans geometrico e tondo (si abbina a Inter per il corpo).
+const poppins = Poppins({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+// Serif editoriale SOLO per i wordmark di Forbes e la Repubblica (fascia fonti).
 const playfair = Playfair_Display({
   variable: "--font-serif",
   subsets: ["latin"],
@@ -58,7 +66,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="it" className={`${inter.variable} ${playfair.variable} h-full`}>
+    <html
+      lang="it"
+      className={`${inter.variable} ${poppins.variable} ${playfair.variable} h-full`}
+    >
       <body className="min-h-full flex flex-col antialiased">
         <LanguageProvider>{children}</LanguageProvider>
       </body>

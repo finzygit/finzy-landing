@@ -20,7 +20,7 @@ export function Learning() {
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary">
             {t.learning.overline}
           </p>
-          <h2 className="mt-4 text-center font-serif text-4xl leading-tight sm:text-5xl">
+          <h2 className="mt-4 text-center font-display text-4xl leading-tight sm:text-5xl">
             {t.learning.title}
           </h2>
           <p className="mt-5 max-w-2xl text-center text-lg text-primary sm:mt-4 sm:text-xl">

@@ -27,7 +27,7 @@ export function Testimonials() {
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary">
             {t.testimonials.overline}
           </p>
-          <h2 className="mt-4 text-center font-serif text-4xl leading-tight sm:text-5xl">
+          <h2 className="mt-4 text-center font-display text-4xl leading-tight sm:text-5xl">
             {t.testimonials.title}
           </h2>
         </Reveal>

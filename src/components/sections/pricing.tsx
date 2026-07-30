@@ -11,8 +11,8 @@ import { cn } from "@/lib/utils";
 // Nomi commerciali + prezzo mensile (in €) + piano evidenziato. Non tradotti.
 const PLANS = [
   { name: "Free", price: 0, href: "#contatti", popular: false },
-  { name: "Premium", price: 4.99, href: "#contatti", popular: true },
-  { name: "Unlimited Pro", price: 6.99, href: "#contatti", popular: false },
+  { name: "Premium", price: 4.99, href: "#contatti", popular: false },
+  { name: "Unlimited", price: 6.99, href: "#contatti", popular: true },
 ];
 
 type Plan = (typeof PLANS)[number];
@@ -244,7 +244,7 @@ export function Pricing() {
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary">
             {p.overline}
           </p>
-          <h2 className="mt-4 max-w-3xl text-center font-serif text-4xl leading-tight sm:text-5xl">
+          <h2 className="mt-4 max-w-3xl text-center font-display text-4xl leading-tight sm:text-5xl">
             {p.title}
           </h2>
 

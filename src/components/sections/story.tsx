@@ -18,7 +18,7 @@ export function Story() {
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
               {t.story.overline}
             </p>
-            <h2 className="mt-5 font-serif text-4xl leading-[1.1] sm:text-5xl">
+            <h2 className="mt-5 font-display text-4xl leading-[1.1] sm:text-5xl">
               {t.story.titleLine1}
               <br />
               {t.story.titleLine2}

@@ -19,7 +19,7 @@ export function About() {
     >
       <Container className="flex flex-col items-center">
         <Reveal className="flex w-full flex-col items-center">
-          <h2 className="text-center font-serif text-4xl leading-tight sm:text-5xl">
+          <h2 className="text-center font-display text-4xl leading-tight sm:text-5xl">
             {t.about.title}
           </h2>
           <p className="mt-5 max-w-2xl text-center text-lg text-primary sm:mt-4 sm:text-xl">
