@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { CountUp } from "@/components/ui/count-up";
+import { MarketMap } from "@/components/sections/market-map";
 import { useLanguage } from "@/lib/i18n";
 
 export function Story() {
@@ -40,17 +40,9 @@ export function Story() {
             </dl>
           </Reveal>
 
-          {/* Immagine con card flottante */}
+          {/* Mappa dei mercati con card flottante */}
           <Reveal delay={120} className="relative">
-            <div className="relative aspect-[6/5] w-full overflow-hidden rounded-3xl">
-              <Image
-                src="/graph.webp"
-                alt={t.story.imageAlt}
-                fill
-                sizes="(max-width: 1024px) 100vw, 600px"
-                className="object-cover"
-              />
-            </div>
+            <MarketMap label={t.story.imageAlt} className="w-full" />
 
             <div className="animate-float absolute -bottom-6 left-6 rounded-2xl bg-white px-6 py-4 shadow-2xl shadow-black/40">
               <p className="text-xs text-neutral-500">{t.story.cardLabel}</p>

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Check, Sparkles } from "lucide-react";
+import { Check, Lock, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { useLanguage, type Lang } from "@/lib/i18n";
@@ -16,7 +16,13 @@ const PLANS = [
 ];
 
 type Plan = (typeof PLANS)[number];
-type PlanInfo = { tagline: string; features: string[]; cta: string };
+type PlanInfo = {
+  tagline: string;
+  features: string[];
+  locked: string[];
+  cta: string;
+  note: string;
+};
 
 const LOCALE: Record<Lang, string> = {
   en: "en-US",
@@ -89,6 +95,12 @@ function PlanCard({ plan, info, annual, lang, perMonth, popularLabel }: CardProp
         </div>
       </div>
 
+      {info.note && (
+        <p className="mt-3 text-xs leading-snug text-muted-foreground/80">
+          {info.note}
+        </p>
+      )}
+
       <ul className="mt-6 space-y-3">
         {info.features.map((f) => (
           <li
@@ -96,6 +108,18 @@ function PlanCard({ plan, info, annual, lang, perMonth, popularLabel }: CardProp
             className="flex items-start gap-2.5 text-sm text-foreground/90"
           >
             <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" strokeWidth={2.5} />
+            <span>{f}</span>
+          </li>
+        ))}
+        {info.locked.map((f) => (
+          <li
+            key={f}
+            className="flex items-start gap-2.5 text-sm text-muted-foreground/70"
+          >
+            <Lock
+              className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/50"
+              strokeWidth={2}
+            />
             <span>{f}</span>
           </li>
         ))}
