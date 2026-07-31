@@ -25,16 +25,16 @@ export function Hero() {
       <div className="relative flex flex-1 flex-col">
         {/* Immagine di sfondo allineata in alto (spostata su, cielo clippato)
             + sfumatura che la fonde sul nero verso il basso */}
-        <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-x-0 bottom-0 top-32 overflow-hidden sm:top-0">
           <Image
             src="/hero-img.png"
             alt=""
             fill
             priority
             sizes="100vw"
-            className="-translate-y-[15%] object-cover object-center"
+            className="object-cover object-center sm:-translate-y-[15%]"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/55 via-transparent via-45% to-background to-[85%]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent via-45% to-background to-[85%] sm:from-background/55" />
         </div>
 
         {/* Pallini pulsanti con le funzionalità dell'app */}

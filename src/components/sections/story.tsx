@@ -28,13 +28,15 @@ export function Story() {
               {t.story.body}
             </p>
 
-            <dl className="mt-10 flex flex-wrap gap-x-10 gap-y-6">
+            <dl className="mt-8 grid grid-cols-3 gap-4 sm:mt-10 sm:flex sm:flex-wrap sm:gap-x-10 sm:gap-y-6">
               {t.story.stats.map((stat) => (
                 <div key={stat.label}>
-                  <dd className="text-3xl font-bold sm:text-4xl">
+                  <dd className="text-2xl font-bold sm:text-4xl">
                     <CountUp value={stat.value} />
                   </dd>
-                  <dt className="mt-1 text-sm text-primary">{stat.label}</dt>
+                  <dt className="mt-1 text-xs leading-tight text-primary sm:text-sm">
+                    {stat.label}
+                  </dt>
                 </div>
               ))}
             </dl>

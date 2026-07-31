@@ -212,7 +212,7 @@ const it = {
     titleLine2: "resa semplice",
     body: "Abbiamo creato finzy per rendere la speculazione semplice. Segnali intelligenti, dati di flusso in tempo reale e la calma per restare lucido quando il mercato accelera.",
     stats: [
-      { value: "250+", label: "notizie selezionate per te" },
+      { value: "250+", label: "Notizie selezionate per te" },
       { value: "60 sec", label: "Per restare aggiornato" },
       { value: "12+", label: "Mercati monitorati" },
     ],
@@ -517,7 +517,7 @@ const en: Dict = {
     titleLine2: "made simple",
     body: "We built finzy to make speculation effortless. Smart signals, real-time flow data, and the calm to keep you steady when the market surges.",
     stats: [
-      { value: "250+", label: "news selected for you" },
+      { value: "250+", label: "News selected for you" },
       { value: "60 sec", label: "To stay up to date" },
       { value: "12+", label: "Markets monitored" },
     ],
@@ -819,7 +819,7 @@ const es: Dict = {
     titleLine2: "hecha simple",
     body: "Creamos finzy para hacer que la especulación sea sencilla. Señales inteligentes, datos de flujo en tiempo real y la calma para mantenerte firme cuando el mercado se acelera.",
     stats: [
-      { value: "250+", label: "noticias seleccionadas para ti" },
+      { value: "250+", label: "Noticias seleccionadas para ti" },
       { value: "60 sec", label: "Para estar al día" },
       { value: "12+", label: "Mercados monitoreados" },
     ],
@@ -1122,7 +1122,7 @@ const fr: Dict = {
     titleLine2: "rendue simple",
     body: "Nous avons créé finzy pour rendre la spéculation simple. Des signaux intelligents, des données de flux en temps réel et le calme pour rester lucide quand le marché s'emballe.",
     stats: [
-      { value: "250+", label: "actualités sélectionnées pour vous" },
+      { value: "250+", label: "Actualités sélectionnées pour vous" },
       { value: "60 sec", label: "Pour rester à jour" },
       { value: "12+", label: "Marchés suivis" },
     ],
@@ -1425,7 +1425,7 @@ const pt: Dict = {
     titleLine2: "tornada simples",
     body: "Criámos a finzy para tornar a especulação simples. Sinais inteligentes, dados de fluxo em tempo real e a calma para se manter firme quando o mercado acelera.",
     stats: [
-      { value: "250+", label: "notícias selecionadas para si" },
+      { value: "250+", label: "Notícias selecionadas para si" },
       { value: "60 sec", label: "Para se manter atualizado" },
       { value: "12+", label: "Mercados monitorizados" },
     ],

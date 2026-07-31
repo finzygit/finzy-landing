@@ -317,9 +317,10 @@ export function PhoneParallax({ className }: { className?: string }) {
           }}
           className={cn(
             "absolute top-0 h-[230px] w-[115px] will-change-transform sm:h-[300px] sm:w-[150px] lg:h-[400px] lg:w-[210px]",
+            // Su mobile ~3/4 del telefono resta visibile (fuori schermo solo ~1/4).
             phone.side === "left"
-              ? "left-[-18%] sm:left-[-6%] lg:left-[11%] xl:left-[15%]"
-              : "right-[-18%] sm:right-[-6%] lg:right-[11%] xl:right-[15%]",
+              ? "left-[-28px] sm:left-[-38px] lg:left-[11%] xl:left-[15%]"
+              : "right-[-28px] sm:right-[-38px] lg:right-[11%] xl:right-[15%]",
           )}
         >
           {/* Canvas 3D: scocca con spessore reale, render statico */}

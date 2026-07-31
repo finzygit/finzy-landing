@@ -82,13 +82,9 @@ html {
   }
 }
 
-/* Su mobile l'aggancio è più deciso: ogni scroll porta alla sezione
-   successiva, così non serve scorrere tante volte. */
-@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-snap-type: y mandatory;
-  }
-}
+/* Nota: niente snap "mandatory" su mobile — con sezioni più alte dello schermo
+   forzerebbe il salto alla sezione successiva nascondendo il contenuto in fondo
+   (es. la mappa nella sezione storia). Resta l'aggancio dolce "proximity". */
 
 body {
   background: var(--background);
