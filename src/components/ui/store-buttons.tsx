@@ -27,9 +27,12 @@ function GooglePlayGlyph({ className }: { className?: string }) {
   );
 }
 
+const APP_STORE_URL = "https://apps.apple.com/it/app/id6795460404";
+const GOOGLE_PLAY_URL =
+  "https://play.google.com/store/apps/details?id=it.mokkastudios.finzyapp";
+
 /**
  * Bottoni di download App Store / Google Play.
- * href placeholder (#): sostituire con i link reali quando disponibili.
  * Per badge ufficiali 1:1 basta mettere gli asset in /public e swappare.
  */
 export function StoreButtons({ className }: { className?: string }) {
@@ -40,7 +43,13 @@ export function StoreButtons({ className }: { className?: string }) {
     <div
       className={cn("flex flex-wrap items-center justify-center gap-3", className)}
     >
-      <a href="#" aria-label="Scarica su App Store" className={base}>
+      <a
+        href={APP_STORE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Scarica su App Store"
+        className={base}
+      >
         <AppleGlyph className="h-7 w-7 text-white" />
         <span className="flex flex-col gap-0.5 text-left leading-none">
           <span className="text-[0.65rem] text-white/70">Download on the</span>
@@ -48,7 +57,13 @@ export function StoreButtons({ className }: { className?: string }) {
         </span>
       </a>
 
-      <a href="#" aria-label="Scarica su Google Play" className={base}>
+      <a
+        href={GOOGLE_PLAY_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Scarica su Google Play"
+        className={base}
+      >
         <GooglePlayGlyph className="h-6 w-6" />
         <span className="flex flex-col gap-0.5 text-left leading-none">
           <span className="text-[0.65rem] uppercase tracking-wide text-white/70">
