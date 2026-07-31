@@ -10,25 +10,25 @@ export function Story() {
   const { t } = useLanguage();
 
   return (
-    <section id="storia" className="relative bg-background py-20 sm:py-28 lg:py-32">
+    <section id="storia" className="relative bg-background py-12 sm:py-28 lg:py-32">
       <Container>
-        <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-16">
+        <div className="grid items-center gap-8 sm:gap-14 lg:grid-cols-2 lg:gap-16">
           {/* Testo */}
           <Reveal>
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
               {t.story.overline}
             </p>
-            <h2 className="mt-5 font-display text-4xl leading-[1.1] sm:text-5xl">
+            <h2 className="mt-4 font-display text-3xl leading-[1.1] sm:mt-5 sm:text-5xl">
               {t.story.titleLine1}
               <br />
               {t.story.titleLine2}
             </h2>
-            <div className="mt-6 h-[3px] w-14 rounded-full bg-primary" />
-            <p className="mt-6 max-w-md leading-relaxed text-muted-foreground">
+            <div className="mt-5 h-[3px] w-14 rounded-full bg-primary sm:mt-6" />
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground sm:mt-6 sm:text-base">
               {t.story.body}
             </p>
 
-            <dl className="mt-8 grid grid-cols-3 gap-4 sm:mt-10 sm:flex sm:flex-wrap sm:gap-x-10 sm:gap-y-6">
+            <dl className="mt-6 grid grid-cols-3 gap-4 sm:mt-10 sm:flex sm:flex-wrap sm:gap-x-10 sm:gap-y-6">
               {t.story.stats.map((stat) => (
                 <div key={stat.label}>
                   <dd className="text-2xl font-bold sm:text-4xl">

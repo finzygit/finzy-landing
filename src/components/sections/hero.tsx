@@ -24,17 +24,19 @@ export function Hero() {
 
       <div className="relative flex flex-1 flex-col">
         {/* Immagine di sfondo allineata in alto (spostata su, cielo clippato)
-            + sfumatura che la fonde sul nero verso il basso */}
-        <div className="absolute inset-x-0 bottom-0 top-32 overflow-hidden sm:top-0">
+            + sfumatura che la fonde sul nero verso il basso.
+            Sotto lg è più bassa (52svh) e sfuma sul nero prima che inizi il
+            contenuto, così card e statistiche non si sovrappongono ai coralli. */}
+        <div className="absolute inset-x-0 top-0 h-[46svh] overflow-hidden lg:bottom-0 lg:h-auto">
           <Image
             src="/hero-img.png"
             alt=""
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center sm:-translate-y-[15%]"
+            className="object-cover object-center lg:-translate-y-[15%]"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent via-45% to-background to-[85%] sm:from-background/55" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent via-28% to-background to-[85%] lg:from-background/55" />
         </div>
 
         {/* Pallini pulsanti con le funzionalità dell'app */}
@@ -42,11 +44,12 @@ export function Hero() {
 
         <SiteHeader className="relative z-20" />
 
-        {/* Contenuto in basso: box a sinistra, statistiche a destra */}
-        <div className="relative z-10 mt-auto w-full px-5 pb-8 sm:px-8 lg:px-12 lg:pb-10">
+        {/* Contenuto in basso: box a sinistra, statistiche a destra.
+            Sotto lg parte dopo la zona sfumata dell'immagine (niente overlap). */}
+        <div className="relative z-10 mt-[26svh] w-full px-5 pb-8 sm:px-8 lg:mt-auto lg:px-12 lg:pb-10">
           <Reveal
             delay={150}
-            className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"
+            className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between lg:gap-8"
           >
             <div className="flex gap-3 sm:gap-4">
               {t.hero.cards.map((card, i) => (
