@@ -19,15 +19,16 @@ export function Hero() {
   const { t } = useLanguage();
 
   return (
-    <section className="relative flex min-h-[100svh] flex-col overflow-hidden bg-background text-foreground">
+    <section className="relative flex min-h-[100dvh] flex-col overflow-hidden bg-background text-foreground">
       <MarketTicker />
 
       <div className="relative flex flex-1 flex-col">
         {/* Immagine di sfondo allineata in alto (spostata su, cielo clippato)
             + sfumatura che la fonde sul nero verso il basso.
-            Sotto lg è più bassa (52svh) e sfuma sul nero prima che inizi il
-            contenuto, così card e statistiche non si sovrappongono ai coralli. */}
-        <div className="absolute inset-x-0 top-0 h-[46svh] overflow-hidden lg:bottom-0 lg:h-auto">
+            Sotto lg è staccata dall'header (top-[10svh]) così i coralli non
+            toccano il logo, e sfuma sul nero prima che inizi il contenuto,
+            così card e statistiche non si sovrappongono ai coralli. */}
+        <div className="absolute inset-x-0 top-[10svh] h-[38svh] overflow-hidden lg:top-0 lg:bottom-0 lg:h-auto">
           <Image
             src="/hero-img.png"
             alt=""
