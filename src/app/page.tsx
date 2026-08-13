@@ -2,6 +2,7 @@ import { StickyNav } from "@/components/layout/sticky-nav";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SmoothScroll } from "@/components/layout/smooth-scroll";
 import { GiveawayPopup } from "@/components/layout/giveaway-popup";
+import { QrDownloadFloat } from "@/components/ui/qr-download-float";
 import { Hero } from "@/components/sections/hero";
 import { About } from "@/components/sections/about";
 import { Sources } from "@/components/sections/sources";
@@ -34,6 +35,7 @@ export default function Home() {
       </main>
       <SiteFooter />
       <GiveawayPopup />
+      <QrDownloadFloat />
     </>
   );
 }

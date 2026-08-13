@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { APP_STORE_URL, GOOGLE_PLAY_URL } from "@/lib/store-links";
 
 function AppleGlyph({ className }: { className?: string }) {
   return (
@@ -26,10 +27,6 @@ function GooglePlayGlyph({ className }: { className?: string }) {
     </svg>
   );
 }
-
-const APP_STORE_URL = "https://apps.apple.com/it/app/id6795460404";
-const GOOGLE_PLAY_URL =
-  "https://play.google.com/store/apps/details?id=it.mokkastudios.finzyapp";
 
 /**
  * Bottoni di download App Store / Google Play.
