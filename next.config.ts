@@ -1,7 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async redirects() {
+    return [
+      // Alias inglese della pagina contatti: /contatti resta l'URL canonico.
+      { source: "/contact", destination: "/contatti", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

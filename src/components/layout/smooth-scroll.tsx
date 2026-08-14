@@ -7,6 +7,10 @@ import { useEffect } from "react";
  * Intercetta in fase di cattura così vince sul routing di next/link, che
  * altrimenti salterebbe istantaneo. Rispetta prefers-reduced-motion e
  * l'offset della navbar (scroll-padding-top in globals.css).
+ *
+ * Gestisce anche i link in forma assoluta (/#id): dalle sottopagine (es.
+ * /contatti) devono navigare davvero verso la home, dalla home invece si
+ * comportano come una normale ancora.
  */
 export function SmoothScroll() {
   useEffect(() => {
@@ -26,9 +30,18 @@ export function SmoothScroll() {
       if (!anchor) return;
 
       const href = anchor.getAttribute("href");
-      if (!href || !href.startsWith("#") || href === "#") return;
+      if (!href) return;
 
-      const target = document.getElementById(href.slice(1));
+      // "#id" sempre; "/#id" solo se siamo già sulla home (altrimenti lascia
+      // che next/link faccia la navigazione vera verso la home).
+      let hash: string | null = null;
+      if (href.startsWith("#")) hash = href;
+      else if (href.startsWith("/#") && window.location.pathname === "/") {
+        hash = href.slice(1);
+      }
+      if (!hash || hash === "#") return;
+
+      const target = document.getElementById(hash.slice(1));
       if (!target) return;
 
       e.preventDefault();
@@ -41,7 +54,7 @@ export function SmoothScroll() {
         behavior: reduce ? "auto" : "smooth",
         block: "start",
       });
-      history.pushState(null, "", href);
+      history.pushState(null, "", hash);
     };
 
     document.addEventListener("click", onClick, true);

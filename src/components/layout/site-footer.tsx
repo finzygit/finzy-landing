@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
+import { PRIVACY_POLICY_URL } from "@/lib/company";
 import { useLanguage } from "@/lib/i18n";
 
 export function SiteFooter() {
@@ -57,7 +58,7 @@ export function SiteFooter() {
 
         {/* CTA gigante */}
         <Link
-          href="#contatti"
+          href="/#contatti"
           className="group mt-16 flex items-center gap-3 sm:mt-20"
         >
           <span className="text-5xl font-bold tracking-tight text-white/10 transition-colors group-hover:text-white/20 sm:text-7xl lg:text-8xl">
@@ -72,13 +73,16 @@ export function SiteFooter() {
         {/* Barra inferiore */}
         <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>{t.footer.copyright}</p>
+          {/* Solo Privacy: i Termini torneranno quando ci sarà un URL reale. */}
           <div className="flex gap-6">
-            <Link href="#" className="transition-colors hover:text-foreground">
+            <a
+              href={PRIVACY_POLICY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
               {t.footer.privacy}
-            </Link>
-            <Link href="#" className="transition-colors hover:text-foreground">
-              {t.footer.terms}
-            </Link>
+            </a>
           </div>
         </div>
       </Container>
