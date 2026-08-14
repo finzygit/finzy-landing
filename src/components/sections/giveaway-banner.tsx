@@ -35,7 +35,7 @@ export function GiveawayBanner() {
                 {g.bannerPost}
               </p>
               <Link
-                href="#contatti"
+                href="/#contatti"
                 className="mt-8 inline-flex items-center justify-center rounded-full bg-primary px-8 py-3.5 font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
               >
                 {g.cta}

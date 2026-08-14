@@ -11,16 +11,22 @@ import { cn } from "@/lib/utils";
 /**
  * Navbar compatta che compare scorrendo: unisce in un'unica barra
  * logo + chip di mercato + hamburger. Nascosta in cima alla pagina.
+ *
+ * `alwaysVisible` la ancora in alto fin dal caricamento: serve sulle pagine
+ * brevi (es. /contatti) dove non c'è abbastanza scroll per farla comparire.
  */
-export function StickyNav() {
-  const [visible, setVisible] = useState(false);
+export function StickyNav({ alwaysVisible = false }: { alwaysVisible?: boolean }) {
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 160);
+    if (alwaysVisible) return;
+    const onScroll = () => setScrolled(window.scrollY > 160);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [alwaysVisible]);
+
+  const visible = alwaysVisible || scrolled;
 
   return (
     <div

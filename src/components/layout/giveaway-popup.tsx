@@ -99,7 +99,7 @@ export function GiveawayPopup() {
             {g.bodyPost}
           </p>
           <Link
-            href="#contatti"
+            href="/#contatti"
             onClick={close}
             className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
           >
