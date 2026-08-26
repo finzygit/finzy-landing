@@ -28,7 +28,7 @@ export function Hero() {
             Sotto lg è staccata dall'header (top-[10svh]) così i coralli non
             toccano il logo, e sfuma sul nero prima che inizi il contenuto,
             così card e statistiche non si sovrappongono ai coralli. */}
-        <div className="absolute inset-x-0 top-[10svh] h-[38svh] overflow-hidden lg:top-0 lg:bottom-0 lg:h-auto">
+        <div className="absolute inset-x-0 top-[7svh] h-[34svh] overflow-hidden lg:top-0 lg:bottom-0 lg:h-auto">
           <Image
             src="/hero-img.png"
             alt=""
@@ -37,7 +37,7 @@ export function Hero() {
             sizes="100vw"
             className="object-cover object-center lg:-translate-y-[15%]"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent via-28% to-background to-[85%] lg:from-background/55" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent via-25% to-background to-[70%] lg:from-background/55" />
         </div>
 
         {/* Pallini pulsanti con le funzionalità dell'app */}
