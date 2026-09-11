@@ -25,10 +25,11 @@ export function Hero() {
       <div className="relative flex flex-1 flex-col">
         {/* Immagine di sfondo allineata in alto (spostata su, cielo clippato)
             + sfumatura che la fonde sul nero verso il basso.
-            Sotto lg è staccata dall'header (top-[10svh]) così i coralli non
-            toccano il logo, e sfuma sul nero prima che inizi il contenuto,
-            così card e statistiche non si sovrappongono ai coralli. */}
-        <div className="absolute inset-x-0 top-[7svh] h-[34svh] overflow-hidden lg:top-0 lg:bottom-0 lg:h-auto">
+            Sotto lg il container è più alto e più vicino all'header (top-[2svh],
+            h-[50svh]) così il corallo occupa più schermo ed è meno "in
+            lontananza"; sfuma sul nero prima che inizi il contenuto, così
+            card e statistiche non si sovrappongono ai coralli. */}
+        <div className="absolute inset-x-0 top-[2svh] h-[50svh] overflow-hidden lg:top-0 lg:bottom-0 lg:h-auto">
           <Image
             src="/hero-img.png"
             alt=""
@@ -47,7 +48,7 @@ export function Hero() {
 
         {/* Contenuto in basso: box a sinistra, statistiche a destra.
             Sotto lg parte dopo la zona sfumata dell'immagine (niente overlap). */}
-        <div className="relative z-10 mt-[26svh] w-full px-5 pb-8 sm:px-8 lg:mt-auto lg:px-12 lg:pb-10">
+        <div className="relative z-10 mt-[28svh] w-full px-5 pb-8 sm:px-8 lg:mt-auto lg:px-12 lg:pb-10">
           <Reveal
             delay={150}
             className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between lg:gap-8"
