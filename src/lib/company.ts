@@ -11,7 +11,7 @@
  */
 
 /** Casella di assistenza, come nella scheda Google Play. */
-export const SUPPORT_EMAIL = "carlo.cervo@finzyapp.com";
+export const SUPPORT_EMAIL = "cervo.carlo@finzyapp.com";
 
 /** Formato E.164, per il link `tel:` e per i dati strutturati. */
 export const SUPPORT_PHONE_E164 = "+393664114468";
