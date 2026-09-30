@@ -44,7 +44,9 @@ export function Hero() {
         {/* Pallini pulsanti con le funzionalità dell'app */}
         <FeatureHotspots />
 
-        <SiteHeader className="relative z-20" />
+        {/* z-[45]: il dropdown lingua resta sopra il QR fisso (z-40) e sotto
+            la StickyNav (z-50). */}
+        <SiteHeader className="relative z-[45]" />
 
         {/* Contenuto in basso: box a sinistra, statistiche a destra.
             Sotto lg parte dopo la zona sfumata dell'immagine (niente overlap). */}

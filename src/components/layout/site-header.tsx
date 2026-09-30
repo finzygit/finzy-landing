@@ -23,8 +23,10 @@ export function SiteHeader({ className }: { className?: string }) {
         />
       </Link>
 
-      <div className="flex items-center gap-1 sm:gap-2">
-        <LanguageSwitcher />
+      {/* Il gruppo prende tutta l'altezza del logo: la lingua sale in alto
+          (centrata finiva sopra il corallo), l'hamburger resta centrato. */}
+      <div className="flex items-center gap-1 self-stretch sm:gap-2">
+        <LanguageSwitcher className="self-start" />
         <NavMenu triggerClassName="h-11 w-11" />
       </div>
     </header>
