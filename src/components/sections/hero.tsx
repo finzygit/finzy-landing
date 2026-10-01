@@ -28,7 +28,10 @@ export function Hero() {
             Sotto lg il container è più alto e più vicino all'header (top-[2svh],
             h-[50svh]) così il corallo occupa più schermo ed è meno "in
             lontananza"; sfuma sul nero prima che inizi il contenuto, così
-            card e statistiche non si sovrappongono ai coralli. */}
+            card e statistiche non si sovrappongono ai coralli.
+            Da lg i pallini di FeatureHotspots sono ancorati a punti di questa
+            immagine: se cambiano immagine, object-fit o translate, aggiornare
+            anche feature-hotspots.tsx. */}
         <div className="absolute inset-x-0 top-[2svh] h-[50svh] overflow-hidden lg:top-0 lg:bottom-0 lg:h-auto">
           <Image
             src="/hero-img.png"

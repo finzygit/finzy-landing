@@ -1,18 +1,41 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
-type Spot = { top: string; left: string; side: "left" | "right" };
+type Spot = { x: number; y: number; side: "left" | "right" };
 
-/** Posizioni dei pallini sul coral (in % del riquadro hero) e lato del tooltip. */
+/**
+ * Posizioni dei pallini sul cordone del corallo, in frazione dell'immagine
+ * hero (0–1, non del riquadro), e lato del tooltip.
+ */
 const SPOTS: Spot[] = [
-  { left: "16%", top: "66%", side: "right" },
-  { left: "37%", top: "55%", side: "right" },
-  { left: "58%", top: "56%", side: "left" },
-  { left: "82%", top: "66%", side: "left" },
+  { x: 0.16, y: 0.712, side: "right" },
+  { x: 0.37, y: 0.441, side: "right" },
+  { x: 0.589, y: 0.579, side: "left" },
+  { x: 0.825, y: 0.645, side: "left" },
 ];
+
+// Devono rispecchiare come hero.tsx disegna /hero-img.png da lg in su:
+// proporzioni dell'immagine e `lg:-translate-y-[15%]`.
+const IMAGE_RATIO = (1672 / 941).toFixed(4);
+const IMAGE_SHIFT = 15;
+
+/**
+ * Converte un punto dell'immagine in coordinate del riquadro hero, rifacendo
+ * il conto di `object-cover object-center` con le container query units: così
+ * il pallino resta sullo stesso punto del corallo a ogni dimensione. Il clamp
+ * lo tiene a schermo quando l'immagine viene tagliata ai lati.
+ */
+function spotPosition({ x, y }: Spot): CSSProperties {
+  const imageWidth = `max(100cqw, ${IMAGE_RATIO} * 100cqh)`;
+  const imageHeight = `max(100cqh, 100cqw / ${IMAGE_RATIO})`;
+  return {
+    left: `clamp(4rem, calc(50cqw + ${(x - 0.5).toFixed(4)} * ${imageWidth}), calc(100cqw - 4rem))`,
+    top: `calc(${50 - IMAGE_SHIFT}cqh + ${(y - 0.5).toFixed(4)} * ${imageHeight})`,
+  };
+}
 
 export function FeatureHotspots() {
   const { t } = useLanguage();
@@ -44,7 +67,7 @@ export function FeatureHotspots() {
   return (
     <div
       ref={rootRef}
-      className="pointer-events-none absolute inset-0 z-[15] hidden lg:block"
+      className="pointer-events-none absolute inset-0 z-[15] hidden [container-type:size] lg:block"
     >
       {SPOTS.map((spot, i) => {
         const feature = features[i];
@@ -54,7 +77,7 @@ export function FeatureHotspots() {
           <div
             key={feature.title}
             className="pointer-events-auto absolute -translate-x-1/2 -translate-y-1/2"
-            style={{ left: spot.left, top: spot.top }}
+            style={spotPosition(spot)}
             onMouseEnter={() => setHovered(i)}
             onMouseLeave={() => setHovered((h) => (h === i ? null : h))}
           >
