@@ -8,6 +8,7 @@ import { Reveal } from "@/components/ui/reveal";
 import { CountUp } from "@/components/ui/count-up";
 import { FlipCard, type Trend } from "@/components/ui/flip-card";
 import { useLanguage } from "@/lib/i18n";
+import type { TickerQuote } from "@/lib/ticker";
 
 // Icona (trend) per faccia di ciascuna chip, nell'ordine delle tagline.
 const CARD_TRENDS: Trend[][] = [
@@ -15,12 +16,12 @@ const CARD_TRENDS: Trend[][] = [
   ["up", "down", "up"], // Mercati
 ];
 
-export function Hero() {
+export function Hero({ quotes }: { quotes: TickerQuote[] }) {
   const { t } = useLanguage();
 
   return (
     <section className="relative flex min-h-[100dvh] flex-col overflow-hidden bg-background text-foreground">
-      <MarketTicker />
+      <MarketTicker quotes={quotes} />
 
       <div className="relative flex flex-1 flex-col">
         {/* Immagine di sfondo allineata in alto (spostata su, cielo clippato)

@@ -4,6 +4,7 @@ import { SmoothScroll } from "@/components/layout/smooth-scroll";
 import { StickyNav } from "@/components/layout/sticky-nav";
 import { ContactInfo } from "@/components/sections/contact-info";
 import { PUBLISHER, SUPPORT_EMAIL, SUPPORT_PHONE_E164 } from "@/lib/company";
+import { getTickerQuotes } from "@/lib/ticker";
 
 const siteUrl = "https://finzyapp.com";
 const pageUrl = `${siteUrl}/contatti`;
@@ -12,7 +13,8 @@ const title = "Contatti | Finzy";
 const description =
   "Contatta l'assistenza dell'app Finzy: email, telefono e dati dell'editore. Rispondiamo alle richieste di supporto entro 2 giorni lavorativi.";
 
-// Pagina di sola lettura: nessuna API dinamica, viene prerenderizzata a build time.
+// Pagina di sola lettura: nessuna API dinamica, resta prerenderizzata. Solo le
+// quotazioni del ticker la fanno rigenerare in background con ISR.
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
@@ -84,7 +86,9 @@ const jsonLd = {
   ],
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const quotes = await getTickerQuotes();
+
   return (
     <>
       <script
@@ -95,7 +99,7 @@ export default function ContactPage() {
       />
       <SmoothScroll />
       {/* Pagina breve: la navbar resta ancorata, senza dipendere dallo scroll. */}
-      <StickyNav alwaysVisible />
+      <StickyNav quotes={quotes} alwaysVisible />
       <main className="flex flex-1 flex-col">
         <ContactInfo />
       </main>
