@@ -6,6 +6,7 @@ import Link from "next/link";
 import { TickerTrack } from "@/components/layout/market-ticker";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { NavMenu } from "@/components/layout/nav-menu";
+import type { TickerQuote } from "@/lib/ticker";
 import { cn } from "@/lib/utils";
 
 /**
@@ -15,7 +16,13 @@ import { cn } from "@/lib/utils";
  * `alwaysVisible` la ancora in alto fin dal caricamento: serve sulle pagine
  * brevi (es. /contatti) dove non c'è abbastanza scroll per farla comparire.
  */
-export function StickyNav({ alwaysVisible = false }: { alwaysVisible?: boolean }) {
+export function StickyNav({
+  quotes,
+  alwaysVisible = false,
+}: {
+  quotes: TickerQuote[];
+  alwaysVisible?: boolean;
+}) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -48,7 +55,7 @@ export function StickyNav({ alwaysVisible = false }: { alwaysVisible?: boolean }
         </Link>
 
         <div className="relative min-w-0 flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
-          <TickerTrack className="py-1" />
+          <TickerTrack quotes={quotes} className="py-1" />
         </div>
 
         <div className="flex shrink-0 items-center gap-1">

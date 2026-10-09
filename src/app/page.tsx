@@ -14,14 +14,17 @@ import { Testimonials } from "@/components/sections/testimonials";
 import { GiveawayBanner } from "@/components/sections/giveaway-banner";
 import { Pricing } from "@/components/sections/pricing";
 import { Contact } from "@/components/sections/contact";
+import { getTickerQuotes } from "@/lib/ticker";
 
-export default function Home() {
+export default async function Home() {
+  const quotes = await getTickerQuotes();
+
   return (
     <>
       <SmoothScroll />
-      <StickyNav />
+      <StickyNav quotes={quotes} />
       <main className="flex flex-1 flex-col">
-        <Hero />
+        <Hero quotes={quotes} />
         <About />
         <Sources />
         <Story />

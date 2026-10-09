@@ -43,6 +43,25 @@ I colori di brand sono definiti come CSS variables in `src/app/globals.css`
 (`bg-primary`, `text-muted-foreground`, ...). Sono valori placeholder:
 vanno sostituiti con i colori ufficiali di finzy.
 
+## Ticker di mercato
+
+Il ticker in testata mostra le quotazioni reali del DB dell'app. Le legge
+`src/lib/ticker.ts` dall'API pubblica del backend, `/api/aziones`, e le pagine
+si rigenerano ogni 5 minuti. Se l'API non risponde il ticker sparisce e il sito
+resta online.
+
+La lista degli strumenti è configurazione. Senza impostazioni valgono i venti
+titoli di `DEFAULT_INSTRUMENTS`. Per cambiarla imposta la variabile d'ambiente
+`TICKER_INSTRUMENTS` su Vercel e rilancia il deploy, senza toccare il codice.
+
+```bash
+TICKER_INSTRUMENTS="NVDA:Nvidia,AAPL:Apple,MC.PA:LVMH"
+```
+
+Ogni voce è `SIMBOLO:Nome`, nell'ordine in cui scorre. Il simbolo è quello del
+catalogo dell'app. Il nome è facoltativo, se manca il ticker usa quello del
+catalogo.
+
 ## Come procediamo
 
 La landing si costruisce una sezione alla volta. Ogni nuova sezione vive in
