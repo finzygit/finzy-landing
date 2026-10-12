@@ -62,6 +62,18 @@ Ogni voce è `SIMBOLO:Nome`, nell'ordine in cui scorre. Il simbolo è quello del
 catalogo dell'app. Il nome è facoltativo, se manca il ticker usa quello del
 catalogo.
 
+## Notizie nel hero
+
+Le card in fondo alla prima schermata mostrano le ultime notizie pubblicate
+nell'app, con titolo, testata e data. Le legge `src/lib/news.ts` dall'API
+pubblica del backend, `/api/blogs`, e le pagine si rigenerano ogni 5 minuti.
+Ogni card passa alla notizia successiva ogni 5 secondi, si ferma con il
+puntatore sopra e resta ferma con `prefers-reduced-motion`. Se l'API non
+risponde le card spariscono e il sito resta online.
+
+I titoli esistono solo in italiano e in inglese. Le altre lingue del sito
+mostrano il titolo inglese.
+
 ## Come procediamo
 
 La landing si costruisce una sezione alla volta. Ogni nuova sezione vive in
