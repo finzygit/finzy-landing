@@ -47,24 +47,6 @@ const it = {
       "Vince l'utente numero 10.000 che attiva l'abbonamento Unlimited su Finzy, individuato in base all'ordine cronologico di sottoscrizione. Il vincitore sarà contattato via email e annunciato pubblicamente. Concorso soggetto a termini e condizioni completi.",
   },
   hero: {
-    cards: [
-      {
-        label: "Segnali",
-        titles: [
-          "Leggi il mercato in pochi secondi.",
-          "Anticipa il movimento prima che accada.",
-          "Agisci sul vantaggio, non sul rumore.",
-        ],
-      },
-      {
-        label: "Mercati",
-        titles: [
-          "Un feed, ogni asset.",
-          "Opera su qualsiasi mercato, all'istante.",
-          "Dalla notizia all'ordine, in un lampo.",
-        ],
-      },
-    ],
     stats: [
       { value: "2000+", label: "notizie selezionate" },
       { value: "60 sec", label: "tempo di lettura" },
@@ -370,24 +352,6 @@ const en: Dict = {
       "The 10,000th user to activate the Unlimited subscription on Finzy wins, determined by chronological subscription order. The winner will be contacted by email and announced publicly. Subject to full terms and conditions.",
   },
   hero: {
-    cards: [
-      {
-        label: "Signals",
-        titles: [
-          "Read the tape in seconds.",
-          "Spot the move before it happens.",
-          "Act on edge, not noise.",
-        ],
-      },
-      {
-        label: "Markets",
-        titles: [
-          "One feed, every asset.",
-          "Trade any market, instantly.",
-          "From news to order, fast.",
-        ],
-      },
-    ],
     stats: [
       { value: "2000+", label: "news selection" },
       { value: "60 sec", label: "reading time" },
@@ -689,24 +653,6 @@ const es: Dict = {
       "Gana el usuario número 10.000 que activa la suscripción Unlimited en Finzy, determinado por el orden cronológico de suscripción. El ganador será contactado por email y anunciado públicamente. Sujeto a los términos y condiciones completos.",
   },
   hero: {
-    cards: [
-      {
-        label: "Señales",
-        titles: [
-          "Lee el mercado en segundos.",
-          "Anticipa el movimiento antes de que ocurra.",
-          "Actúa con ventaja, no con ruido.",
-        ],
-      },
-      {
-        label: "Mercados",
-        titles: [
-          "Un feed, cada activo.",
-          "Opera en cualquier mercado, al instante.",
-          "De la noticia a la orden, al momento.",
-        ],
-      },
-    ],
     stats: [
       { value: "2000+", label: "selección de noticias" },
       { value: "60 sec", label: "tiempo de lectura" },
@@ -1009,24 +955,6 @@ const fr: Dict = {
       "Le 10 000e utilisateur à activer l'abonnement Unlimited sur Finzy gagne, déterminé selon l'ordre chronologique d'abonnement. Le gagnant sera contacté par e-mail et annoncé publiquement. Soumis aux conditions générales complètes.",
   },
   hero: {
-    cards: [
-      {
-        label: "Signaux",
-        titles: [
-          "Lisez le marché en quelques secondes.",
-          "Anticipez le mouvement avant qu'il n'arrive.",
-          "Agissez sur l'avantage, pas sur le bruit.",
-        ],
-      },
-      {
-        label: "Marchés",
-        titles: [
-          "Un flux, chaque actif.",
-          "Tradez n'importe quel marché, instantanément.",
-          "De l'actualité à l'ordre, en un éclair.",
-        ],
-      },
-    ],
     stats: [
       { value: "2000+", label: "sélection d'actualités" },
       { value: "60 sec", label: "temps de lecture" },
@@ -1330,24 +1258,6 @@ const pt: Dict = {
       "Ganha o utilizador número 10.000 que ativa a subscrição Unlimited na Finzy, determinado pela ordem cronológica de subscrição. O vencedor será contactado por email e anunciado publicamente. Sujeito aos termos e condições completos.",
   },
   hero: {
-    cards: [
-      {
-        label: "Sinais",
-        titles: [
-          "Leia o mercado em segundos.",
-          "Antecipe o movimento antes de acontecer.",
-          "Aja com vantagem, não com ruído.",
-        ],
-      },
-      {
-        label: "Mercados",
-        titles: [
-          "Um feed, cada ativo.",
-          "Negoceie qualquer mercado, ao instante.",
-          "Da notícia à ordem, num relâmpago.",
-        ],
-      },
-    ],
     stats: [
       { value: "2000+", label: "seleção de notícias" },
       { value: "60 sec", label: "tempo de leitura" },

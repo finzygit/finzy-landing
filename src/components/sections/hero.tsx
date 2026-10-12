@@ -6,18 +6,50 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { FeatureHotspots } from "@/components/sections/feature-hotspots";
 import { Reveal } from "@/components/ui/reveal";
 import { CountUp } from "@/components/ui/count-up";
-import { FlipCard, type Trend } from "@/components/ui/flip-card";
-import { useLanguage } from "@/lib/i18n";
+import { FlipCard, type FlipCardItem } from "@/components/ui/flip-card";
+import { useLanguage, type Lang } from "@/lib/i18n";
+import type { NewsItem } from "@/lib/news";
 import type { TickerQuote } from "@/lib/ticker";
 
-// Icona (trend) per faccia di ciascuna chip, nell'ordine delle tagline.
-const CARD_TRENDS: Trend[][] = [
-  ["up", "up", "up"], // Segnali
-  ["up", "down", "up"], // Mercati
-];
+/** Card affiancate nel hero. Le notizie si alternano tra una e l'altra. */
+const CARD_COUNT = 2;
 
-export function Hero({ quotes }: { quotes: TickerQuote[] }) {
-  const { t } = useLanguage();
+/**
+ * Distribuisce le notizie sulle card, la più recente nella prima. Con meno
+ * notizie che card restano solo le card che hanno qualcosa da mostrare.
+ */
+function toCards(news: NewsItem[], lang: Lang): FlipCardItem[][] {
+  // Fuso fisso: server e browser devono scrivere la stessa data.
+  const date = new Intl.DateTimeFormat(lang, {
+    day: "numeric",
+    month: "short",
+    timeZone: "Europe/Rome",
+  });
+  // Il backend traduce solo in italiano e in inglese.
+  const titleLang = lang === "it" ? "it" : "en";
+
+  const cards: FlipCardItem[][] = Array.from({ length: CARD_COUNT }, () => []);
+  news.forEach((item, i) => {
+    const day = date.format(new Date(item.publishedAt));
+    cards[i % CARD_COUNT].push({
+      key: item.id,
+      label: item.source ? `${item.source} · ${day}` : day,
+      title: item.title[titleLang],
+      titleLang: titleLang === lang ? undefined : titleLang,
+    });
+  });
+  return cards.filter((items) => items.length > 0);
+}
+
+export function Hero({
+  quotes,
+  news,
+}: {
+  quotes: TickerQuote[];
+  news: NewsItem[];
+}) {
+  const { t, lang } = useLanguage();
+  const cards = toCards(news, lang);
 
   return (
     <section className="relative flex min-h-[100dvh] flex-col overflow-hidden bg-background text-foreground">
@@ -59,16 +91,13 @@ export function Hero({ quotes }: { quotes: TickerQuote[] }) {
             delay={150}
             className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between lg:gap-8"
           >
-            <div className="flex gap-3 sm:gap-4">
-              {t.hero.cards.map((card, i) => (
-                <FlipCard
-                  key={card.label}
-                  label={card.label}
-                  titles={card.titles}
-                  trends={CARD_TRENDS[i] ?? []}
-                />
-              ))}
-            </div>
+            {cards.length > 0 && (
+              <div className="flex gap-3 sm:gap-4">
+                {cards.map((items) => (
+                  <FlipCard key={items[0].key} items={items} />
+                ))}
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-x-8 gap-y-5 sm:flex sm:flex-wrap sm:items-end sm:gap-x-10 lg:justify-end">
               {t.hero.stats.map((stat) => (

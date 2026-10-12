@@ -204,13 +204,13 @@ main > section:not(:first-child):nth-of-type(even) {
   -webkit-backface-visibility: hidden;
 }
 
-/* --flip-half = metà altezza card (h-32 = 128px → 4rem) */
+/* --flip-half = metà altezza card (h-36 = 144px → 4.5rem) */
 .flip-face-front {
-  transform: rotateX(0deg) translateZ(var(--flip-half, 4rem));
+  transform: rotateX(0deg) translateZ(var(--flip-half, 4.5rem));
 }
 
 .flip-face-bottom {
-  transform: rotateX(-90deg) translateZ(var(--flip-half, 4rem));
+  transform: rotateX(-90deg) translateZ(var(--flip-half, 4.5rem));
 }
 
 @media (prefers-reduced-motion: reduce) {

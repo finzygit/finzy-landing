@@ -14,12 +14,16 @@ import { Testimonials } from "@/components/sections/testimonials";
 import { GiveawayBanner } from "@/components/sections/giveaway-banner";
 import { Pricing } from "@/components/sections/pricing";
 import { Contact } from "@/components/sections/contact";
+import { getLatestNews } from "@/lib/news";
 import { JsonLd } from "@/components/seo/json-ld";
 import { softwareApplicationJsonLd } from "@/lib/structured-data";
 import { getTickerQuotes } from "@/lib/ticker";
 
 export default async function Home() {
-  const quotes = await getTickerQuotes();
+  const [quotes, news] = await Promise.all([
+    getTickerQuotes(),
+    getLatestNews(),
+  ]);
 
   return (
     <>
@@ -27,7 +31,7 @@ export default async function Home() {
       <SmoothScroll />
       <StickyNav quotes={quotes} />
       <main className="flex flex-1 flex-col">
-        <Hero quotes={quotes} />
+        <Hero quotes={quotes} news={news} />
         <About />
         <Sources />
         <Story />
