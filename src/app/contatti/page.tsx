@@ -3,11 +3,12 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SmoothScroll } from "@/components/layout/smooth-scroll";
 import { StickyNav } from "@/components/layout/sticky-nav";
 import { ContactInfo } from "@/components/sections/contact-info";
-import { PUBLISHER, SUPPORT_EMAIL, SUPPORT_PHONE_E164 } from "@/lib/company";
+import { JsonLd } from "@/components/seo/json-ld";
+import { SITE_URL } from "@/lib/site";
+import { ORGANIZATION_ID, WEBSITE_ID } from "@/lib/structured-data";
 import { getTickerQuotes } from "@/lib/ticker";
 
-const siteUrl = "https://finzyapp.com";
-const pageUrl = `${siteUrl}/contatti`;
+const pageUrl = `${SITE_URL}/contatti`;
 
 const title = "Contatti | Finzy";
 const description =
@@ -36,54 +37,18 @@ export const metadata: Metadata = {
 };
 
 /**
- * Dati strutturati: gli stessi recapiti mostrati a schermo, così contenuto
- * visibile e markup non possono divergere. I campi legali compaiono solo
- * quando `PUBLISHER` è stato compilato in src/lib/company.ts.
+ * Dati strutturati della pagina. Organization e WebSite sono già dichiarati
+ * dal layout su ogni pagina: qui bastano i riferimenti ai loro `@id`.
  */
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": `${siteUrl}/#organization`,
-      name: "Finzy",
-      url: siteUrl,
-      email: SUPPORT_EMAIL,
-      telephone: SUPPORT_PHONE_E164,
-      contactPoint: [
-        {
-          "@type": "ContactPoint",
-          contactType: "customer support",
-          email: SUPPORT_EMAIL,
-          telephone: SUPPORT_PHONE_E164,
-          availableLanguage: ["it", "en", "es", "fr", "pt"],
-        },
-      ],
-      ...(PUBLISHER && {
-        legalName: PUBLISHER.legalName,
-        address: PUBLISHER.address,
-        vatID: PUBLISHER.vatId,
-        ...(PUBLISHER.registrationNumber && {
-          identifier: PUBLISHER.registrationNumber,
-        }),
-      }),
-    },
-    {
-      "@type": "ContactPage",
-      "@id": pageUrl,
-      url: pageUrl,
-      name: title,
-      description,
-      inLanguage: "it-IT",
-      isPartOf: {
-        "@type": "WebSite",
-        "@id": `${siteUrl}/#website`,
-        url: siteUrl,
-        name: "finzy",
-      },
-      about: { "@id": `${siteUrl}/#organization` },
-    },
-  ],
+const contactPageJsonLd = {
+  "@type": "ContactPage",
+  "@id": pageUrl,
+  url: pageUrl,
+  name: title,
+  description,
+  inLanguage: "it-IT",
+  isPartOf: { "@id": WEBSITE_ID },
+  about: { "@id": ORGANIZATION_ID },
 };
 
 export default async function ContactPage() {
@@ -91,12 +56,7 @@ export default async function ContactPage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
-        }}
-      />
+      <JsonLd graph={[contactPageJsonLd]} />
       <SmoothScroll />
       {/* Pagina breve: la navbar resta ancorata, senza dipendere dallo scroll. */}
       <StickyNav quotes={quotes} alwaysVisible />
