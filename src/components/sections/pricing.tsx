@@ -6,16 +6,9 @@ import { Check, Lock, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { useLanguage, type Lang } from "@/lib/i18n";
+import { annualMonthlyPrice, PLANS, type Plan } from "@/lib/plans";
 import { cn } from "@/lib/utils";
 
-// Nomi commerciali + prezzo mensile (in €) + piano evidenziato. Non tradotti.
-const PLANS = [
-  { name: "Free", price: 0, href: "#contatti", popular: false },
-  { name: "Premium", price: 4.99, href: "#contatti", popular: false },
-  { name: "Unlimited", price: 6.99, href: "#contatti", popular: true },
-];
-
-type Plan = (typeof PLANS)[number];
 type PlanInfo = {
   tagline: string;
   features: string[];
@@ -49,7 +42,7 @@ type CardProps = {
 };
 
 function PlanCard({ plan, info, annual, lang, perMonth, popularLabel }: CardProps) {
-  const amount = annual ? Math.round(plan.price * 0.8 * 100) / 100 : plan.price;
+  const amount = annual ? annualMonthlyPrice(plan.price) : plan.price;
   const popular = plan.popular;
 
   return (
