@@ -1,19 +1,18 @@
 import type { MetadataRoute } from "next";
-
-const siteUrl = "https://finzyapp.com";
+import { SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
 
   return [
     {
-      url: siteUrl,
+      url: SITE_URL,
       lastModified,
       changeFrequency: "weekly",
       priority: 1,
     },
     {
-      url: `${siteUrl}/contatti`,
+      url: `${SITE_URL}/contatti`,
       lastModified,
       changeFrequency: "yearly",
       priority: 0.5,

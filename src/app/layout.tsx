@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display, Poppins } from "next/font/google";
+import { JsonLd } from "@/components/seo/json-ld";
 import { LanguageProvider } from "@/lib/i18n";
+import { SITE_URL } from "@/lib/site";
+import { organizationJsonLd, websiteJsonLd } from "@/lib/structured-data";
 import "./globals.css";
 
 const inter = Inter({
@@ -25,10 +28,8 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
-const siteUrl = "https://finzyapp.com";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "finzy — la tua app per la finanza personale",
     template: "%s · finzy",
@@ -46,7 +47,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "it_IT",
-    url: siteUrl,
+    url: SITE_URL,
     siteName: "finzy",
     title: "finzy — la tua app per la finanza personale",
     description:
@@ -71,6 +72,8 @@ export default function RootLayout({
       className={`${inter.variable} ${poppins.variable} ${playfair.variable} h-full`}
     >
       <body className="min-h-full flex flex-col antialiased">
+        {/* Organization + WebSite su ogni pagina del sito. */}
+        <JsonLd graph={[organizationJsonLd, websiteJsonLd]} />
         <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
