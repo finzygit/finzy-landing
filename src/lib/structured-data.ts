@@ -1,8 +1,4 @@
-import {
-  PUBLISHER,
-  SUPPORT_EMAIL,
-  SUPPORT_PHONE_E164,
-} from "@/lib/company";
+import { PUBLISHER, SUPPORT_EMAIL } from "@/lib/company";
 import { PLANS, PRICE_CURRENCY } from "@/lib/plans";
 import {
   APP_DESCRIPTION,
@@ -38,13 +34,11 @@ export const organizationJsonLd = {
   url: SITE_URL,
   logo: `${SITE_URL}/logo.png`,
   email: SUPPORT_EMAIL,
-  telephone: SUPPORT_PHONE_E164,
   contactPoint: [
     {
       "@type": "ContactPoint",
       contactType: "customer support",
       email: SUPPORT_EMAIL,
-      telephone: SUPPORT_PHONE_E164,
       availableLanguage: SITE_LANGUAGES,
     },
   ],

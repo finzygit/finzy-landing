@@ -40,7 +40,7 @@ ${plans}
 
 - [Home](${SITE_URL}/): product overview, features and pricing.
 - [Download](${SITE_URL}/download): sends a phone to the right app store.
-- [Contacts](${SITE_URL}/contatti): support email, phone and publisher details.
+- [Contacts](${SITE_URL}/contatti): support email and publisher details.
 
 ## Download
 
