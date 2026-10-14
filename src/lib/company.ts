@@ -5,19 +5,14 @@
  * footer leggono da qui, così il contenuto visibile e quello per i crawler
  * (e per i revisori degli store) non possono divergere.
  *
- * Email e telefono coincidono con i "Store Listing contact details" della
- * scheda Google Play: la policy News and Magazines richiede che i recapiti
- * pubblicati sul sito siano gli stessi dichiarati nello store.
+ * L'email deve coincidere con i "Store Listing contact details" della scheda
+ * Google Play: la policy News and Magazines richiede che i recapiti pubblicati
+ * sul sito siano gli stessi dichiarati nello store. Il sito non pubblica un
+ * numero di telefono.
  */
 
 /** Casella di assistenza, come nella scheda Google Play. */
-export const SUPPORT_EMAIL = "cervo.carlo@finzyapp.com";
-
-/** Formato E.164, per il link `tel:` e per i dati strutturati. */
-export const SUPPORT_PHONE_E164 = "+393664114468";
-
-/** Stesso numero, spaziato per la lettura a schermo. */
-export const SUPPORT_PHONE_DISPLAY = "+39 366 411 4468";
+export const SUPPORT_EMAIL = "info@finzyapp.com";
 
 export const PRIVACY_POLICY_URL =
   "https://www.iubenda.com/privacy-policy/68699235";

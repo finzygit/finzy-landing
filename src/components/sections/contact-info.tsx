@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight, Clock, Mail, Phone } from "lucide-react";
+import { ArrowUpRight, Clock, Mail } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { StoreButtons } from "@/components/ui/store-buttons";
@@ -9,8 +9,6 @@ import {
   PRIVACY_POLICY_URL,
   PUBLISHER,
   SUPPORT_EMAIL,
-  SUPPORT_PHONE_DISPLAY,
-  SUPPORT_PHONE_E164,
 } from "@/lib/company";
 import { useLanguage } from "@/lib/i18n";
 
@@ -48,7 +46,7 @@ export function ContactInfo() {
             </p>
           </Reveal>
 
-          {/* Recapiti: link reali mailto:/tel:, così sono toccabili da mobile. */}
+          {/* Recapiti: link reale mailto:, così è toccabile da mobile. */}
           <Reveal delay={120}>
             <h2 className="mt-12 font-display text-2xl sm:mt-14 sm:text-3xl">
               {t.contactPage.detailsTitle}
@@ -60,16 +58,6 @@ export function ContactInfo() {
                   <a href={`mailto:${SUPPORT_EMAIL}`} className={actionClass}>
                     <Mail className={iconClass} strokeWidth={2} />
                     <span className="break-all">{SUPPORT_EMAIL}</span>
-                  </a>
-                </dd>
-              </div>
-
-              <div className={rowClass}>
-                <dt className={labelClass}>{t.contactPage.phoneLabel}</dt>
-                <dd>
-                  <a href={`tel:${SUPPORT_PHONE_E164}`} className={actionClass}>
-                    <Phone className={iconClass} strokeWidth={2} />
-                    <span>{SUPPORT_PHONE_DISPLAY}</span>
                   </a>
                 </dd>
               </div>
