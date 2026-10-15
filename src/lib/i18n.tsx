@@ -1531,25 +1531,93 @@ type LanguageContextValue = {
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
-function isLang(value: string | null): value is Lang {
+const STORAGE_KEY = "finzy-lang";
+const DEFAULT_LANG: Lang = "it";
+
+function isLang(value: string | null | undefined): value is Lang {
   return LANGUAGES.some((l) => l.code === value);
 }
 
+/** Riduce un codice tipo `pt-BR` o `EN` alla lingua del sito, o `null` se non supportata. */
+function toLang(code: string | null | undefined): Lang | null {
+  if (!code) return null;
+  const short = code.trim().slice(0, 2).toLowerCase();
+  return isLang(short) ? short : null;
+}
+
+/**
+ * Sceglie la lingua iniziale, nell'ordine: `?lang=` nel link, scelta salvata
+ * dal menu, lingua del browser (la prima supportata), italiano.
+ * Funzione pura: riceve i valori già letti da URL, storage e browser.
+ */
+export function resolveInitialLang({
+  search,
+  stored,
+  browser,
+}: {
+  search: string;
+  stored: string | null;
+  browser: readonly string[];
+}): Lang {
+  const fromUrl = toLang(new URLSearchParams(search).get("lang"));
+  if (fromUrl) return fromUrl;
+
+  const fromStorage = toLang(stored);
+  if (fromStorage) return fromStorage;
+
+  for (const code of browser) {
+    const fromBrowser = toLang(code);
+    if (fromBrowser) return fromBrowser;
+  }
+
+  return DEFAULT_LANG;
+}
+
+/** Safari in navigazione privata può lanciare su localStorage: mai bloccare la pagina. */
+function readStoredLang(): string | null {
+  try {
+    return window.localStorage.getItem(STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredLang(lang: Lang) {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, lang);
+  } catch {
+    // Storage non disponibile: la scelta vale solo per questa visita.
+  }
+}
+
+function browserLanguages(): readonly string[] {
+  const list = navigator.languages;
+  if (list && list.length > 0) return list;
+  return navigator.language ? [navigator.language] : [];
+}
+
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("it");
+  const [lang, setLangState] = useState<Lang>(DEFAULT_LANG);
 
   useEffect(() => {
-    const stored = window.localStorage.getItem("finzy-lang");
-    if (isLang(stored)) setLangState(stored);
+    setLangState(
+      resolveInitialLang({
+        search: window.location.search,
+        stored: readStoredLang(),
+        browser: browserLanguages(),
+      }),
+    );
   }, []);
 
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
 
+  // Solo una scelta dal menu viene salvata: `?lang=` e la lingua del browser
+  // non sovrascrivono mai una preferenza del visitatore.
   const setLang = (next: Lang) => {
     setLangState(next);
-    window.localStorage.setItem("finzy-lang", next);
+    writeStoredLang(next);
   };
 
   return (
