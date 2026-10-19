@@ -84,7 +84,8 @@ inglesi mostrano le stesse notizie.
 
 I formati sono l'elenco `ROUTINE_WIRE_PATTERNS` in `src/lib/news.ts`, uno per
 riga con un esempio. Se un formato nuovo arriva sulle card, aggiungi una riga lì
-e un titolo d'esempio in `src/lib/news.test.ts`, poi lancia `pnpm test`.
+e un titolo d'esempio in `src/lib/news.test.ts`, poi lancia `pnpm test`. I test
+girano con Node 22.18 o più recente, che legge TypeScript senza dipendenze.
 
 ## Come procediamo
 

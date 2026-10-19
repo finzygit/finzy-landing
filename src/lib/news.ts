@@ -24,8 +24,9 @@ const NEWS_COUNT = 6;
  * Quante notizie chiedere all'API per riempire le card dopo il filtro. Nei
  * giorni di borsa circa una notizia su sette è un dispaccio di routine, nelle
  * ore più fitte fino a due su tre: su 30 ne restano comunque più di 6. L'API ne
- * dà al massimo 100, e la cache di Next non salva risposte oltre 2 MB (30 righe
- * pesano circa 0,5 MB).
+ * dà al massimo 100. La cache di Next non salva risposte oltre 2 MB, contati in
+ * base64: 30 righe arrivano a circa 1 MB, cioè 1,3 MB in cache. Oltre le 40
+ * righe la cache rischia di saltare.
  */
 const POOL_SIZE = 30;
 
@@ -51,36 +52,39 @@ type ApiBlog = {
  */
 const ROUTINE_WIRE_PATTERNS: RegExp[] = [
   // "Sector Update: Tech Stocks Fall Late Afternoon", "NZX Midday Sector Update: ..."
-  /^(?:[a-z]+ )?(?:early |morning |midday |afternoon |late |closing )?sector update\b/,
+  // Con una borsa davanti serve i due punti: "Analysts Expect Sector Update" resta.
+  /^(?:sector update\b|(?:[a-z0-9]+ ){1,5}sector update:)/,
   // "Top Premarket Decliners", "Top Midday Stories: ...", "Top After-Hours Gainers"
   /^top (?:pre ?market|pre bell|mid ?day|after ?hours|after the bell) (?:gainers|decliners|losers|movers|stories)\b/,
   // "Daily Roundup of Key US Economic Data for Oct. 16"
   /^daily roundup\b/,
   // "Asian Equities Traded in the US as American Depositary Receipts Edge Higher ..."
   /^(?:[a-z]+ ){0,2}equities traded in the us as american depositary receipts\b/,
-  // "Exchange-Traded Funds, Equity Futures Mixed Pre-Bell Friday ..."
-  /^exchange ?traded funds\b/,
+  // "Exchange-Traded Funds, Equity Futures Mixed Pre-Bell Friday ...",
+  // "Exchange-Traded Funds Rise as US Equities Advance After Midday"
+  /^exchange ?traded funds\b.*\b(?:pre ?bell|pre ?market|midday|after ?hours)\b/,
   // "Top Cryptocurrencies Drop; Bitcoin Falls Below $82,000"
   /^top cryptocurrencies\b/,
-  // "US Equity Markets End Higher ...", "US Equity Futures Mixed Pre-Bell ..."
-  /^us equity (?:markets?|indexes|indices|futures)\b/,
+  // "US Equity Markets End Higher ...", "US Equity Futures Mixed Pre-Bell ...",
+  // "Update: US Equity Indexes Fall After Core Inflation Rate Rises"
+  /^us equity (?:markets|indexes|indices|futures)\b/,
   // "US Dollar Falls Early Friday Ahead of Import Prices, ..."
   /^us dollar (?:[a-z]+ ){1,3}early (?:mon|tues|wednes|thurs|fri)day\b/,
-  // "US Treasury Late-Day Levels"
-  /^us treasury late ?day levels\b/,
+  // "US Treasury Late-Day Levels", "US Treasury Closing Levels"
+  /^us treasury (?:late ?day|closing) levels\b/,
 ];
 
 /**
  * Minuscole, "U.S." come "us", trattini e punteggiatura come spazi, senza le
- * etichette "Update:" davanti. Così "Update: Top Pre-Market Decliners" e
- * "top premarket decliners" finiscono sullo stesso formato.
+ * etichette "Update:" e "Correction:" davanti. Così "Update: Top Pre-Market
+ * Decliners" e "top premarket decliners" finiscono sullo stesso formato.
  */
 function normalizeTitle(title: string): string {
   return title
     .toLowerCase()
     .replace(/\./g, "")
     .replace(/[^a-z0-9:]+/g, " ")
-    .replace(/^(?:\s*update\s*\d*\s*:)+/, "")
+    .replace(/^(?:\s*(?:update|correction)\s*\d*\s*:)+/, "")
     .trim();
 }
 

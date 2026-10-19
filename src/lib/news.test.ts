@@ -47,6 +47,7 @@ describe("isRoutineWire", () => {
       "US Dollar Falls Early Friday Ahead of Import Prices, New York Fed Services, Industrial Production",
       "US Dollar Rises Early Monday; Focus on Inflation, Retail Sales This Week",
       "US Treasury Late-Day Levels",
+      "US Treasury Closing Levels",
     ]) {
       assert.equal(isRoutineWire(title), true, title);
     }
@@ -56,7 +57,11 @@ describe("isRoutineWire", () => {
     for (const title of [
       "NZX Midday Sector Update: Commercial Services Stocks Rise, Producer Manufacturing Falls",
       "ASX Midday Sector Update: Materials Stocks Rise, Communication Services Slide",
+      "ASX Close Sector Update: Energy Stocks Lead",
+      "Hong Kong Midday Sector Update: Property Stocks Slide",
+      "S&P/ASX 200 Midday Sector Update: Banks Rise",
       "Update: Sector Update: Energy Stocks Gain Late Afternoon",
+      "Correction: Sector Update: Energy Stocks Rise Late Afternoon",
       "UPDATE: update 2: Daily Roundup of Key US Economic Data for Oct. 13",
       "Update: US Equity Indexes Fall After Core Inflation Rate Rises",
       "Top Pre-Market Decliners",
@@ -84,6 +89,9 @@ describe("isRoutineWire", () => {
       "Goldman Tops Third-Quarter Views Amid Equities Boost, Record Advisory Revenue",
       "Top Glove Swings to Profit in Fiscal Q4",
       "US Equity Investors to Monitor Q3 Earnings, September's Inflation Data, Crude Oil Moves This Week",
+      "US Equity Market Structure Overhaul Proposed by SEC",
+      "Exchange-Traded Funds Draw Record Inflows in September",
+      "Correction: Stellantis' Q3 Estimated Consolidated Shipments Decline",
       "US Dollar Strengthens Against The Loonie as Higher CPI Sparks Rate Hike Expectation",
       "Foreign Holdings of US Treasuries Rise in August, Led by Canada and Belgium",
       "Market Chatter: Apple Appoints Former Meta Executive to Lead AI Hardware",
