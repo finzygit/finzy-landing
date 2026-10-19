@@ -45,29 +45,38 @@ type ApiBlog = {
  * Formati fissi delle agenzie (quasi tutti MT Newswires): classifiche, note di
  * apertura e chiusura, riepiloghi di dati. Nell'app servono, in vetrina no.
  *
- * Ogni voce è ancorata all'inizio del titolo inglese già normalizzato (vedi
+ * Le voci sono ancorate all'inizio del titolo inglese già normalizzato (vedi
  * `normalizeTitle`), così una notizia vera che contiene le stesse parole a metà
  * titolo resta. Per aggiungere un formato: una riga qui e un caso in
  * news.test.ts.
  */
 const ROUTINE_WIRE_PATTERNS: RegExp[] = [
   // "Sector Update: Tech Stocks Fall Late Afternoon", "NZX Midday Sector Update: ..."
-  // Con una borsa davanti serve i due punti: "Analysts Expect Sector Update" resta.
+  // Con una borsa davanti serve i due punti (o un trattino, vedi
+  // `normalizeTitle`): "Analysts Expect Sector Update to Lift Banks" resta.
   /^(?:sector update\b|(?:[a-z0-9]+ ){1,5}sector update:)/,
   // "Top Premarket Decliners", "Top Midday Stories: ...", "Top After-Hours Gainers"
-  /^top (?:pre ?market|pre bell|mid ?day|after ?hours|after the bell) (?:gainers|decliners|losers|movers|stories)\b/,
+  /^top (?:pre ?market|pre ?bell|mid ?day|after ?hours|after the bell) (?:gainers|decliners|losers|movers|stories)\b/,
   // "Daily Roundup of Key US Economic Data for Oct. 16"
-  /^daily roundup\b/,
-  // "Asian Equities Traded in the US as American Depositary Receipts Edge Higher ..."
-  /^(?:[a-z]+ ){0,2}equities traded in the us as american depositary receipts\b/,
+  /^daily round ?up\b/,
+  // "Asian Equities Traded in the US as American Depositary Receipts Edge Higher ...",
+  // "European Equities Traded in US as ADRs Fall in Thursday Trading"
+  /^(?:[a-z]+ ){0,2}equities traded in (?:the )?us as (?:american deposit[ao]ry receipts|adrs?)\b/,
   // "Exchange-Traded Funds, Equity Futures Mixed Pre-Bell Friday ...",
   // "Exchange-Traded Funds Rise as US Equities Advance After Midday"
-  /^exchange ?traded funds\b.*\b(?:pre ?bell|pre ?market|midday|after ?hours)\b/,
+  /^exchange ?traded funds\b.*\b(?:pre ?bell|pre ?market|mid ?day|after ?hours)\b/,
   // "Top Cryptocurrencies Drop; Bitcoin Falls Below $82,000"
   /^top cryptocurrencies\b/,
   // "US Equity Markets End Higher ...", "US Equity Futures Mixed Pre-Bell ...",
   // "Update: US Equity Indexes Fall After Core Inflation Rate Rises"
   /^us equity (?:markets|indexes|indices|futures)\b/,
+  // Note di apertura, metà seduta e chiusura: "Stocks Rise Pre-Bell Following
+  // Tech Selloff", "Update: Equities Mixed at Close Ahead of Big Bank Earnings".
+  // Servono tutte e due le cose: l'inizio e il momento della seduta.
+  /^(?:us )?(?:stocks|equities|equity (?:markets|indexes|indices|futures))\b.*\b(?:pre ?bell|pre ?market|intraday|at (?:the )?(?:open|close)|mid ?day|after ?hours)\b/,
+  // "AI Bears March Down Wall Street Pre-Bell; Asia Down, Europe Off". Qui il
+  // formato sta a metà titolo, ma "Wall Street Pre-Bell" esiste solo in queste note.
+  /\bwall street pre ?bell\b/,
   // "US Dollar Falls Early Friday Ahead of Import Prices, ..."
   /^us dollar (?:[a-z]+ ){1,3}early (?:mon|tues|wednes|thurs|fri)day\b/,
   // "US Treasury Late-Day Levels", "US Treasury Closing Levels"
@@ -75,14 +84,16 @@ const ROUTINE_WIRE_PATTERNS: RegExp[] = [
 ];
 
 /**
- * Minuscole, "U.S." come "us", trattini e punteggiatura come spazi, senza le
- * etichette "Update:" e "Correction:" davanti. Così "Update: Top Pre-Market
- * Decliners" e "top premarket decliners" finiscono sullo stesso formato.
+ * Minuscole, "U.S." come "us", un trattino tra spazi come i due punti, gli
+ * altri trattini e la punteggiatura come spazi, senza le etichette "Update:" e
+ * "Correction:" davanti. Così "Update: Top Pre-Market Decliners" e "top
+ * premarket decliners" finiscono sullo stesso formato.
  */
 function normalizeTitle(title: string): string {
   return title
     .toLowerCase()
     .replace(/\./g, "")
+    .replace(/\s+[-–—]+\s+/g, ": ")
     .replace(/[^a-z0-9:]+/g, " ")
     .replace(/^(?:\s*(?:update|correction)\s*\d*\s*:)+/, "")
     .trim();

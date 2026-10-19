@@ -48,6 +48,15 @@ describe("isRoutineWire", () => {
       "US Dollar Rises Early Monday; Focus on Inflation, Retail Sales This Week",
       "US Treasury Late-Day Levels",
       "US Treasury Closing Levels",
+      "European Equities Traded in US as ADRs Fall in Thursday Trading",
+      "Update: Equities Mixed at Close Ahead of Big Bank Earnings",
+      "Update: Equities Rise Intraday as Traders Parse Consumer Sentiment Survey",
+      "Update: Equity Markets Rise Intraday as Yields Fall",
+      "Equity Indexes Slide Intraday Amid Tech Sell-Off",
+      "Stocks Mostly Down Pre-Bell as Traders Await Big Bank Earnings",
+      "Stocks Mostly Up Pre-Bell Ahead of Consumer Inflation Report, More Bank Earnings",
+      "Stocks Rise Pre-Bell Following Tech Selloff",
+      "AI Bears March Down Wall Street Pre-Bell; Asia Down, Europe Off",
     ]) {
       assert.equal(isRoutineWire(title), true, title);
     }
@@ -72,7 +81,13 @@ describe("isRoutineWire", () => {
       "Sector Update - Financial Stocks Rise Friday",
       "U.S. Equity Markets Open Lower",
       "Exchange Traded Funds Lower as US Equities Decline After Midday",
+      "Exchange-Traded Funds Rise as US Equities Advance After Mid-Day",
       "US Treasury Late Day Levels",
+      "Daily Round-Up of Key US Economic Data for Oct. 14",
+      "Asian Equities Traded in the US as American Depository Receipts Rise in Friday Trading",
+      "Top Prebell Gainers",
+      "ASX Midday Sector Update - Materials Rise",
+      "Update - Sector Update – Tech Stocks Fall",
     ]) {
       assert.equal(isRoutineWire(title), true, title);
     }
@@ -85,7 +100,9 @@ describe("isRoutineWire", () => {
       "Oil Prices Rise as Traders Weigh Sector Update From OPEC",
       "Analysts Expect Sector Update to Lift Banks",
       "Alignment Healthcare Sees Lowered Federal Rating for California Health Plan; Shares Fall Pre-Bell",
-      "Stocks Mostly Up Pre-Bell Ahead of Consumer Inflation Report, More Bank Earnings",
+      "SK Hynix, Micron Shares Fall Pre-Bell Amid Reports of CXMT's Breakthrough in Chip Development",
+      "Stocks of Chinese EV Makers Rally on Subsidy Plan",
+      "Equities Research Firm Names New CEO",
       "Goldman Tops Third-Quarter Views Amid Equities Boost, Record Advisory Revenue",
       "Top Glove Swings to Profit in Fiscal Q4",
       "US Equity Investors to Monitor Q3 Earnings, September's Inflation Data, Crude Oil Moves This Week",
