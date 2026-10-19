@@ -20,6 +20,16 @@ const API_URL = "https://console.finzyapp.com/api/blogs";
 /** Quante notizie ruotano nel hero, divise tra le card. */
 const NEWS_COUNT = 6;
 
+/**
+ * Quante notizie chiedere all'API per riempire le card dopo il filtro. Nei
+ * giorni di borsa circa una notizia su sette è un dispaccio di routine, nelle
+ * ore più fitte fino a due su tre: su 30 ne restano comunque più di 6. L'API ne
+ * dà al massimo 100. La cache di Next non salva risposte oltre 2 MB, contati in
+ * base64: 30 righe arrivano a circa 1 MB, cioè 1,3 MB in cache. Oltre le 40
+ * righe la cache rischia di saltare.
+ */
+const POOL_SIZE = 30;
+
 /** Ogni quanti secondi il sito rilegge le notizie. */
 const REVALIDATE_SECONDS = 300;
 
@@ -32,29 +42,85 @@ type ApiBlog = {
 };
 
 /**
- * Le notizie più recenti, dalla più nuova.
+ * Formati fissi delle agenzie (quasi tutti MT Newswires): classifiche, note di
+ * apertura e chiusura, riepiloghi di dati. Nell'app servono, in vetrina no.
  *
- * Senza `latest=true`: quel filtro tiene solo le ultime 24 ore e resta vuoto
- * dopo un weekend. La lista base è già ordinata per data e copre 30 giorni.
- *
- * Non lancia mai. Se l'API non risponde torna una lista vuota e le card
- * spariscono fino alla rigenerazione successiva.
+ * Le voci sono ancorate all'inizio del titolo inglese già normalizzato (vedi
+ * `normalizeTitle`), così una notizia vera che contiene le stesse parole a metà
+ * titolo resta. Per aggiungere un formato: una riga qui e un caso in
+ * news.test.ts.
  */
-export async function getLatestNews(): Promise<NewsItem[]> {
-  try {
-    const res = await fetch(`${API_URL}?limit=${NEWS_COUNT}`, {
-      next: { revalidate: REVALIDATE_SECONDS },
-      signal: AbortSignal.timeout(10_000),
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+const ROUTINE_WIRE_PATTERNS: RegExp[] = [
+  // "Sector Update: Tech Stocks Fall Late Afternoon", "NZX Midday Sector Update: ..."
+  // Con una borsa davanti serve i due punti (o un trattino, vedi
+  // `normalizeTitle`): "Analysts Expect Sector Update to Lift Banks" resta.
+  /^(?:sector update\b|(?:[a-z0-9]+ ){1,5}sector update:)/,
+  // "Top Premarket Decliners", "Top Midday Stories: ...", "Top After-Hours Gainers"
+  /^top (?:pre ?market|pre ?bell|mid ?day|after ?hours|after the bell) (?:gainers|decliners|losers|movers|stories)\b/,
+  // "Daily Roundup of Key US Economic Data for Oct. 16"
+  /^daily round ?up\b/,
+  // "Asian Equities Traded in the US as American Depositary Receipts Edge Higher ...",
+  // "European Equities Traded in US as ADRs Fall in Thursday Trading"
+  /^(?:[a-z]+ ){0,2}equities traded in (?:the )?us as (?:american deposit[ao]ry receipts|adrs?)\b/,
+  // "Exchange-Traded Funds, Equity Futures Mixed Pre-Bell Friday ...",
+  // "Exchange-Traded Funds Rise as US Equities Advance After Midday"
+  /^exchange ?traded funds\b.*\b(?:pre ?bell|pre ?market|mid ?day|after ?hours)\b/,
+  // "Top Cryptocurrencies Drop; Bitcoin Falls Below $82,000"
+  /^top cryptocurrencies\b/,
+  // "US Equity Markets End Higher ...", "US Equity Futures Mixed Pre-Bell ...",
+  // "Update: US Equity Indexes Fall After Core Inflation Rate Rises"
+  /^us equity (?:markets|indexes|indices|futures)\b/,
+  // Note di apertura, metà seduta e chiusura: "Stocks Rise Pre-Bell Following
+  // Tech Selloff", "Update: Equities Mixed at Close Ahead of Big Bank Earnings".
+  // Servono tutte e due le cose: l'inizio e il momento della seduta.
+  /^(?:us )?(?:stocks|equities|equity (?:markets|indexes|indices|futures))\b.*\b(?:pre ?bell|pre ?market|intraday|at (?:the )?(?:open|close)|mid ?day|after ?hours)\b/,
+  // "AI Bears March Down Wall Street Pre-Bell; Asia Down, Europe Off". Qui il
+  // formato sta a metà titolo, ma "Wall Street Pre-Bell" esiste solo in queste note.
+  /\bwall street pre ?bell\b/,
+  // "US Dollar Falls Early Friday Ahead of Import Prices, ..."
+  /^us dollar (?:[a-z]+ ){1,3}early (?:mon|tues|wednes|thurs|fri)day\b/,
+  // "US Treasury Late-Day Levels", "US Treasury Closing Levels"
+  /^us treasury (?:late ?day|closing) levels\b/,
+];
 
-    const body: { data?: unknown } = await res.json();
-    const rows = Array.isArray(body.data) ? (body.data as ApiBlog[]) : [];
+/**
+ * Minuscole, "U.S." come "us", un trattino tra spazi come i due punti, gli
+ * altri trattini e la punteggiatura come spazi, senza le etichette "Update:" e
+ * "Correction:" davanti. Così "Update: Top Pre-Market Decliners" e "top
+ * premarket decliners" finiscono sullo stesso formato.
+ */
+function normalizeTitle(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/\./g, "")
+    .replace(/\s+[-–—]+\s+/g, ": ")
+    .replace(/[^a-z0-9:]+/g, " ")
+    .replace(/^(?:\s*(?:update|correction)\s*\d*\s*:)+/, "")
+    .trim();
+}
 
-    return rows.flatMap((row) => {
+/** Vero se il titolo inglese è uno dei formati di routine delle agenzie. */
+export function isRoutineWire(title: string): boolean {
+  const normalized = normalizeTitle(title);
+  return ROUTINE_WIRE_PATTERNS.some((pattern) => pattern.test(normalized));
+}
+
+/**
+ * Le prime `count` notizie da mostrare, nell'ordine dell'API (dalla più nuova).
+ *
+ * Il filtro guarda il titolo inglese, o quello italiano se manca, e decide una
+ * volta per notizia: le card italiane e inglesi mostrano le stesse notizie.
+ * Con meno notizie valide di `count` torna solo quelle, anche nessuna.
+ */
+export function selectShowcaseNews(rows: unknown, count: number): NewsItem[] {
+  if (!Array.isArray(rows)) return [];
+
+  return (rows as ApiBlog[])
+    .flatMap((row) => {
       const it = row.title?.it?.trim() || row.title?.en?.trim();
       const en = row.title?.en?.trim() || it;
       if (!it || !en || !row.created_at) return [];
+      if (isRoutineWire(en)) return [];
       return [
         {
           id: row.id,
@@ -63,7 +129,30 @@ export async function getLatestNews(): Promise<NewsItem[]> {
           source: row.testata?.name ?? "",
         },
       ];
+    })
+    .slice(0, count);
+}
+
+/**
+ * Le notizie più recenti da mostrare, dalla più nuova.
+ *
+ * Senza `latest=true`: quel filtro tiene solo le ultime 24 ore e resta vuoto
+ * dopo un weekend. La lista base è già ordinata per data e copre 30 giorni.
+ *
+ * Non lancia mai. Se l'API non risponde torna una lista vuota e le card
+ * spariscono fino alla rigenerazione successiva. Lo stesso se tutte le notizie
+ * recenti sono dispacci di routine: meglio nessuna card che una classifica.
+ */
+export async function getLatestNews(): Promise<NewsItem[]> {
+  try {
+    const res = await fetch(`${API_URL}?limit=${POOL_SIZE}`, {
+      next: { revalidate: REVALIDATE_SECONDS },
+      signal: AbortSignal.timeout(10_000),
     });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const body: { data?: unknown } = await res.json();
+    return selectShowcaseNews(body.data, NEWS_COUNT);
   } catch (error) {
     console.error("[news] notizie non disponibili:", error);
     return [];
