@@ -74,6 +74,18 @@ risponde le card spariscono e il sito resta online.
 I titoli esistono solo in italiano e in inglese. Le altre lingue del sito
 mostrano il titolo inglese.
 
+Le card saltano i dispacci di routine delle agenzie, come "Top Premarket
+Decliners", "Sector Update: ..." o "Daily Roundup of Key US Economic Data".
+Nell'app servono, in vetrina no. Il sito legge le ultime 30 notizie, scarta
+quelle con un titolo di routine e mostra le prime 6 che restano, dalla più
+nuova. Se ne restano meno di 6 mostra solo quelle; se non ne resta nessuna le
+card spariscono. Il filtro guarda il titolo inglese, così le pagine italiane e
+inglesi mostrano le stesse notizie.
+
+I formati sono l'elenco `ROUTINE_WIRE_PATTERNS` in `src/lib/news.ts`, uno per
+riga con un esempio. Se un formato nuovo arriva sulle card, aggiungi una riga lì
+e un titolo d'esempio in `src/lib/news.test.ts`, poi lancia `pnpm test`.
+
 ## Come procediamo
 
 La landing si costruisce una sezione alla volta. Ogni nuova sezione vive in
