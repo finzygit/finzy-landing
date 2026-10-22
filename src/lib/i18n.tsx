@@ -53,6 +53,8 @@ const it = {
       { value: "1 min", label: "tempo di aggiornamento" },
       { value: "8+", label: "ottimizzazione pipeline" },
     ],
+    // Nome dei pallini sul corallo: {n}, {total} e {title} vengono sostituiti.
+    featureLabel: "Funzionalità {n} di {total}: {title}",
     features: [
       {
         title: "Segnali in tempo reale",
@@ -357,6 +359,7 @@ const en: Dict = {
       { value: "1 min", label: "updated time" },
       { value: "8+", label: "pipeline optimisation" },
     ],
+    featureLabel: "Feature {n} of {total}: {title}",
     features: [
       {
         title: "Real-time Signals",
@@ -657,6 +660,7 @@ const es: Dict = {
       { value: "1 min", label: "tiempo de actualización" },
       { value: "8+", label: "optimización de pipeline" },
     ],
+    featureLabel: "Función {n} de {total}: {title}",
     features: [
       {
         title: "Señales en tiempo real",
@@ -958,6 +962,7 @@ const fr: Dict = {
       { value: "1 min", label: "temps de mise à jour" },
       { value: "8+", label: "optimisation du pipeline" },
     ],
+    featureLabel: "Fonctionnalité {n} sur {total} : {title}",
     features: [
       {
         title: "Signaux en temps réel",
@@ -1260,6 +1265,7 @@ const pt: Dict = {
       { value: "1 min", label: "tempo de atualização" },
       { value: "8+", label: "otimização de pipeline" },
     ],
+    featureLabel: "Funcionalidade {n} de {total}: {title}",
     features: [
       {
         title: "Sinais em tempo real",
