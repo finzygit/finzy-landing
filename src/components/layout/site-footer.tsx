@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
+import { CookieLinks } from "@/components/layout/cookie-consent";
 import { PRIVACY_POLICY_URL } from "@/lib/company";
 import { useLanguage } from "@/lib/i18n";
 
@@ -74,7 +75,7 @@ export function SiteFooter() {
         <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>{t.footer.copyright}</p>
           {/* Solo Privacy: i Termini torneranno quando ci sarà un URL reale. */}
-          <div className="flex gap-6">
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
             <a
               href={PRIVACY_POLICY_URL}
               target="_blank"
@@ -83,6 +84,10 @@ export function SiteFooter() {
             >
               {t.footer.privacy}
             </a>
+            <CookieLinks
+              labels={t.footer}
+              className="transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            />
           </div>
         </div>
       </Container>

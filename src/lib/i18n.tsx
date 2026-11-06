@@ -314,6 +314,8 @@ const it = {
     cta: "Inizia a speculare",
     copyright: "© 2026 finzy. Tutti i diritti riservati.",
     privacy: "Privacy",
+    cookiePolicy: "Cookie policy",
+    cookiePreferences: "Preferenze cookie",
   },
 };
 
@@ -617,6 +619,8 @@ const en: Dict = {
     cta: "Start speculating",
     copyright: "© 2026 finzy. All rights reserved.",
     privacy: "Privacy",
+    cookiePolicy: "Cookie policy",
+    cookiePreferences: "Cookie preferences",
   },
 };
 
@@ -919,6 +923,8 @@ const es: Dict = {
     cta: "Empieza a especular",
     copyright: "© 2026 finzy. Todos los derechos reservados.",
     privacy: "Privacidad",
+    cookiePolicy: "Política de cookies",
+    cookiePreferences: "Preferencias de cookies",
   },
 };
 
@@ -1222,6 +1228,8 @@ const fr: Dict = {
     cta: "Commencez à spéculer",
     copyright: "© 2026 finzy. Tous droits réservés.",
     privacy: "Confidentialité",
+    cookiePolicy: "Politique de cookies",
+    cookiePreferences: "Préférences cookies",
   },
 };
 
@@ -1524,6 +1532,8 @@ const pt: Dict = {
     cta: "Comece a especular",
     copyright: "© 2026 finzy. Todos os direitos reservados.",
     privacy: "Privacidade",
+    cookiePolicy: "Política de cookies",
+    cookiePreferences: "Preferências de cookies",
   },
 };
 
