@@ -149,10 +149,11 @@ export function CookieLinks({
 }) {
   const { lang } = useLanguage();
   if (!CONFIG) return null;
+  const policyUrl = cookiePolicyUrl(cookiePolicyIdFor(CONFIG, lang));
   return (
     <>
       <a
-        href={cookiePolicyUrl(cookiePolicyIdFor(CONFIG, lang))}
+        href={policyUrl}
         target="_blank"
         rel="noopener noreferrer"
         className={className}
@@ -164,7 +165,13 @@ export function CookieLinks({
       <button
         type="button"
         className={className}
-        onClick={() => iubenda()?.cs?.api?.openPreferences?.()}
+        onClick={() => {
+          const open = iubenda()?.cs?.api?.openPreferences;
+          // Se iubenda non è ancora caricato, o un blocker lo ferma, il clic
+          // apre almeno la cookie policy invece di non fare niente.
+          if (open) open();
+          else window.open(policyUrl, "_blank", "noopener,noreferrer");
+        }}
       >
         {labels.cookiePreferences}
       </button>
