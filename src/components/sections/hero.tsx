@@ -92,7 +92,9 @@ export function Hero({
             className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between lg:gap-8"
           >
             {cards.length > 0 && (
-              <div className="flex gap-3 sm:gap-4">
+              // 16px a ogni larghezza: è anche lo spazio che si vede, perché
+              // le card ferme non sporgono dal loro box (globals.css, MOB-819).
+              <div className="flex gap-4">
                 {cards.map((items) => (
                   <FlipCard key={items[0].key} items={items} />
                 ))}

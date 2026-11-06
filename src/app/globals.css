@@ -178,18 +178,24 @@ main > section:not(:first-child):nth-of-type(even) {
   perspective: 1200px;
 }
 
+/* Il cubo arretra di mezza altezza, così la faccia frontale sta sul piano
+   dello schermo (z = 0) e da ferma si vede grande quanto il suo box.
+   Senza questo la faccia stava a +4.5rem verso chi guarda: con la
+   prospettiva a 1200px ogni card appariva il 6% più larga e si mangiava lo
+   spazio tra le due card, che a metà rotazione si sovrapponevano (MOB-819). */
 .flip-cube {
   position: relative;
   height: 100%;
   width: 100%;
   transform-style: preserve-3d;
+  transform: translateZ(calc(-1 * var(--flip-half, 4.5rem)));
   transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 /* rotazione verso l'alto: il bordo superiore va indietro e la faccia
    inferiore sale al posto di quella frontale ("on up way"). */
 .flip-cube[data-flip="true"] {
-  transform: rotateX(90deg);
+  transform: translateZ(calc(-1 * var(--flip-half, 4.5rem))) rotateX(90deg);
 }
 
 /* snap istantaneo a 0° dopo il flip, senza animazione all'indietro */
@@ -218,7 +224,7 @@ main > section:not(:first-child):nth-of-type(even) {
     transition: none;
   }
   .flip-cube[data-flip="true"] {
-    transform: none;
+    transform: translateZ(calc(-1 * var(--flip-half, 4.5rem)));
   }
 }
 
