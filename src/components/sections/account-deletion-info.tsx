@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight, Mail } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { deletionMailto } from "@/lib/account-deletion";
@@ -77,13 +77,6 @@ export function AccountDeletionInfo() {
                 </a>
                 {afterEmail}
               </p>
-              <a
-                href={deletionMailto(SUPPORT_EMAIL, copy.emailSubject)}
-                className={`mt-6 ${actionClass}`}
-              >
-                <Mail className="h-4 w-4 shrink-0" strokeWidth={2} />
-                <span>{copy.emailSubject}</span>
-              </a>
             </div>
           </Reveal>
 
@@ -108,8 +101,8 @@ export function AccountDeletionInfo() {
                   {t.footer.privacy}
                   <ArrowUpRight className="h-4 w-4" strokeWidth={2} />
                 </a>
-                <Link href="/contatti" className={actionClass}>
-                  {t.contactPage.title}
+                <Link href="/" className={actionClass}>
+                  {t.contactPage.backHome}
                 </Link>
               </div>
             </div>

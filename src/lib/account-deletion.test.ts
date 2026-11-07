@@ -9,6 +9,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { describe, test } from "node:test";
 import * as deletion from "./account-deletion.ts";
+import { SUPPORT_EMAIL } from "./company.ts";
 
 // Letti in modo dinamico: sul codice vecchio il modulo non esporta niente, e
 // il test deve fallire sulle asserzioni, non sull'import.
@@ -56,14 +57,29 @@ describe("pagina /elimina-account", () => {
   });
 
   test("la strada via email cita la casella di assistenza", () => {
+    assert.equal(SUPPORT_EMAIL, "info@finzyapp.com");
     for (const lang of LANGS) {
-      assert.match(String(copy()[lang].emailBody), /\{email\}/, lang);
+      const body = String(copy()[lang].emailBody);
+      assert.match(body, /\{email\}/, lang);
+      // L'oggetto citato nel testo è quello che il link mailto: precompila.
+      assert.ok(body.includes(String(copy()[lang].emailSubject)), `${lang}: oggetto diverso`);
     }
     const mailto = lib.deletionMailto as (email: string, subject: string) => string;
     assert.equal(
       mailto("info@finzyapp.com", "Eliminazione account"),
       "mailto:info@finzyapp.com?subject=Eliminazione%20account",
     );
+    assert.equal(
+      mailto("info@finzyapp.com", "Eliminação de conta"),
+      "mailto:info@finzyapp.com?subject=Elimina%C3%A7%C3%A3o%20de%20conta",
+    );
+  });
+
+  test("nessuna promessa di tempi per l'eliminazione via email", () => {
+    // Regola: niente promesse a nome di Carlo. La conferma arriva via email.
+    for (const lang of LANGS) {
+      assert.doesNotMatch(String(copy()[lang].emailBody), /\b\d+\b/, lang);
+    }
   });
 
   test("la pagina è nella sitemap, nel footer delle 5 lingue e ha l'alias inglese", () => {
