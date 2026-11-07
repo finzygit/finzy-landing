@@ -1,6 +1,10 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import {
+  ACCOUNT_DELETION_COPY,
+  ACCOUNT_DELETION_PATH,
+} from "@/lib/account-deletion";
 import { ANNUAL_BADGE, LESSON_COUNT } from "@/lib/plans";
 
 export type Lang = "en" | "it" | "es" | "fr" | "pt";
@@ -290,6 +294,8 @@ const it = {
     documentsTitle: "Documenti",
     backHome: "Torna alla home",
   },
+  // Pagina /elimina-account (MOB-591): testi in src/lib/account-deletion.ts.
+  accountDeletionPage: ACCOUNT_DELETION_COPY.it,
   footer: {
     tagline:
       "Specula in modo semplice. Segnali intelligenti, flussi di mercato in tempo reale, tutto in un unico posto.",
@@ -308,6 +314,7 @@ const it = {
         links: [
           { label: "Richiedi l'accesso", href: "/#contatti" },
           { label: "Contatti", href: "/contatti" },
+          { label: ACCOUNT_DELETION_COPY.it.navLabel, href: ACCOUNT_DELETION_PATH },
           { label: "Newsletter", href: "#" },
         ],
       },
@@ -595,6 +602,8 @@ const en: Dict = {
     documentsTitle: "Documents",
     backHome: "Back to home",
   },
+  // Pagina /elimina-account (MOB-591): testi in src/lib/account-deletion.ts.
+  accountDeletionPage: ACCOUNT_DELETION_COPY.en,
   footer: {
     tagline:
       "Speculate easily. Smart signals, real-time market flow, all in one place.",
@@ -613,6 +622,7 @@ const en: Dict = {
         links: [
           { label: "Request access", href: "/#contatti" },
           { label: "Contact", href: "/contatti" },
+          { label: ACCOUNT_DELETION_COPY.en.navLabel, href: ACCOUNT_DELETION_PATH },
           { label: "Newsletter", href: "#" },
         ],
       },
@@ -899,6 +909,8 @@ const es: Dict = {
     documentsTitle: "Documentos",
     backHome: "Volver al inicio",
   },
+  // Pagina /elimina-account (MOB-591): testi in src/lib/account-deletion.ts.
+  accountDeletionPage: ACCOUNT_DELETION_COPY.es,
   footer: {
     tagline:
       "Especula de forma sencilla. Señales inteligentes, flujo de mercado en tiempo real, todo en un solo lugar.",
@@ -917,6 +929,7 @@ const es: Dict = {
         links: [
           { label: "Solicitar acceso", href: "/#contatti" },
           { label: "Contacto", href: "/contatti" },
+          { label: ACCOUNT_DELETION_COPY.es.navLabel, href: ACCOUNT_DELETION_PATH },
           { label: "Newsletter", href: "#" },
         ],
       },
@@ -1204,6 +1217,8 @@ const fr: Dict = {
     documentsTitle: "Documents",
     backHome: "Retour à l'accueil",
   },
+  // Pagina /elimina-account (MOB-591): testi in src/lib/account-deletion.ts.
+  accountDeletionPage: ACCOUNT_DELETION_COPY.fr,
   footer: {
     tagline:
       "Spéculez simplement. Des signaux intelligents, un flux de marché en temps réel, le tout au même endroit.",
@@ -1222,6 +1237,7 @@ const fr: Dict = {
         links: [
           { label: "Demander l'accès", href: "/#contatti" },
           { label: "Contact", href: "/contatti" },
+          { label: ACCOUNT_DELETION_COPY.fr.navLabel, href: ACCOUNT_DELETION_PATH },
           { label: "Newsletter", href: "#" },
         ],
       },
@@ -1508,6 +1524,8 @@ const pt: Dict = {
     documentsTitle: "Documentos",
     backHome: "Voltar à página inicial",
   },
+  // Pagina /elimina-account (MOB-591): testi in src/lib/account-deletion.ts.
+  accountDeletionPage: ACCOUNT_DELETION_COPY.pt,
   footer: {
     tagline:
       "Especule de forma simples. Sinais inteligentes, fluxo de mercado em tempo real, tudo num só lugar.",
@@ -1526,6 +1544,7 @@ const pt: Dict = {
         links: [
           { label: "Pedir acesso", href: "/#contatti" },
           { label: "Contacto", href: "/contatti" },
+          { label: ACCOUNT_DELETION_COPY.pt.navLabel, href: ACCOUNT_DELETION_PATH },
           { label: "Newsletter", href: "#" },
         ],
       },
