@@ -87,6 +87,30 @@ riga con un esempio. Se un formato nuovo arriva sulle card, aggiungi una riga l�
 e un titolo d'esempio in `src/lib/news.test.ts`, poi lancia `pnpm test`. I test
 girano con Node 22.18 o più recente, che legge TypeScript senza dipendenze.
 
+## Banner dei cookie (iubenda)
+
+Il banner è la Cookie Solution di iubenda, sull'account di Carlo (MOB-815). Lo
+carica `src/components/layout/cookie-consent.tsx`; la logica pura e i suoi test
+sono in `src/lib/consent.ts` e `src/lib/consent.test.ts`.
+
+Serve una sola variabile su Vercel, poi un nuovo deploy:
+
+```bash
+NEXT_PUBLIC_IUBENDA_SITE_ID=1234567   # Site ID del sito in iubenda
+```
+
+Senza, il sito non carica niente di iubenda e il footer non mostra i link dei
+cookie. Gli ID della cookie policy per lingua sono già nel codice
+(`DEFAULT_COOKIE_POLICY_IDS`); se cambiano, si sovrascrivono con
+`NEXT_PUBLIC_IUBENDA_COOKIE_POLICY_IDS="it:68699235,en:58107777"`. Nessuno dei
+due è un segreto. Il Cookie Solution va anche attivato nel pannello di iubenda:
+finché è spento lì, lo script si carica ma il banner non compare.
+
+Ogni script non necessario (analytics, pixel) si aggiunge con
+`<ConsentScript purpose="measurement" src="..." />`, mai con `<Script>` diretto:
+parte solo dopo il consenso alla sua finalità. Se il visitatore ritira il
+consenso, la pagina si ricarica senza quello script.
+
 ## Come procediamo
 
 La landing si costruisce una sezione alla volta. Ogni nuova sezione vive in

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display, Poppins } from "next/font/google";
+import { CookieConsentProvider } from "@/components/layout/cookie-consent";
 import { JsonLd } from "@/components/seo/json-ld";
 import { LanguageProvider } from "@/lib/i18n";
 import { SITE_URL } from "@/lib/site";
@@ -74,7 +75,11 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col antialiased">
         {/* Organization + WebSite su ogni pagina del sito. */}
         <JsonLd graph={[organizationJsonLd, websiteJsonLd]} />
-        <LanguageProvider>{children}</LanguageProvider>
+        <LanguageProvider>
+          {/* Banner dei cookie di iubenda (MOB-815): spento finché manca
+              NEXT_PUBLIC_IUBENDA_SITE_ID. */}
+          <CookieConsentProvider>{children}</CookieConsentProvider>
+        </LanguageProvider>
       </body>
     </html>
   );
