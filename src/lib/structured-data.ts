@@ -84,12 +84,20 @@ export const softwareApplicationJsonLd = {
     price: plan.price.toFixed(2),
     priceCurrency: PRICE_CURRENCY,
     ...(plan.price > 0 && {
-      priceSpecification: {
-        "@type": "UnitPriceSpecification",
-        price: plan.price.toFixed(2),
-        priceCurrency: PRICE_CURRENCY,
-        billingDuration: "P1M",
-      },
+      priceSpecification: [
+        {
+          "@type": "UnitPriceSpecification",
+          price: plan.price.toFixed(2),
+          priceCurrency: PRICE_CURRENCY,
+          billingDuration: "P1M",
+        },
+        {
+          "@type": "UnitPriceSpecification",
+          price: plan.annualPrice.toFixed(2),
+          priceCurrency: PRICE_CURRENCY,
+          billingDuration: "P1Y",
+        },
+      ],
     }),
   })),
 };

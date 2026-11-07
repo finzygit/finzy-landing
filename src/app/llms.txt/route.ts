@@ -1,5 +1,5 @@
 import { SUPPORT_EMAIL } from "@/lib/company";
-import { annualMonthlyPrice, PLANS, PRICE_CURRENCY } from "@/lib/plans";
+import { annualMonthlyPrice, LESSON_COUNT, PLANS, PRICE_CURRENCY } from "@/lib/plans";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 import { APP_STORE_URL, GOOGLE_PLAY_URL } from "@/lib/store-links";
 
@@ -9,7 +9,7 @@ export const dynamic = "force-static";
 const plans = PLANS.map((plan) =>
   plan.price === 0
     ? `- ${plan.name}: free`
-    : `- ${plan.name}: ${plan.price.toFixed(2)} ${PRICE_CURRENCY} per month, or ${annualMonthlyPrice(plan.price).toFixed(2)} ${PRICE_CURRENCY} per month billed annually`,
+    : `- ${plan.name}: ${plan.price.toFixed(2)} ${PRICE_CURRENCY} per month, or ${plan.annualPrice.toFixed(2)} ${PRICE_CURRENCY} per year (${annualMonthlyPrice(plan).toFixed(2)} ${PRICE_CURRENCY} per month)`,
 ).join("\n");
 
 /**
@@ -30,7 +30,7 @@ ${SITE_NAME} is made for people who are not finance experts. The app is availabl
 - Stock Snapshot: a quick overview of a single stock.
 - Financial reports: 10-K statements and key indicators.
 - Personal finance planner: build and export a personal balance sheet.
-- Learning: lessons on stocks, bonds, crypto, forex, commodities and more.
+- Learning: ${LESSON_COUNT} video lessons on interest rates, inflation, stocks, bonds, forex and more.
 
 ## Plans
 

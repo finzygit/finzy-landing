@@ -38,12 +38,26 @@ type CardProps = {
   annual: boolean;
   lang: Lang;
   perMonth: string;
+  billedAnnually: string;
   popularLabel: string;
 };
 
-function PlanCard({ plan, info, annual, lang, perMonth, popularLabel }: CardProps) {
-  const amount = annual ? annualMonthlyPrice(plan.price) : plan.price;
+function PlanCard({
+  plan,
+  info,
+  annual,
+  lang,
+  perMonth,
+  billedAnnually,
+  popularLabel,
+}: CardProps) {
+  const amount = annual ? annualMonthlyPrice(plan) : plan.price;
   const popular = plan.popular;
+  // Con l'annuale si dice anche quanto si paga davvero, una volta l'anno.
+  const note =
+    annual && plan.annualPrice > 0
+      ? `€${formatAmount(plan.annualPrice, lang)} ${billedAnnually}`
+      : info.note;
 
   return (
     <div
@@ -88,9 +102,9 @@ function PlanCard({ plan, info, annual, lang, perMonth, popularLabel }: CardProp
         </div>
       </div>
 
-      {info.note && (
+      {note && (
         <p className="mt-3 text-xs leading-snug text-muted-foreground/80">
-          {info.note}
+          {note}
         </p>
       )}
 
@@ -140,6 +154,7 @@ type CarouselProps = {
   annual: boolean;
   lang: Lang;
   perMonth: string;
+  billedAnnually: string;
   popularLabel: string;
 };
 
@@ -251,6 +266,7 @@ export function Pricing() {
     annual,
     lang,
     perMonth: p.perMonth,
+    billedAnnually: p.billedAnnually,
     popularLabel: p.popular,
   };
 
