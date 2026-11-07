@@ -41,6 +41,7 @@ ${plans}
 - [Home](${SITE_URL}/): product overview, features and pricing.
 - [Download](${SITE_URL}/download): sends a phone to the right app store.
 - [Contacts](${SITE_URL}/contatti): support email and publisher details.
+- [Delete account](${SITE_URL}/elimina-account): how to delete a Finzy account, in the app or by email.
 
 ## Download
 

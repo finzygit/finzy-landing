@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { ACCOUNT_DELETION_PATH } from "@/lib/account-deletion";
 import { SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -16,6 +17,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: "yearly",
       priority: 0.5,
+    },
+    {
+      url: `${SITE_URL}${ACCOUNT_DELETION_PATH}`,
+      lastModified,
+      changeFrequency: "yearly",
+      priority: 0.3,
     },
   ];
 }

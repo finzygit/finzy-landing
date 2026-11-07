@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
     return [
       // Alias inglese della pagina contatti: /contatti resta l'URL canonico.
       { source: "/contact", destination: "/contatti", permanent: true },
+      // Alias inglese della pagina di eliminazione (MOB-591).
+      { source: "/delete-account", destination: "/elimina-account", permanent: true },
     ];
   },
 };
