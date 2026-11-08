@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useSyncExternalStore,
+} from "react";
+import { noopSubscribe } from "@/lib/client-snapshot";
 import { ANNUAL_BADGE, LESSON_COUNT } from "@/lib/plans";
 
 export type Lang = "en" | "it" | "es" | "fr" | "pt";
@@ -1613,18 +1620,29 @@ function browserLanguages(): readonly string[] {
   return navigator.language ? [navigator.language] : [];
 }
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(DEFAULT_LANG);
+// Lingua iniziale: calcolata una volta per caricamento della pagina, al primo
+// render nel browser (prima: in un effect al mount del provider, che vive per
+// tutta la visita). Sul server e durante l'hydration vale DEFAULT_LANG.
+let initialLang: Lang | undefined;
 
-  useEffect(() => {
-    setLangState(
-      resolveInitialLang({
-        search: window.location.search,
-        stored: readStoredLang(),
-        browser: browserLanguages(),
-      }),
-    );
-  }, []);
+function getInitialLang(): Lang {
+  initialLang ??= resolveInitialLang({
+    search: window.location.search,
+    stored: readStoredLang(),
+    browser: browserLanguages(),
+  });
+  return initialLang;
+}
+
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const initial = useSyncExternalStore(
+    noopSubscribe,
+    getInitialLang,
+    () => DEFAULT_LANG,
+  );
+  // Scelta dal menu durante la visita; finché manca vale la lingua iniziale.
+  const [chosen, setLangState] = useState<Lang | null>(null);
+  const lang = chosen ?? initial;
 
   useEffect(() => {
     document.documentElement.lang = lang;

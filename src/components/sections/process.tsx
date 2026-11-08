@@ -3,6 +3,7 @@
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
+import { usePrefersReducedMotion } from "@/lib/client-snapshot";
 import { useLanguage } from "@/lib/i18n";
 
 // Numero + emoji per ciascuno step (nell'ordine di t.process.steps).
@@ -29,8 +30,10 @@ export function Process() {
     null,
   );
   // Animazione "disegno" del percorso quando la sezione entra in vista.
-  const [drawn, setDrawn] = useState(false);
-  const [instant, setInstant] = useState(false);
+  // Con prefers-reduced-motion il percorso è già disegnato, senza transizioni.
+  const instant = usePrefersReducedMotion();
+  const [seen, setSeen] = useState(false);
+  const drawn = seen || instant;
   // Su mobile i pallini si sfalsano lungo tutta la durata del disegno;
   // su desktop (nessuna linea) restano una comparsa rapida a cascata.
   const [isMobile, setIsMobile] = useState(false);
@@ -104,16 +107,11 @@ export function Process() {
 
   useEffect(() => {
     const el = wrapRef.current;
-    if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setInstant(true);
-      setDrawn(true);
-      return;
-    }
+    if (!el || instant) return;
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setDrawn(true);
+          setSeen(true);
           io.disconnect();
         }
       },
@@ -121,7 +119,7 @@ export function Process() {
     );
     io.observe(el);
     return () => io.disconnect();
-  }, []);
+  }, [instant]);
 
   return (
     <section
