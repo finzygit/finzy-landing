@@ -1623,6 +1623,7 @@ function browserLanguages(): readonly string[] {
 // Lingua iniziale: calcolata una volta per caricamento della pagina, al primo
 // render nel browser (prima: in un effect al mount del provider, che vive per
 // tutta la visita). Sul server e durante l'hydration vale DEFAULT_LANG.
+// Vale finché il provider sta nel root layout (un mount per caricamento).
 let initialLang: Lang | undefined;
 
 function getInitialLang(): Lang {
