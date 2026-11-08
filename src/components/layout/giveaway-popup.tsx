@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { X } from "lucide-react";
+import { useIsClient } from "@/lib/client-snapshot";
 import { useLanguage } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -15,10 +16,8 @@ import { cn } from "@/lib/utils";
 export function GiveawayPopup() {
   const { t } = useLanguage();
   const g = t.giveaway;
-  const [mounted, setMounted] = useState(false);
+  const mounted = useIsClient();
   const [open, setOpen] = useState(false);
-
-  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     const target = document.getElementById("storia");
@@ -41,7 +40,7 @@ export function GiveawayPopup() {
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
+      if (e.key === "Escape") setOpen(false);
     };
     window.addEventListener("keydown", onKey);
     const original = document.body.style.overflow;
@@ -50,7 +49,6 @@ export function GiveawayPopup() {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = original;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   const close = () => setOpen(false);

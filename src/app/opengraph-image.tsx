@@ -28,6 +28,7 @@ export default function OpengraphImage() {
       >
         <img
           src={logoSrc}
+          alt=""
           width={240}
           height={240}
           style={{
