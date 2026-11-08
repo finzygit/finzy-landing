@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePrefersReducedMotion } from "@/lib/client-snapshot";
 
 // Colonna verticale delle cifre: lo 0 finale serve al "giro completo".
 const REEL = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
@@ -31,17 +32,13 @@ export function CountUp({
   const [offsets, setOffsets] = useState<number[]>(() =>
     Array(digits.length).fill(0),
   );
+  // Nessuna animazione: mostra subito il valore finale.
+  const reduced = usePrefersReducedMotion();
 
   useEffect(() => {
-    if (!match) return;
+    if (!match || reduced) return;
     const el = ref.current;
     if (!el) return;
-
-    // Nessuna animazione: mostra subito il valore finale.
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setOffsets([...digits].map(Number));
-      return;
-    }
 
     setOffsets(Array(digits.length).fill(0));
     const timers: ReturnType<typeof setTimeout>[] = [];
@@ -82,7 +79,7 @@ export function CountUp({
       timers.forEach(clearTimeout);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  }, [value, reduced]);
 
   if (!match) {
     return <span className={className}>{value}</span>;
@@ -91,7 +88,9 @@ export function CountUp({
   const prefix = match[1];
   const suffix = match[3];
   // Difende da cambi di lingua (lunghezza diversa) prima che l'effetto giri.
-  const reels = [...digits].map((_, i) => offsets[i] ?? 0);
+  const reels = reduced
+    ? [...digits].map(Number)
+    : [...digits].map((_, i) => offsets[i] ?? 0);
 
   return (
     <span ref={ref} className={className}>
