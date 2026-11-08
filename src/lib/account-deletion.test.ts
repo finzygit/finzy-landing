@@ -82,6 +82,41 @@ describe("pagina /elimina-account", () => {
     }
   });
 
+  test("«Cosa eliminiamo» elenca quello che il backend cancella davvero (backend #81)", () => {
+    // AccountDeletionService::TARGETS: foto profilo (media), notifiche,
+    // calcolatori (portal_generations); letture e voti anonimizzati.
+    const expected: Record<string, string[]> = {
+      it: ["foto profilo", "notifiche", "calcolatori", "conteggio", "subito"],
+      en: ["profile picture", "notifications", "calculators", "count", "straight away"],
+    };
+    for (const [lang, words] of Object.entries(expected)) {
+      const body = String(copy()[lang].deletedBody);
+      for (const word of words) assert.ok(body.includes(word), `${lang}: manca «${word}»`);
+    }
+    // Niente formula generica: RevenueCat e i profili di analytics non si cancellano.
+    assert.doesNotMatch(String(copy().it.deletedBody), /dati personali/);
+    assert.doesNotMatch(String(copy().en.deletedBody), /personal data/);
+  });
+
+  test("«Cosa resta» dice del registro dei pagamenti e di Stripe", () => {
+    // subscription_webhook_events resta; il cliente e le fatture Stripe restano.
+    for (const lang of LANGS) {
+      assert.match(String(copy()[lang].keptBody), /Stripe/, lang);
+    }
+    assert.match(String(copy().it.keptBody), /registro dei pagamenti, senza nome né email/);
+    assert.match(String(copy().en.keptBody), /payment log, without your name or email/);
+  });
+
+  test("nessun tempo dei backup: la scadenza su AWS non si può leggere", () => {
+    // La regola S3 e la policy DLM non sono leggibili in sola lettura, e lo
+    // snapshot manuale del 4/11 esiste ancora (MOB-664): niente «entro 8 giorni».
+    for (const lang of LANGS) {
+      for (const key of ["deletedBody", "keptBody"]) {
+        assert.doesNotMatch(String(copy()[lang][key]), /\d/, `${lang}.${key}`);
+      }
+    }
+  });
+
   test("la pagina è nella sitemap, nel footer delle 5 lingue e ha l'alias inglese", () => {
     assert.match(read("../app/sitemap.ts"), /ACCOUNT_DELETION_PATH/);
     const i18n = read("./i18n.tsx");

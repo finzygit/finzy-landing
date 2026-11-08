@@ -11,6 +11,11 @@
  * francese e portoghese il pulsante resta «Delete account».
  * Il Profilo si apre toccando la foto profilo (user_profile_image.dart) e
  * «Elimina account» è l'ultima voce della pagina.
+ *
+ * «Cosa eliminiamo» e «Cosa resta» seguono AccountDeletionService del
+ * backend (finzy-backend #81, MOB-867): non scrivere niente che il backend
+ * non fa (RevenueCat, profili di analytics e revoca Apple non ci sono).
+ * Niente tempi dei backup: la scadenza su AWS non è verificabile (MOB-664).
  */
 
 /** URL canonico, da inserire in Play Console > Data safety. */
@@ -64,10 +69,10 @@ export const ACCOUNT_DELETION_COPY: Record<
     emailSubject: "Eliminazione account",
     deletedTitle: "Cosa eliminiamo",
     deletedBody:
-      "Il tuo account e i dati personali collegati: profilo, email, risposte dell'onboarding, preferenze, articoli salvati, watchlist e wallet.",
+      "Il tuo account e i dati collegati: profilo, email, foto profilo, risposte dell'onboarding, preferenze, notifiche, articoli salvati, watchlist, wallet, Stock Snapshot richiesti e dati inseriti nei calcolatori. Delle letture e dei voti agli articoli resta solo il conteggio, non più collegato a te e senza IP né dispositivo. Tutto questo avviene subito, quando l'account viene eliminato.",
     keptTitle: "Cosa resta",
     keptBody:
-      "L'eliminazione non annulla un abbonamento: annullalo prima nelle impostazioni dell'App Store o di Google Play. I pagamenti restano registrati da Apple o da Google. Le copie di sicurezza del server vengono cancellate entro 8 giorni.",
+      "L'eliminazione non annulla un abbonamento: annullalo prima nelle impostazioni dell'App Store o di Google Play. I pagamenti restano registrati da Apple o da Google. Noi teniamo il registro dei pagamenti, senza nome né email, per la contabilità. Se hai pagato con Stripe, la scheda cliente e le fatture restano su Stripe come documenti fiscali.",
   },
   en: {
     navLabel: "Delete account",
@@ -88,10 +93,10 @@ export const ACCOUNT_DELETION_COPY: Record<
     emailSubject: "Account deletion",
     deletedTitle: "What we delete",
     deletedBody:
-      "Your account and the personal data linked to it: profile, email, onboarding answers, preferences, saved articles, watchlist and wallet.",
+      "Your account and the data linked to it: profile, email, profile picture, onboarding answers, preferences, notifications, saved articles, watchlist, wallet, requested Stock Snapshots and what you entered in the calculators. For articles you read or rated, only the count stays, no longer linked to you and with no IP address or device. All of this happens straight away, when the account is deleted.",
     keptTitle: "What stays",
     keptBody:
-      "Deleting the account does not cancel a subscription: cancel it first in your App Store or Google Play settings. Payments stay on record with Apple or Google. Server backups are deleted within 8 days.",
+      "Deleting the account does not cancel a subscription: cancel it first in your App Store or Google Play settings. Payments stay on record with Apple or Google. We keep our payment log, without your name or email, for our accounts. If you paid through Stripe, your customer record and invoices stay with Stripe as tax documents.",
   },
   es: {
     navLabel: "Eliminar cuenta",
@@ -112,10 +117,10 @@ export const ACCOUNT_DELETION_COPY: Record<
     emailSubject: "Eliminación de cuenta",
     deletedTitle: "Qué eliminamos",
     deletedBody:
-      "Tu cuenta y los datos personales vinculados: perfil, email, respuestas del onboarding, preferencias, artículos guardados, watchlist y wallet.",
+      "Tu cuenta y los datos vinculados: perfil, email, foto de perfil, respuestas del onboarding, preferencias, notificaciones, artículos guardados, watchlist, wallet, Stock Snapshots solicitados y lo que introdujiste en las calculadoras. De los artículos que leíste o valoraste solo queda el recuento, ya no vinculado a ti y sin IP ni dispositivo. Todo esto ocurre al momento, cuando se elimina la cuenta.",
     keptTitle: "Qué se conserva",
     keptBody:
-      "Eliminar la cuenta no cancela una suscripción: cancélala antes en los ajustes del App Store o de Google Play. Los pagos quedan registrados en Apple o Google. Las copias de seguridad del servidor se borran en un plazo de 8 días.",
+      "Eliminar la cuenta no cancela una suscripción: cancélala antes en los ajustes del App Store o de Google Play. Los pagos quedan registrados en Apple o Google. Nosotros conservamos el registro de pagos, sin nombre ni email, para la contabilidad. Si pagaste con Stripe, tu ficha de cliente y las facturas se quedan en Stripe como documentos fiscales.",
   },
   fr: {
     navLabel: "Supprimer le compte",
@@ -136,10 +141,10 @@ export const ACCOUNT_DELETION_COPY: Record<
     emailSubject: "Suppression du compte",
     deletedTitle: "Ce que nous supprimons",
     deletedBody:
-      "Votre compte et les données personnelles qui y sont liées : profil, e-mail, réponses de l'onboarding, préférences, articles enregistrés, watchlist et wallet.",
+      "Votre compte et les données qui y sont liées : profil, e-mail, photo de profil, réponses de l'onboarding, préférences, notifications, articles enregistrés, watchlist, wallet, Stock Snapshots demandés et ce que vous avez saisi dans les calculateurs. Pour les articles lus ou notés, seul le décompte reste, sans lien avec vous, sans IP ni appareil. Tout cela se fait immédiatement, quand le compte est supprimé.",
     keptTitle: "Ce qui est conservé",
     keptBody:
-      "Supprimer le compte n'annule pas un abonnement : annulez-le d'abord dans les réglages de l'App Store ou de Google Play. Les paiements restent enregistrés chez Apple ou Google. Les sauvegardes du serveur sont effacées sous 8 jours.",
+      "Supprimer le compte n'annule pas un abonnement : annulez-le d'abord dans les réglages de l'App Store ou de Google Play. Les paiements restent enregistrés chez Apple ou Google. Nous gardons le registre des paiements, sans nom ni e-mail, pour la comptabilité. Si vous avez payé avec Stripe, votre fiche client et vos factures restent chez Stripe comme documents fiscaux.",
   },
   pt: {
     navLabel: "Eliminar conta",
@@ -159,9 +164,9 @@ export const ACCOUNT_DELETION_COPY: Record<
     emailSubject: "Eliminação de conta",
     deletedTitle: "O que eliminamos",
     deletedBody:
-      "A sua conta e os dados pessoais associados: perfil, email, respostas do onboarding, preferências, artigos guardados, watchlist e wallet.",
+      "A sua conta e os dados associados: perfil, email, foto de perfil, respostas do onboarding, preferências, notificações, artigos guardados, watchlist, wallet, Stock Snapshots pedidos e o que introduziu nas calculadoras. Dos artigos que leu ou avaliou fica só a contagem, já sem ligação a si, sem IP nem dispositivo. Tudo isto acontece de imediato, quando a conta é eliminada.",
     keptTitle: "O que fica",
     keptBody:
-      "Eliminar a conta não cancela uma subscrição: cancele-a antes nas definições da App Store ou do Google Play. Os pagamentos ficam registados na Apple ou na Google. As cópias de segurança do servidor são apagadas no prazo de 8 dias.",
+      "Eliminar a conta não cancela uma subscrição: cancele-a antes nas definições da App Store ou do Google Play. Os pagamentos ficam registados na Apple ou na Google. Nós guardamos o registo de pagamentos, sem nome nem email, para a contabilidade. Se pagou com Stripe, a sua ficha de cliente e as faturas ficam na Stripe como documentos fiscais.",
   },
 };
