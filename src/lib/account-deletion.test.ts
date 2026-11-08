@@ -86,25 +86,33 @@ describe("pagina /elimina-account", () => {
     // AccountDeletionService::TARGETS: foto profilo (media), notifiche,
     // calcolatori (portal_generations); letture e voti anonimizzati.
     const expected: Record<string, string[]> = {
-      it: ["foto profilo", "notifiche", "calcolatori", "conteggio", "subito"],
-      en: ["profile picture", "notifications", "calculators", "count", "straight away"],
+      it: ["Eliminiamo il tuo account e questi dati:", "foto profilo", "notifiche", "calcolatori", "conteggio", "subito"],
+      en: ["We delete your account and this data:", "profile picture", "notifications", "calculators", "count", "straight away"],
+      es: ["Eliminamos tu cuenta y estos datos:", "foto de perfil", "notificaciones", "calculadoras", "recuento", "al momento"],
+      fr: ["Nous supprimons votre compte et ces données :", "photo de profil", "notifications", "calculateurs", "décompte", "immédiatement"],
+      pt: ["Eliminamos a sua conta e estes dados:", "foto de perfil", "notificações", "calculadoras", "contagem", "de imediato"],
     };
     for (const [lang, words] of Object.entries(expected)) {
       const body = String(copy()[lang].deletedBody);
       for (const word of words) assert.ok(body.includes(word), `${lang}: manca «${word}»`);
+      // Stessa lista in ogni lingua: 11 voci, 10 virgole prima del punto.
+      assert.equal(body.split(".")[0].split(",").length, 10, `${lang}: voci diverse`);
     }
     // Niente formula generica: RevenueCat e i profili di analytics non si cancellano.
-    assert.doesNotMatch(String(copy().it.deletedBody), /dati personali/);
-    assert.doesNotMatch(String(copy().en.deletedBody), /personal data/);
+    assert.doesNotMatch(String(copy().it.deletedBody), /dati personali|dati collegati/);
+    assert.doesNotMatch(String(copy().en.deletedBody), /personal data|data linked/);
   });
 
   test("«Cosa resta» dice del registro dei pagamenti e di Stripe", () => {
-    // subscription_webhook_events resta; il cliente e le fatture Stripe restano.
+    // subscription_webhook_events resta e, per Stripe, ha email e nome
+    // (28 payload in produzione, 8/11); cliente e fatture restano su Stripe.
     for (const lang of LANGS) {
       assert.match(String(copy()[lang].keptBody), /Stripe/, lang);
     }
-    assert.match(String(copy().it.keptBody), /registro dei pagamenti, senza nome né email/);
-    assert.match(String(copy().en.keptBody), /payment log, without your name or email/);
+    assert.match(String(copy().it.keptBody), /registro dei pagamenti/);
+    assert.match(String(copy().en.keptBody), /payment log/);
+    assert.doesNotMatch(String(copy().it.keptBody), /senza nome né email/);
+    assert.doesNotMatch(String(copy().en.keptBody), /without your name or email/);
   });
 
   test("nessun tempo dei backup: la scadenza su AWS non si può leggere", () => {
