@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test src/lib/news.test.ts src/lib/consent.test.ts src/lib/plans.test.ts src/lib/account-deletion.test.ts src/lib/security-headers.test.ts"
+    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test src/lib/news.test.ts src/lib/consent.test.ts src/lib/plans.test.ts src/lib/account-deletion.test.ts src/lib/redirects.test.ts src/lib/security-headers.test.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",
