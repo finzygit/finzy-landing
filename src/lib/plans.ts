@@ -9,10 +9,11 @@
  */
 
 // Nomi commerciali + prezzo mensile e annuale (in €) + piano evidenziato. Non tradotti.
+// href: /download, lo smart link verso lo store (MOB-828: il modulo contatti non c'è più).
 export const PLANS = [
-  { name: "Free", price: 0, annualPrice: 0, href: "#contatti", popular: false },
-  { name: "Premium", price: 7.99, annualPrice: 80, href: "#contatti", popular: false },
-  { name: "Unlimited", price: 9.99, annualPrice: 100, href: "#contatti", popular: true },
+  { name: "Free", price: 0, annualPrice: 0, href: "/download", popular: false },
+  { name: "Premium", price: 7.99, annualPrice: 80, href: "/download", popular: false },
+  { name: "Unlimited", price: 9.99, annualPrice: 100, href: "/download", popular: true },
 ];
 
 export type Plan = (typeof PLANS)[number];

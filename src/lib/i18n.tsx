@@ -269,20 +269,7 @@ const it = {
     ],
   },
   contact: {
-    overline: "Richiedi l'accesso",
-    titleLine1: "Inizia a",
-    titleLine2: "speculare",
-    name: { label: "Il tuo nome", placeholder: "Nome e cognome" },
-    email: { label: "Email", placeholder: "nome@email.com" },
-    goal: {
-      label: "Il tuo obiettivo",
-      placeholder: "Raccontaci la tua strategia di mercato…",
-    },
-    submit: "Richiedi l'accesso",
     storesLabel: "Preferisci scaricare l'app?",
-    privacyNote: "I tuoi dati sono al sicuro. Niente spam, mai.",
-    success:
-      "Grazie! Abbiamo ricevuto la tua richiesta — ti contatteremo presto.",
   },
   // Pagina /contatti: recapiti di assistenza e dati della società editrice.
   contactPage: {
@@ -319,7 +306,6 @@ const it = {
       {
         title: "Contatti",
         links: [
-          { label: "Richiedi l'accesso", href: "/#contatti" },
           { label: "Contatti", href: "/contatti" },
           { label: ACCOUNT_DELETION_COPY.it.navLabel, href: ACCOUNT_DELETION_PATH },
           { label: "Newsletter", href: "#" },
@@ -579,19 +565,7 @@ const en: Dict = {
     ],
   },
   contact: {
-    overline: "Request access",
-    titleLine1: "Start",
-    titleLine2: "speculating",
-    name: { label: "Your name", placeholder: "Full name" },
-    email: { label: "Email", placeholder: "hello@email.com" },
-    goal: {
-      label: "Your goal",
-      placeholder: "Tell us about your market strategy…",
-    },
-    submit: "Request access",
     storesLabel: "Prefer to download the app?",
-    privacyNote: "Your data is safe. No spam, ever.",
-    success: "Thanks! We've received your request — we'll be in touch soon.",
   },
   contactPage: {
     overline: "Support",
@@ -627,7 +601,6 @@ const en: Dict = {
       {
         title: "Connect",
         links: [
-          { label: "Request access", href: "/#contatti" },
           { label: "Contact", href: "/contatti" },
           { label: ACCOUNT_DELETION_COPY.en.navLabel, href: ACCOUNT_DELETION_PATH },
           { label: "Newsletter", href: "#" },
@@ -885,20 +858,7 @@ const es: Dict = {
     ],
   },
   contact: {
-    overline: "Solicitar acceso",
-    titleLine1: "Empieza a",
-    titleLine2: "especular",
-    name: { label: "Tu nombre", placeholder: "Nombre y apellido" },
-    email: { label: "Email", placeholder: "hola@email.com" },
-    goal: {
-      label: "Tu objetivo",
-      placeholder: "Cuéntanos tu estrategia de mercado…",
-    },
-    submit: "Solicitar acceso",
     storesLabel: "¿Prefieres descargar la app?",
-    privacyNote: "Tus datos están seguros. Sin spam, nunca.",
-    success:
-      "¡Gracias! Hemos recibido tu solicitud, nos pondremos en contacto pronto.",
   },
   contactPage: {
     overline: "Soporte",
@@ -934,7 +894,6 @@ const es: Dict = {
       {
         title: "Conecta",
         links: [
-          { label: "Solicitar acceso", href: "/#contatti" },
           { label: "Contacto", href: "/contatti" },
           { label: ACCOUNT_DELETION_COPY.es.navLabel, href: ACCOUNT_DELETION_PATH },
           { label: "Newsletter", href: "#" },
@@ -1192,20 +1151,7 @@ const fr: Dict = {
     ],
   },
   contact: {
-    overline: "Demander l'accès",
-    titleLine1: "Commencez à",
-    titleLine2: "spéculer",
-    name: { label: "Votre nom", placeholder: "Nom et prénom" },
-    email: { label: "Email", placeholder: "bonjour@email.com" },
-    goal: {
-      label: "Votre objectif",
-      placeholder: "Parlez-nous de votre stratégie de marché…",
-    },
-    submit: "Demander l'accès",
     storesLabel: "Vous préférez télécharger l'app ?",
-    privacyNote: "Vos données sont en sécurité. Jamais de spam.",
-    success:
-      "Merci ! Nous avons bien reçu votre demande — nous vous contacterons bientôt.",
   },
   contactPage: {
     overline: "Assistance",
@@ -1242,7 +1188,6 @@ const fr: Dict = {
       {
         title: "Contact",
         links: [
-          { label: "Demander l'accès", href: "/#contatti" },
           { label: "Contact", href: "/contatti" },
           { label: ACCOUNT_DELETION_COPY.fr.navLabel, href: ACCOUNT_DELETION_PATH },
           { label: "Newsletter", href: "#" },
@@ -1500,20 +1445,7 @@ const pt: Dict = {
     ],
   },
   contact: {
-    overline: "Pedir acesso",
-    titleLine1: "Comece a",
-    titleLine2: "especular",
-    name: { label: "O seu nome", placeholder: "Nome completo" },
-    email: { label: "Email", placeholder: "ola@email.com" },
-    goal: {
-      label: "O seu objetivo",
-      placeholder: "Fale-nos da sua estratégia de mercado…",
-    },
-    submit: "Pedir acesso",
     storesLabel: "Prefere descarregar a app?",
-    privacyNote: "Os teus dados estão seguros. Nunca spam.",
-    success:
-      "Obrigado! Recebemos o seu pedido — entraremos em contacto em breve.",
   },
   contactPage: {
     overline: "Apoio",
@@ -1549,7 +1481,6 @@ const pt: Dict = {
       {
         title: "Ligar",
         links: [
-          { label: "Pedir acesso", href: "/#contatti" },
           { label: "Contacto", href: "/contatti" },
           { label: ACCOUNT_DELETION_COPY.pt.navLabel, href: ACCOUNT_DELETION_PATH },
           { label: "Newsletter", href: "#" },

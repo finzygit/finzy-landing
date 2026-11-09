@@ -57,9 +57,10 @@ export function SiteFooter() {
           </div>
         </div>
 
-        {/* CTA gigante */}
-        <Link
-          href="/#contatti"
+        {/* CTA gigante: /download è un route handler (redirect allo store), non
+            una pagina, quindi <a> e non <Link> (MOB-828). */}
+        <a
+          href="/download"
           className="group mt-16 flex items-center gap-3 sm:mt-20"
         >
           <span className="text-5xl font-bold tracking-tight text-white/10 transition-colors group-hover:text-white/20 sm:text-7xl lg:text-8xl">
@@ -69,7 +70,7 @@ export function SiteFooter() {
             className="h-8 w-8 shrink-0 text-primary transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 sm:h-12 sm:w-12"
             strokeWidth={1.75}
           />
-        </Link>
+        </a>
 
         {/* Barra inferiore */}
         <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
