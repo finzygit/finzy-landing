@@ -39,7 +39,6 @@ const it = {
       { label: "Prezzi", href: "/#prezzi" },
       { label: "Contatti", href: "/contatti" },
     ],
-    cta: "Richiedi l'accesso",
   },
   giveaway: {
     overline: "Giveaway ufficiale",
@@ -336,7 +335,6 @@ const en: Dict = {
       { label: "Pricing", href: "/#prezzi" },
       { label: "Contact", href: "/contatti" },
     ],
-    cta: "Request access",
   },
   giveaway: {
     overline: "Official giveaway",
@@ -629,7 +627,6 @@ const es: Dict = {
       { label: "Precios", href: "/#prezzi" },
       { label: "Contacto", href: "/contatti" },
     ],
-    cta: "Solicitar acceso",
   },
   giveaway: {
     overline: "Sorteo oficial",
@@ -922,7 +919,6 @@ const fr: Dict = {
       { label: "Tarifs", href: "/#prezzi" },
       { label: "Contact", href: "/contatti" },
     ],
-    cta: "Demander l'accès",
   },
   giveaway: {
     overline: "Tirage officiel",
@@ -1216,7 +1212,6 @@ const pt: Dict = {
       { label: "Preços", href: "/#prezzi" },
       { label: "Contacto", href: "/contatti" },
     ],
-    cta: "Pedir acesso",
   },
   giveaway: {
     overline: "Sorteio oficial",

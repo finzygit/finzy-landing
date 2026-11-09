@@ -6,6 +6,8 @@
  * visitatori andavano persi. Resta la pagina /contatti con l'email di
  * assistenza. Questi test impediscono che il modulo torni senza un invio vero
  * e che un link porti ancora all'ancora /#contatti, che non esiste più.
+ * Oggi il sito non ha nessun modulo: chi ne aggiunge uno con un invio vero (e
+ * la voce nella privacy policy) aggiorna il test «nessun <form>».
  */
 import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
@@ -24,7 +26,7 @@ function sourceFiles(dir: URL): URL[] {
   });
 }
 
-const files = sourceFiles(SRC).map((url) => ({
+const files = [...sourceFiles(SRC), new URL("../../next.config.ts", import.meta.url)].map((url) => ({
   path: url.pathname.slice(SRC.pathname.length),
   text: readFileSync(url, "utf8"),
 }));
@@ -36,13 +38,13 @@ describe("modulo contatti tolto (MOB-828)", () => {
   });
 
   test("nessun <form> nel sito", () => {
-    const found = files.filter((f) => /<form[\s>]/.test(f.text)).map((f) => f.path);
+    const found = files.filter((f) => /<form[\s>]/i.test(f.text)).map((f) => f.path);
     assert.deepEqual(found, [], `<form> in: ${found.join(", ")}`);
   });
 
   test("nessun link porta all'ancora /#contatti", () => {
     const found = files
-      .filter((f) => /["'`]\/?#contatti["'`]/.test(f.text))
+      .filter((f) => /#contatti\b/.test(f.text))
       .map((f) => f.path);
     assert.deepEqual(found, [], `link a /#contatti in: ${found.join(", ")}`);
   });
