@@ -100,12 +100,44 @@ describe("Content-Security-Policy", () => {
     assert.ok(csp.has("upgrade-insecure-requests"));
   });
 
-  test("nessuna sorgente aperta a tutti o in chiaro", async () => {
-    for (const [name, sources] of await enforcedCsp()) {
-      for (const source of sources) {
-        assert.notEqual(source, "*", `${name}: *`);
-        assert.ok(!source.startsWith("http:"), `${name}: ${source}`);
-        assert.notEqual(source, "https:", `${name}: https: è tutto il web`);
+  test("in produzione ogni direttiva ha esattamente le sue sorgenti", async () => {
+    // Fissate una per una: allargarne una (un'altra wildcard, data: negli
+    // script, un dominio nuovo) deve far fallire il test ed essere una scelta.
+    const csp = await enforcedCsp();
+    assert.deepEqual(Object.fromEntries(csp), {
+      "default-src": ["'self'"],
+      "script-src": ["'self'", "'unsafe-inline'", "https://*.iubenda.com"],
+      "style-src": ["'self'", "'unsafe-inline'", "https://*.iubenda.com"],
+      "img-src": ["'self'", "data:", "https://*.iubenda.com"],
+      "font-src": ["'self'", "https://*.iubenda.com"],
+      "connect-src": ["'self'", "https://*.iubenda.com"],
+      "frame-src": ["https://*.iubenda.com"],
+      "object-src": ["'none'"],
+      "base-uri": ["'self'"],
+      "form-action": ["'self'"],
+      "frame-ancestors": ["'none'"],
+      "upgrade-insecure-requests": [],
+    });
+  });
+
+  test("nessuna sorgente aperta a tutti o in chiaro, nemmeno nelle anteprime", () => {
+    const build = lib.contentSecurityPolicy as (opts: {
+      dev: boolean;
+      vercelPreview: boolean;
+    }) => string;
+    assert.equal(typeof build, "function", "manca contentSecurityPolicy()");
+    for (const dev of [false, true]) {
+      for (const vercelPreview of [false, true]) {
+        for (const [name, sources] of parseCsp(build({ dev, vercelPreview }))) {
+          for (const source of sources) {
+            assert.ok(!source.startsWith("http:"), `${name}: ${source}`);
+            assert.ok(
+              !source.includes("*") || source === "https://*.iubenda.com",
+              `${name}: wildcard ${source}`,
+            );
+            assert.ok(!["https:", "data:", "blob:"].includes(source) || name === "img-src", `${name}: ${source}`);
+          }
+        }
       }
     }
   });
@@ -126,6 +158,9 @@ describe("Content-Security-Policy", () => {
     assert.ok(dev.get("script-src")?.includes("'unsafe-eval'"));
     const prod = parseCsp(build({ dev: false, vercelPreview: false }));
     assert.ok(!prod.get("script-src")?.includes("'unsafe-eval'"));
+    // In sviluppo niente upgrade-insecure-requests (prove da telefono in LAN).
+    assert.equal(dev.has("upgrade-insecure-requests"), false);
+    assert.equal(prod.has("upgrade-insecure-requests"), true);
   });
 
   test("lo script di iubenda può partire, e solo da iubenda", async () => {

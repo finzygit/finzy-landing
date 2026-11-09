@@ -28,7 +28,9 @@ const IUBENDA = "https://*.iubenda.com";
 
 /**
  * La barra delle anteprime di Vercel (commenti, toolbar). Vercel la inietta
- * solo nei deploy di anteprima: in produzione non c'è e non va ammessa.
+ * nei deploy di anteprima. In produzione non va ammessa di proposito: se un
+ * membro del team accende la toolbar anche lì, vedrà violazioni CSP in
+ * console solo lui, e va bene così (MOB-625).
  */
 const VERCEL_LIVE = {
   script: ["https://vercel.live"],
@@ -55,7 +57,8 @@ export function contentSecurityPolicy({ dev, vercelPreview }: CspOptions): strin
       ["'self'", "'unsafe-inline'", ...(dev ? ["'unsafe-eval'"] : []), IUBENDA, ...v(VERCEL_LIVE.script)],
     ],
     ["style-src", ["'self'", "'unsafe-inline'", IUBENDA, ...v(VERCEL_LIVE.style)]],
-    ["img-src", ["'self'", "data:", "blob:", IUBENDA, ...v(VERCEL_LIVE.img)]],
+    // data: per i segnaposto sfocati di next/image e il logo dell'immagine OG.
+    ["img-src", ["'self'", "data:", IUBENDA, ...v(VERCEL_LIVE.img)]],
     ["font-src", ["'self'", IUBENDA, ...v(VERCEL_LIVE.font)]],
     ["connect-src", ["'self'", IUBENDA, ...v(VERCEL_LIVE.connect)]],
     ["frame-src", [IUBENDA, ...v(VERCEL_LIVE.frame)]],
@@ -63,7 +66,9 @@ export function contentSecurityPolicy({ dev, vercelPreview }: CspOptions): strin
     ["base-uri", ["'self'"]],
     ["form-action", ["'self'"]],
     ["frame-ancestors", ["'none'"]],
-    ["upgrade-insecure-requests", []],
+    // Non in `next dev`: da un telefono su http://192.168.x.x Safari porterebbe
+    // gli asset della pagina su https, e la pagina si rompe.
+    ...(dev ? [] : ([["upgrade-insecure-requests", []]] as [string, string[]][])),
   ];
   return directives
     .map(([name, sources]) => [name, ...sources].join(" "))
