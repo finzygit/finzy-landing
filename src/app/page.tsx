@@ -15,7 +15,6 @@ import { Testimonials } from "@/components/sections/testimonials";
 // MOB-492: giveaway disattivato. Togli il commento per riattivarlo.
 // import { GiveawayBanner } from "@/components/sections/giveaway-banner";
 import { Pricing } from "@/components/sections/pricing";
-import { Contact } from "@/components/sections/contact";
 import { getLatestNews } from "@/lib/news";
 import { JsonLd } from "@/components/seo/json-ld";
 import { softwareApplicationJsonLd } from "@/lib/structured-data";
@@ -44,7 +43,6 @@ export default async function Home() {
         {/* MOB-492: giveaway disattivato. Togli il commento per riattivarlo. */}
         {/* <GiveawayBanner /> */}
         <Pricing />
-        <Contact />
       </main>
       <SiteFooter />
       {/* MOB-492: giveaway disattivato. Togli il commento per riattivarlo. */}

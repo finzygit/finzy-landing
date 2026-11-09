@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { Check, Lock, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
@@ -133,7 +132,8 @@ function PlanCard({
       </ul>
 
       <div className="mt-auto pt-8">
-        <Link
+        {/* /download è un route handler (redirect allo store): <a>, non <Link>. */}
+        <a
           href={plan.href}
           className={cn(
             "inline-flex w-full items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold transition-colors",
@@ -143,7 +143,7 @@ function PlanCard({
           )}
         >
           {info.cta}
-        </Link>
+        </a>
       </div>
     </div>
   );
