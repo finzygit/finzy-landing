@@ -307,7 +307,6 @@ const it = {
         links: [
           { label: "Contatti", href: "/contatti" },
           { label: ACCOUNT_DELETION_COPY.it.navLabel, href: ACCOUNT_DELETION_PATH },
-          { label: "Newsletter", href: "#" },
         ],
       },
     ],
@@ -601,7 +600,6 @@ const en: Dict = {
         links: [
           { label: "Contact", href: "/contatti" },
           { label: ACCOUNT_DELETION_COPY.en.navLabel, href: ACCOUNT_DELETION_PATH },
-          { label: "Newsletter", href: "#" },
         ],
       },
     ],
@@ -893,7 +891,6 @@ const es: Dict = {
         links: [
           { label: "Contacto", href: "/contatti" },
           { label: ACCOUNT_DELETION_COPY.es.navLabel, href: ACCOUNT_DELETION_PATH },
-          { label: "Newsletter", href: "#" },
         ],
       },
     ],
@@ -1186,7 +1183,6 @@ const fr: Dict = {
         links: [
           { label: "Contact", href: "/contatti" },
           { label: ACCOUNT_DELETION_COPY.fr.navLabel, href: ACCOUNT_DELETION_PATH },
-          { label: "Newsletter", href: "#" },
         ],
       },
     ],
@@ -1478,7 +1474,6 @@ const pt: Dict = {
         links: [
           { label: "Contacto", href: "/contatti" },
           { label: ACCOUNT_DELETION_COPY.pt.navLabel, href: ACCOUNT_DELETION_PATH },
-          { label: "Newsletter", href: "#" },
         ],
       },
     ],
