@@ -96,7 +96,9 @@ certificato scaduto, risposta senza lista) succede questo (MOB-1281,
 
 - **durante una rigenerazione** la lettura lancia l'errore, Next scarta la
   rigenerazione e continua a servire l'ultima pagina buona, con card e ticker.
-  Riprova alla richiesta successiva. L'errore resta nei log di Vercel;
+  Riprova alle richieste successive finché l'API torna. L'errore resta nei log
+  di Vercel. Il ticker non mostra la data: durante un guasto lungo resta con
+  gli ultimi prezzi buoni, anche oltre i 4 giorni di `MAX_QUOTE_AGE_MS`;
 - **durante il build** (un deploy mentre l'API è giù) non c'è una pagina
   precedente: card e ticker si nascondono e il deploy passa. Tornano alla
   prima rigenerazione con l'API di nuovo su;
