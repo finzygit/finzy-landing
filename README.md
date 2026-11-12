@@ -47,8 +47,8 @@ vanno sostituiti con i colori ufficiali di finzy.
 
 Il ticker in testata mostra le quotazioni reali del DB dell'app. Le legge
 `src/lib/ticker.ts` dall'API pubblica del backend, `/api/aziones`, e le pagine
-si rigenerano ogni 5 minuti. Se l'API non risponde il ticker sparisce e il sito
-resta online.
+si rigenerano ogni 5 minuti. Se l'API non risponde vale la regola di
+[API giù](#api-giù).
 
 La lista degli strumenti è configurazione. Senza impostazioni valgono i venti
 titoli di `DEFAULT_INSTRUMENTS`. Per cambiarla imposta la variabile d'ambiente
@@ -69,7 +69,7 @@ nell'app, con titolo, testata e data. Le legge `src/lib/news.ts` dall'API
 pubblica del backend, `/api/blogs`, e le pagine si rigenerano ogni 5 minuti.
 Ogni card passa alla notizia successiva ogni 5 secondi, si ferma con il
 puntatore sopra e resta ferma con `prefers-reduced-motion`. Se l'API non
-risponde le card spariscono e il sito resta online.
+risponde vale la regola di [API giù](#api-giù).
 
 I titoli esistono solo in italiano e in inglese. Le altre lingue del sito
 mostrano il titolo inglese.
@@ -86,6 +86,26 @@ I formati sono l'elenco `ROUTINE_WIRE_PATTERNS` in `src/lib/news.ts`, uno per
 riga con un esempio. Se un formato nuovo arriva sulle card, aggiungi una riga lì
 e un titolo d'esempio in `src/lib/news.test.ts`, poi lancia `pnpm test`. I test
 girano con Node 22.18 o più recente, che legge TypeScript senza dipendenze.
+
+## API giù
+
+Notizie e ticker si leggono quando Next genera la pagina: in `next build` e poi
+a ogni rigenerazione (ogni 5 minuti). Se l'API non risponde (rete, errore HTTP,
+certificato scaduto, risposta senza lista) succede questo (MOB-1281,
+`src/lib/backend-outage.ts`):
+
+- **durante una rigenerazione** la lettura lancia l'errore, Next scarta la
+  rigenerazione e continua a servire l'ultima pagina buona, con card e ticker.
+  Riprova alla richiesta successiva. L'errore resta nei log di Vercel;
+- **durante il build** (un deploy mentre l'API è giù) non c'è una pagina
+  precedente: card e ticker si nascondono e il deploy passa. Tornano alla
+  prima rigenerazione con l'API di nuovo su;
+- **in sviluppo** card e ticker si nascondono.
+
+Un'API che risponde ma non ha niente da mostrare (solo dispacci di routine,
+nessuna quotazione recente) non è un guasto: le sezioni si nascondono anche
+in produzione. Il controllo che l'API sia raggiungibile è quello di MOB-620
+(`docs/monitoraggio.md` del backend), non del sito.
 
 ## Banner dei cookie (iubenda)
 
