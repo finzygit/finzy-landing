@@ -3,6 +3,7 @@ import { Inter, Playfair_Display, Poppins } from "next/font/google";
 import { CookieConsentProvider } from "@/components/layout/cookie-consent";
 import { JsonLd } from "@/components/seo/json-ld";
 import { LanguageProvider } from "@/lib/i18n";
+import { META } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/structured-data";
 import "./globals.css";
@@ -32,11 +33,10 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "finzy — la tua app per la finanza personale",
+    default: META.it.title,
     template: "%s · finzy",
   },
-  description:
-    "finzy ti aiuta a gestire spese, risparmi e obiettivi finanziari in un'unica app semplice e intelligente.",
+  description: META.it.description,
   alternates: {
     canonical: "/",
   },
@@ -50,15 +50,13 @@ export const metadata: Metadata = {
     locale: "it_IT",
     url: SITE_URL,
     siteName: "finzy",
-    title: "finzy — la tua app per la finanza personale",
-    description:
-      "finzy ti aiuta a gestire spese, risparmi e obiettivi finanziari in un'unica app semplice e intelligente.",
+    title: META.it.title,
+    description: META.it.description,
   },
   twitter: {
     card: "summary_large_image",
-    title: "finzy — la tua app per la finanza personale",
-    description:
-      "finzy ti aiuta a gestire spese, risparmi e obiettivi finanziari in un'unica app semplice e intelligente.",
+    title: META.it.title,
+    description: META.it.description,
   },
 };
 
