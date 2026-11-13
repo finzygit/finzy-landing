@@ -6,7 +6,7 @@
  * a zero notizie (toCards in hero.tsx), timer delle card.
  */
 import assert from "node:assert/strict";
-import { describe, test } from "node:test";
+import { afterEach, beforeEach, describe, test } from "node:test";
 import { getLatestNews, isRoutineWire, selectShowcaseNews } from "./news.ts";
 
 let nextId = 1;
@@ -233,6 +233,20 @@ describe("selectShowcaseNews", () => {
 });
 
 describe("getLatestNews", () => {
+  // Fuori dalla produzione un guasto dell'API dà una lista vuota. In
+  // produzione invece lancia (MOB-1281, backend-outage.test.ts): questi test
+  // fissano NODE_ENV, così non dipendono da come si lancia `pnpm test`.
+  const env = process.env as Record<string, string | undefined>;
+  let savedNodeEnv: string | undefined;
+  beforeEach(() => {
+    savedNodeEnv = env.NODE_ENV;
+    env.NODE_ENV = "development";
+  });
+  afterEach(() => {
+    if (savedNodeEnv === undefined) delete env.NODE_ENV;
+    else env.NODE_ENV = savedNodeEnv;
+  });
+
   test("chiede 30 righe, rilegge ogni 5 minuti e mostra 6 notizie vere", async (t) => {
     const rows = [
       ...Array.from({ length: 10 }, () => blog("Top Premarket Gainers")),
@@ -265,6 +279,7 @@ describe("getLatestNews", () => {
   });
 
   test("se la risposta non ha una lista non torna nulla", async (t) => {
+    t.mock.method(console, "error", () => {});
     t.mock.method(globalThis, "fetch", async () => Response.json({ data: null }));
     assert.deepEqual(await getLatestNews(), []);
   });

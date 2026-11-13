@@ -1,3 +1,5 @@
+import { onBackendOutage } from "./backend-outage.ts";
+
 /**
  * Strumenti del ticker di mercato e loro quotazioni reali.
  *
@@ -107,9 +109,10 @@ function isQuoted(row: ApiAzione, now: number): row is QuotedAzione {
 /**
  * Quotazioni degli strumenti configurati, nell'ordine della configurazione.
  *
- * Non lancia mai. Se l'API non risponde torna una lista vuota e il ticker
- * sparisce fino alla rigenerazione successiva. Meglio nessun ticker che un
- * build bloccato o dei numeri inventati.
+ * Se l'API non risponde, durante una rigenerazione lancia e Next tiene
+ * l'ultima pagina buona; nel build torna una lista vuota e il ticker si
+ * nasconde (`onBackendOutage`). Meglio nessun ticker che un build bloccato o
+ * dei numeri inventati.
  */
 export async function getTickerQuotes(): Promise<TickerQuote[]> {
   const instruments = parseInstruments(process.env.TICKER_INSTRUMENTS);
@@ -125,7 +128,8 @@ export async function getTickerQuotes(): Promise<TickerQuote[]> {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
     const body: { data?: unknown } = await res.json();
-    const rows = Array.isArray(body.data) ? (body.data as ApiAzione[]) : [];
+    if (!Array.isArray(body.data)) throw new Error("risposta senza la lista data");
+    const rows = body.data as ApiAzione[];
 
     // Una riga per simbolo, la più vecchia. È la regola dei movers nel backend.
     const now = Date.now();
@@ -150,7 +154,6 @@ export async function getTickerQuotes(): Promise<TickerQuote[]> {
       ];
     });
   } catch (error) {
-    console.error("[ticker] quotazioni non disponibili:", error);
-    return [];
+    return onBackendOutage("[ticker] quotazioni non disponibili:", error, []);
   }
 }

@@ -1,3 +1,5 @@
+import { onBackendOutage } from "./backend-outage.ts";
+
 /**
  * Ultime notizie pubblicate nell'app, per le card del hero.
  *
@@ -139,9 +141,10 @@ export function selectShowcaseNews(rows: unknown, count: number): NewsItem[] {
  * Senza `latest=true`: quel filtro tiene solo le ultime 24 ore e resta vuoto
  * dopo un weekend. La lista base è già ordinata per data e copre 30 giorni.
  *
- * Non lancia mai. Se l'API non risponde torna una lista vuota e le card
- * spariscono fino alla rigenerazione successiva. Lo stesso se tutte le notizie
- * recenti sono dispacci di routine: meglio nessuna card che una classifica.
+ * Se l'API non risponde, durante una rigenerazione lancia e Next tiene
+ * l'ultima pagina buona; nel build torna una lista vuota e le card si
+ * nascondono (`onBackendOutage`). Se tutte le notizie recenti sono dispacci di
+ * routine torna una lista vuota: meglio nessuna card che una classifica.
  */
 export async function getLatestNews(): Promise<NewsItem[]> {
   try {
@@ -152,9 +155,9 @@ export async function getLatestNews(): Promise<NewsItem[]> {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
     const body: { data?: unknown } = await res.json();
+    if (!Array.isArray(body.data)) throw new Error("risposta senza la lista data");
     return selectShowcaseNews(body.data, NEWS_COUNT);
   } catch (error) {
-    console.error("[news] notizie non disponibili:", error);
-    return [];
+    return onBackendOutage("[news] notizie non disponibili:", error, []);
   }
 }
