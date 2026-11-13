@@ -70,11 +70,19 @@ describe("titolo e descrizione del sito (MOB-1271)", () => {
   });
 
   test("il layout usa META.it per title, Open Graph e Twitter", () => {
-    assert.match(layout, /from "@\/lib\/seo"/, "layout.tsx non importa src/lib/seo");
-    const uses = (field: "title" | "description") =>
-      [...layout.matchAll(new RegExp(`META\\.it\\.${field}`, "g"))].length;
-    // default + openGraph + twitter
-    assert.equal(uses("title"), 3, "META.it.title non è in tutti e 3 i posti");
-    assert.equal(uses("description"), 3, "META.it.description non è in tutti e 3 i posti");
+    // Senza commenti: un `// META.it.title` lasciato lì non deve bastare.
+    const code = layout.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+    assert.match(code, /import \{ META \} from "@\/lib\/seo"/, "layout.tsx non importa META");
+    const block = (name: string) => {
+      const m = code.match(new RegExp(`\\n  ${name}: \\{\\n([\\s\\S]*?)\\n  \\},\\n`));
+      assert.ok(m, `blocco ${name} mancante in metadata`);
+      return m[1];
+    };
+    assert.match(block("title"), /^\s*default: META\.it\.title,$/m, "title.default");
+    assert.match(code, /\n  description: META\.it\.description,\n/, "description");
+    for (const name of ["openGraph", "twitter"]) {
+      assert.match(block(name), /^\s*title: META\.it\.title,$/m, `${name}.title`);
+      assert.match(block(name), /^\s*description: META\.it\.description,$/m, `${name}.description`);
+    }
   });
 });
