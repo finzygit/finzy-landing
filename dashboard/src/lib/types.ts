@@ -18,15 +18,19 @@ export type Me = {
   is_unlimited: boolean;
 };
 
-/** GET /api/dashboard/search and /api/dashboard/stocks/{symbol} (to align: feat/mob-1198-dashboard-data). */
+/**
+ * GET /api/dashboard/search (each row) and /api/dashboard/stocks/{symbol}
+ * (feat/mob-1198-dashboard-data, aligned 14 Nov). `last_price` is in USD for
+ * every venue, as the app shows it (`currency: "USD"`); `trading_currency` is
+ * the venue's own currency, for display only.
+ */
 export type StockHeader = {
-  /** The aziones id: the watchlist (POST/DELETE) and the news (blogs?azione=) need it. To align: not in the 14 Nov draft. */
-  id?: number | null;
+  /** The aziones id: the watchlist (POST/DELETE) and the news (blogs?azione=) need it. Kept nullable defensively. */
+  id: number | null;
   symbol: string;
   name: string;
   exchange: string | null;
   mic_code?: string | null;
-  /** Prices are stored in USD for every venue, as the app shows them. */
   currency: string | null;
   trading_currency?: string | null;
   last_price: number | null;
