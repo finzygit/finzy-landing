@@ -34,32 +34,34 @@ function GoLink({ href, children }: { href: string; children: ReactNode }) {
 
 // ---------------------------------------------------------------- alerts
 
-function alertLine(a: Alert): { text: string; href: string; go: string; strong: boolean } {
+function alertLine(a: Alert, now: string): { text: string; href: string; go: string; strong: boolean } | null {
   switch (a.kind) {
     case "budget":
       return { text: T.alBudget(provider(a.provider), usd(a.spend), usd(a.budget), a.percent), href: "/costi", go: T.goAi, strong: true };
     case "customer_io":
       return { text: T.alCio(count(a.count)), href: "/servizi", go: T.goHealth, strong: false };
-    case "mt_stopped":
-      return { text: T.alMt(hours(a.hours), clock(a.latest_at)), href: "/notizie", go: T.goNews, strong: false };
+    case "mt_stopped": {
+      const last = when(a.latest_at, now);
+      return { text: last.startsWith("oggi ") ? T.alMt(hours(a.hours), clock(a.latest_at)) : T.alMtDay(hours(a.hours), last), href: "/notizie", go: T.goNews, strong: false };
+    }
+    default:
+      return null; // a kind this page does not know yet: no row, never a blank page
   }
 }
 
 /** One amber row per problem; nothing at all when nothing is wrong. */
-export function Alerts({ alerts }: { alerts: Alert[] }) {
-  if (!alerts.length) return null;
+export function Alerts({ alerts, now }: { alerts: Alert[]; now: string }) {
+  const rows = alerts.map((a) => alertLine(a, now)).filter((l) => l !== null);
+  if (!rows.length) return null;
   return (
     <section className={s.alerts} aria-label="Avvisi">
-      {alerts.map((a, i) => {
-        const l = alertLine(a);
-        return (
-          <div key={`${a.kind}-${i}`} className={s.alert} role="status">
-            <Icon name="alert" size={18} />
-            <span className={l.strong ? s.alertStrong : undefined}>{l.text}</span>
-            <GoLink href={l.href}>{l.go}</GoLink>
-          </div>
-        );
-      })}
+      {rows.map((l, i) => (
+        <div key={`${l.href}-${i}`} className={s.alert} role="status">
+          <Icon name="alert" size={18} />
+          <span className={l.strong ? s.alertStrong : undefined}>{l.text}</span>
+          <GoLink href={l.href}>{l.go}</GoLink>
+        </div>
+      ))}
     </section>
   );
 }
@@ -97,7 +99,9 @@ export function GroupCard<D>({
         <span className={s.groupIcon}>
           <Icon name={icon} size={18} />
         </span>
-        <h2 id={`g-${id}`}>{title}</h2>
+        <h2 id={`g-${id}`} tabIndex={-1}>
+          {title}
+        </h2>
         <GoLink href={href}>{go}</GoLink>
       </header>
       {state.kind === "loading" ? (
@@ -111,7 +115,7 @@ export function GroupCard<D>({
           <p className="error-line" role="alert">
             <Icon name="alert" size={17} /> {T.groupError}
           </p>
-          <button type="button" className="btn" onClick={onRetry} disabled={retrying}>
+          <button type="button" className="btn" onClick={() => !retrying && onRetry()} aria-disabled={retrying || undefined}>
             {T.retry}
           </button>
         </div>
@@ -181,14 +185,16 @@ export function AiSpendBody({ d, now }: { d: AiSpend; now: string }) {
         </thead>
         <tbody>
           {LINES.map((l) => {
-            const v = d.lines[l.key];
+            const v = d.lines[l.key] ?? { today: 0, month: 0 };
             return (
               <tr key={l.key}>
                 <th scope="row">
-                  <span className={s.dot} style={{ background: l.dot }} aria-hidden="true" />
-                  <span>
-                    <strong>{l.label}</strong>
-                    <span className="sub">{l.desc}</span>
+                  <span className={s.lineName}>
+                    <span className={s.dot} style={{ background: l.dot }} aria-hidden="true" />
+                    <span>
+                      <strong>{l.label}</strong>
+                      <span className="sub">{l.desc}</span>
+                    </span>
                   </span>
                 </th>
                 <td className={dim(v.today)}>{usd(v.today)}</td>

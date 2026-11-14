@@ -9,6 +9,8 @@ describe("home format", () => {
     expect(usd(0)).toBe("$0,00");
     expect(usd(92.594)).toBe("$92,59");
     expect(usd(1234567.5)).toBe("$1.234.567,50");
+    expect(usd(-0.001)).toBe("$0,00");
+    expect(usd(-2.5)).toBe("-$2,50");
   });
 
   it("reads times on Rome's clock, whatever the offset of the string", () => {

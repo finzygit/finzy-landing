@@ -52,6 +52,8 @@ export const T = {
 
   alCio: (n: string) => `${n} invii a Customer.io non riusciti negli ultimi 7 giorni.`,
   alMt: (h: string, t: string) => `Nessun nuovo articolo MT Newswires da ${h} (l’ultimo alle ${t}).`,
+  // New (D385): the last article was not today, so the day is written too.
+  alMtDay: (h: string, at: string) => `Nessun nuovo articolo MT Newswires da ${h} (l’ultimo il ${at}).`,
   alBudget: (p: string, s: string, b: string, pct: number) => `Spesa ${p} del mese: ${s} su un budget di ${b} (${pct}%).`,
 
   pageError: "Non è stato possibile caricare la Home",

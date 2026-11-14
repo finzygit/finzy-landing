@@ -55,18 +55,24 @@ export function HomeView() {
   const [busy, setBusy] = useState(false);
   const [refreshFailed, setRefreshFailed] = useState(false);
 
+  const busyRef = useRef(false);
   const load = useCallback(
-    async (first: boolean) => {
+    async (first: boolean, focusAfter?: string) => {
+      if (busyRef.current) return;
+      busyRef.current = true;
       setBusy(true);
       try {
         const d = await api.get<HomeData>("/home");
         setData(d);
         setFailed(false);
         setRefreshFailed(false);
+        // The group's Riprova is gone with the error: keep the keyboard on that card.
+        if (focusAfter) requestAnimationFrame(() => document.getElementById(focusAfter)?.focus());
       } catch {
         if (first) setFailed(true);
         else setRefreshFailed(true);
       } finally {
+        busyRef.current = false;
         setBusy(false);
       }
     },
@@ -91,6 +97,7 @@ export function HomeView() {
   }
 
   const retry = () => void load(data === null);
+  const retryGroup = (id: string) => () => void load(data === null, `g-${id}`);
   const head = (
     <PageHead
       title={T.title}
@@ -104,10 +111,12 @@ export function HomeView() {
           ) : data ? (
             <span className={s.updated}>{T.updated(clock(data.generated_at))}</span>
           ) : null}
-          <button type="button" className="btn" onClick={retry} disabled={busy} aria-busy={busy || undefined}>
-            <RefreshIcon busy={busy} />
-            {T.refresh}
-          </button>
+          {data ? (
+            <button type="button" className="btn" onClick={() => !busy && retry()} aria-disabled={busy || undefined} aria-busy={busy || undefined}>
+              <RefreshIcon busy={busy} />
+              {T.refresh}
+            </button>
+          ) : null}
         </div>
       }
     />
@@ -122,7 +131,7 @@ export function HomeView() {
           title={T.pageError}
           body={T.pageErrorBody}
           action={
-            <button type="button" className="btn" onClick={retry} disabled={busy}>
+            <button type="button" className="btn" onClick={() => !busy && retry()} aria-disabled={busy || undefined}>
               {T.retry}
             </button>
           }
@@ -133,12 +142,12 @@ export function HomeView() {
 
   const now = data?.generated_at ?? new Date().toISOString();
   const users = groups.includes("users") ? (
-    <GroupCard id="users" title={T.users} icon="users" href="/utenti" go={T.goUsers} state={stateOf<Users>(data, "users")} onRetry={retry} retrying={busy} fresh={(d) => freshLine(d.latest_at, T.usersFresh, T.usersNone, now)}>
+    <GroupCard id="users" title={T.users} icon="users" href="/utenti" go={T.goUsers} state={stateOf<Users>(data, "users")} onRetry={retryGroup("users")} retrying={busy} fresh={(d) => freshLine(d.latest_at, T.usersFresh, T.usersNone, now)}>
       {(d) => <UsersBody d={d} />}
     </GroupCard>
   ) : null;
   const news = groups.includes("news") ? (
-    <GroupCard id="news" title={T.news} icon="news" href="/notizie" go={T.goNews} state={stateOf<News>(data, "news")} onRetry={retry} retrying={busy} fresh={(d) => freshLine(d.latest_at, T.newsFresh, T.newsNone, now)}>
+    <GroupCard id="news" title={T.news} icon="news" href="/notizie" go={T.goNews} state={stateOf<News>(data, "news")} onRetry={retryGroup("news")} retrying={busy} fresh={(d) => freshLine(d.latest_at, T.newsFresh, T.newsNone, now)}>
       {(d) => <NewsBody d={d} />}
     </GroupCard>
   ) : null;
@@ -146,9 +155,9 @@ export function HomeView() {
   return (
     <div className={s.page}>
       {head}
-      {data ? <Alerts alerts={data.alerts} /> : null}
+      {data ? <Alerts alerts={data.alerts} now={data.generated_at} /> : null}
       {groups.includes("ai_spend") ? (
-        <GroupCard id="ai" title={T.ai} icon="pulse" href="/costi" go={T.goAi} state={stateOf<AiSpend>(data, "ai_spend")} onRetry={retry} retrying={busy} fresh={(d) => freshLine(d.latest_at, T.aiFresh, T.aiNone, now)}>
+        <GroupCard id="ai" title={T.ai} icon="pulse" href="/costi" go={T.goAi} state={stateOf<AiSpend>(data, "ai_spend")} onRetry={retryGroup("ai")} retrying={busy} fresh={(d) => freshLine(d.latest_at, T.aiFresh, T.aiNone, now)}>
           {(d) => <AiSpendBody d={d} now={now} />}
         </GroupCard>
       ) : null}

@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { StrictMode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import HomePage from "@/app/page";
 import { ApiError, type Api } from "@/lib/api";
@@ -179,5 +180,49 @@ describe("Home", () => {
     await screen.findByText("Nessuna pagina disponibile");
     expect(screen.getByText("Il tuo ruolo non apre nessuna pagina del pannello. Chiedi a un super admin.")).toBeTruthy();
     expect(nav.replace).not.toHaveBeenCalled();
+  });
+
+  it("under StrictMode the Home is read once at opening", async () => {
+    const a = api(me(ALL), [home()]);
+    render(
+      <StrictMode>
+        <ConsoleProvider api={a}>
+          <HomePage />
+        </ConsoleProvider>
+      </StrictMode>,
+    );
+
+    await screen.findByText("$92,59");
+    expect(homeCalls(a)).toBe(1);
+  });
+
+  it("a refresh that works after a failed one clears the warning", async () => {
+    const a = api(me(ALL), [home(), new ApiError(0, "offline"), home({ generated_at: "2026-11-13T22:40:00+01:00" })]);
+    show(a);
+
+    await screen.findByText("Aggiornato alle 22:30");
+    fireEvent.click(screen.getByRole("button", { name: "Aggiorna" }));
+    await screen.findByText(/Aggiornamento non riuscito/);
+    fireEvent.click(screen.getByRole("button", { name: "Aggiorna" }));
+
+    await screen.findByText("Aggiornato alle 22:40");
+    expect(screen.queryByText(/Aggiornamento non riuscito/)).toBeNull();
+  });
+
+  it("an MT stop older than today writes the day; an unknown alert kind is skipped, not a blank page", async () => {
+    show(
+      api(me(ALL), [
+        home({
+          alerts: [
+            { kind: "mt_stopped", level: "warning", group: "news", latest_at: "2026-11-12T09:12:00+01:00", hours: 27 },
+            { kind: "something_new", level: "warning", group: "news" } as unknown as HomeData["alerts"][number],
+          ],
+        }),
+      ]),
+    );
+
+    const alerts = await screen.findByRole("region", { name: "Avvisi" });
+    expect(within(alerts).getAllByRole("status").map((r) => r.textContent)).toEqual(["Nessun nuovo articolo MT Newswires da 27 ore (l’ultimo il 12/11/2026, 09:12).Apri Notizie"]);
+    expect(screen.getByRole("region", { name: "Spesa AI" })).toBeTruthy();
   });
 });

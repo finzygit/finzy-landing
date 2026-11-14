@@ -7,11 +7,12 @@
 .headRight { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: flex-end; }
 .updated { color: var(--text-3); font-size: 14px; white-space: nowrap; }
 .refreshFailed { color: var(--warn); font-size: 14px; font-weight: 550; max-width: 340px; text-align: right; }
+.page :global(.btn[aria-disabled="true"]) { opacity: 0.38; cursor: default; }
 .spin { animation: spin 0.9s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .pair { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
-@media (min-width: 1280px) { .pair { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+@media (min-width: 1400px) { .pair { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
 
 /* alerts */
 .alerts { border-radius: 22px; background: rgba(242, 184, 75, 0.07); border: 1px solid rgba(242, 184, 75, 0.34); padding: 0 20px; }
@@ -24,7 +25,7 @@
 /* group card */
 .group { display: flex; flex-direction: column; gap: 20px; padding: 24px 26px 20px; }
 .groupHead { display: flex; align-items: center; gap: 12px; }
-.groupHead h2 { margin: 0; font-size: 21px; flex: 1; min-width: 0; }
+.groupHead h2 { margin: 0; font-size: 21px; flex: 1; min-width: 0; outline: none; }
 .groupIcon { flex: none; width: 36px; height: 36px; border-radius: 11px; display: inline-flex; align-items: center; justify-content: center; background: rgba(39, 204, 216, 0.12); color: var(--accent); }
 .go { display: inline-flex; align-items: center; gap: 4px; color: var(--accent); font-weight: 600; font-size: 15px; white-space: nowrap; border-radius: 10px; }
 .go:focus-visible { outline: 2px solid rgba(39, 216, 199, 0.7); outline-offset: 2px; }
@@ -57,7 +58,8 @@
 .lines thead th, .mtTable thead th { height: 32px; font-size: 13px; font-weight: 600; color: var(--text-3); text-align: right; border-bottom: 1px solid rgba(255, 255, 255, 0.12); padding: 0 0 8px 16px; white-space: nowrap; }
 .lines thead th:first-child, .mtTable thead th:first-child { text-align: left; padding-left: 0; }
 .lines tbody th, .lines tbody td { padding: 14px 0 14px 16px; border-bottom: 1px solid var(--hair); vertical-align: top; }
-.lines tbody th { padding-left: 0; text-align: left; font-weight: 400; display: flex; align-items: baseline; gap: 12px; }
+.lines tbody th { padding-left: 0; text-align: left; font-weight: 400; }
+.lineName { display: flex; align-items: baseline; gap: 12px; }
 .lines tbody th strong { font-size: 16px; }
 .lines tbody td { text-align: right; font-size: 17px; font-weight: 700; white-space: nowrap; }
 .mtTable tbody th, .mtTable tbody td { height: 66px; border-bottom: 1px solid var(--hair); padding-left: 16px; }
@@ -75,6 +77,7 @@
 /* phone */
 @media (max-width: 600px) {
   .page > :global(.page-head) { flex-wrap: wrap; align-items: flex-start; margin-bottom: 0; }
+  .page > :global(.page-head) > div:last-child { flex: 1 1 100%; min-width: 0; }
   .headRight { justify-content: flex-start; }
   .refreshFailed { text-align: left; }
   .alert > span { flex-basis: calc(100% - 30px); }
@@ -84,7 +87,6 @@
   .plans { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .alert { flex-wrap: wrap; row-gap: 6px; }
   .alert > a { margin-left: 30px; }
-  .lines tbody th { flex-direction: row; }
   .lines tbody td { font-size: 15px; }
   .mtTable tbody td { font-size: 17px; }
   .lines thead th, .mtTable thead th { white-space: normal; padding-left: 10px; vertical-align: bottom; }

@@ -14,8 +14,8 @@ export function count(n: number): string {
 
 /** 1234.5 → «$1.234,50». */
 export function usd(n: number): string {
-  const sign = n < 0 ? "-" : "";
   const [int, dec] = Math.abs(n).toFixed(2).split(".");
+  const sign = n < 0 && `${int}${dec}` !== "000" ? "-" : ""; // the sign after rounding: never «-$0,00»
   return `${sign}$${group3(int)},${dec}`;
 }
 
