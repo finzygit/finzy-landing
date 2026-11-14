@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { AuthCard, CodeInput } from "@/components/shell/AuthCard";
 import { ApiError } from "@/lib/api";
 import { useConsole, type Me } from "@/lib/console";
+import { firstRoute } from "@/lib/nav";
 
 const MESSAGES: Record<string, string> = {
   invalid_code: "Codice non valido. Controlla che l’ora del telefono sia automatica e riprova.",
@@ -38,10 +39,11 @@ export default function CodePage() {
     try {
       const res = await api.post<{ recovery_left: number }>("/session/two-factor", recovery ? { recovery_code: value } : { code: value });
       if (recovery) toast({ title: "Hai usato un codice di recupero", body: `Te ne restano ${res.recovery_left}. Puoi crearne di nuovi da «Il mio account».`, kind: "info" });
-      router.replace("/");
+      router.replace(firstRoute(new Set(me?.permissions ?? [])));
     } catch (e) {
       const c = e instanceof ApiError ? e.code ?? "" : "";
       setError(MESSAGES[c] ?? (recovery ? "Codice di recupero non valido o già usato." : MESSAGES.invalid_code));
+      if (!recovery) setCode("");
       setBusy(false);
     }
   };

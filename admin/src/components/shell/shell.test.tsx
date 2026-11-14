@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { DataTable } from "./DataTable";
+import { CodeInput } from "./AuthCard";
 import { ConfirmDialog } from "./overlays";
 import { Level, LevelPicker, Pager } from "./parts";
 
@@ -12,7 +13,7 @@ describe("DataTable", () => {
     const open = vi.fn();
     render(<DataTable<Row> columns={cols} rows={[{ id: 1, name: "Marta" }, { id: 2, name: "Luca" }]} rowKey={(r) => r.id} selectedKey={2} onRowClick={open} />);
     expect(screen.getByText("Marta")).toBeTruthy();
-    expect(screen.getByText("Luca").closest("tr")?.getAttribute("aria-selected")).toBe("true");
+    expect(screen.getByText("Luca").closest("tr")?.getAttribute("aria-current")).toBe("true");
     fireEvent.keyDown(screen.getByText("Marta").closest("tr")!, { key: "Enter" });
     expect(open).toHaveBeenCalledWith({ id: 1, name: "Marta" });
   });
@@ -77,5 +78,28 @@ describe("Pager", () => {
     expect(screen.getByText("1–50 di 1.495 righe")).toBeTruthy();
     expect((screen.getByLabelText("Pagina precedente") as HTMLButtonElement).disabled).toBe(true);
     expect((screen.getByLabelText("Pagina successiva") as HTMLButtonElement).disabled).toBe(false);
+  });
+});
+
+describe("idle warning", () => {
+  it("Escape keeps the admin signed in, and the focus starts on «Resta collegato»", () => {
+    const stay = vi.fn();
+    const out = vi.fn();
+    render(<ConfirmDialog title="Sei ancora qui?" message="…" confirmLabel="Resta collegato" cancelLabel="Esci" kind="primary" safeIsConfirm onConfirm={stay} onCancel={out} />);
+    expect(document.activeElement?.textContent).toBe("Resta collegato");
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(stay).toHaveBeenCalledTimes(1);
+    expect(out).not.toHaveBeenCalled();
+  });
+});
+
+describe("CodeInput", () => {
+  it("a pasted code with a space keeps its six digits and sends", () => {
+    const change = vi.fn();
+    const complete = vi.fn();
+    render(<CodeInput value="" onChange={change} onComplete={complete} />);
+    fireEvent.change(screen.getByLabelText("Codice di 6 cifre"), { target: { value: "123 456" } });
+    expect(change).toHaveBeenCalledWith("123456");
+    expect(complete).toHaveBeenCalledWith("123456");
   });
 });

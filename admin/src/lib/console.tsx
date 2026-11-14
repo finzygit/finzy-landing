@@ -5,7 +5,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { ApiError, createApi, type Api } from "./api";
+import { ApiError, createApi, redirectFor, type Api } from "./api";
 
 export type Me = {
   user: { id: number; name: string; email: string };
@@ -51,7 +51,14 @@ export function ConsoleProvider({ children, api: injected }: { children: ReactNo
   }, [api]);
 
   useEffect(() => {
-    if (isPublic) return;
+    if (isPublic) {
+      // Signed out or signing in: forget the previous admin (name, menu) at once.
+      queueMicrotask(() => {
+        setMe(null);
+        setMeState("loading");
+      });
+      return;
+    }
     let live = true;
     api.get<Me>("/me").then(
       (m) => {
@@ -62,7 +69,10 @@ export function ConsoleProvider({ children, api: injected }: { children: ReactNo
         setMeState("ready");
       },
       (e) => {
-        if (live && (!(e instanceof ApiError) || (e.status !== 401 && e.status !== 403))) setMeState("error");
+        if (!live) return;
+        // 403 «forbidden» on /me: the account has no console access any more (the session is gone).
+        if (e instanceof ApiError && e.status === 403 && !redirectFor(e.status, e.code)) router.replace("/accedi");
+        else if (!(e instanceof ApiError) || (e.status !== 401 && e.status !== 403)) setMeState("error");
       },
     );
     return () => {

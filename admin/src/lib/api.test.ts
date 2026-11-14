@@ -51,4 +51,11 @@ describe("console api client", () => {
   it("builds query strings without empty values", () => {
     expect(buildUrl("/api/admin", "/activity", { area: "users", q: "", page: 2, who: null })).toBe("/api/admin/activity?area=users&page=2");
   });
+
+  it("a session that ended on the code page still goes to the sign-in", async () => {
+    const onRedirect = vi.fn();
+    const api = createApi({ fetch: reply(401, { code: "session_expired" }) as unknown as typeof fetch, onRedirect });
+    await expect(api.post("/session/two-factor", { code: "123456" })).rejects.toMatchObject({ status: 401 });
+    expect(onRedirect).toHaveBeenCalledWith("/accedi?scaduta=1");
+  });
 });

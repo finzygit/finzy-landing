@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { NAV, locate, permissionFor, visibleNav } from "./nav";
+import { NAV, firstRoute, locate, permissionFor, visibleNav } from "./nav";
 
 const all = new Set(NAV.flatMap((s) => s.groups.flatMap((g) => [g.perm, ...g.pages.map((p) => p.perm ?? g.perm)])));
 
@@ -45,5 +45,13 @@ describe("routes inside a group", () => {
     expect(locate("/notizie/articoli")).toEqual({ group: "news", page: "articles" });
     expect(locate("/notizie")).toEqual({ group: "news", page: "today" });
     expect(locate("/ricavi")).toEqual({ group: "revenue", page: "revenue" });
+  });
+});
+
+describe("where an admin lands", () => {
+  it("Home when the role opens it, else its first page", () => {
+    expect(firstRoute(all)).toBe("/");
+    expect(firstRoute(new Set(["console.promotions.view", "console.tools.view"]))).toBe("/promozioni");
+    expect(firstRoute(new Set(["console.news.view"]))).toBe("/notizie");
   });
 });

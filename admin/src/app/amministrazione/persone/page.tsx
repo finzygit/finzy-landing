@@ -16,7 +16,9 @@ import { useConsole } from "@/lib/console";
 type Person = { id: number; name: string; email: string; role: { id: number; name: string } | null; two_factor: "confirmed" | "missing"; last_access: string | null };
 type RoleOpt = { id: number; name: string; locked: boolean };
 
-const when = (iso: string | null) => (iso ? new Date(iso).toLocaleString("it-IT", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "Mai");
+// The backend sends ISO or «YYYY-MM-DD HH:MM:SS» in app time (Europe/Rome): read both the same way everywhere.
+const when = (at: string | null) =>
+  at ? new Date(at.includes("T") ? at : at.replace(" ", "T")).toLocaleString("it-IT", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "Mai";
 
 export default function PeoplePage() {
   const { api, me, can, toast } = useConsole();
@@ -91,7 +93,7 @@ export default function PeoplePage() {
   };
 
   const pending = people?.filter((p) => p.two_factor === "missing").length ?? 0;
-  const isSuper = open?.role?.name === "Super amministratore";
+  const isSuper = !!roles.find((r) => r.id === open?.role?.id)?.locked;
 
   return (
     <AdminFrame title="Persone con accesso">

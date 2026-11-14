@@ -10,6 +10,7 @@ import { AuthCard, CodeInput } from "@/components/shell/AuthCard";
 import { Icon } from "@/components/shell/Icon";
 import { ApiError } from "@/lib/api";
 import { useConsole, type Me } from "@/lib/console";
+import { firstRoute } from "@/lib/nav";
 
 type Setup = { secret: string; otpauth_url: string; qr_svg: string };
 
@@ -43,6 +44,7 @@ export default function SetupPage() {
     } catch (e) {
       const c = e instanceof ApiError ? e.code : null;
       setError(c === "locked" ? "Troppi codici sbagliati. Riprova tra 5 minuti." : "Codice non valido. Controlla che l’ora del telefono sia automatica e riprova.");
+      setCode("");
     }
     setBusy(false);
   };
@@ -57,7 +59,7 @@ export default function SetupPage() {
 
   return (
     <AuthCard wide>
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 260px) minmax(0, 1fr)", gap: 40 }}>
+      <div className="setup-grid">
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <h1 style={{ fontSize: 24, lineHeight: "30px" }}>Attiva la verifica in due passaggi</h1>
           <p className="lead" style={{ fontSize: 15 }}>Per entrare nella console è obbligatoria. Ti servono il telefono e due minuti.</p>
@@ -80,12 +82,17 @@ export default function SetupPage() {
             </button>
           </div>
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, borderLeft: "1px solid var(--hair)", paddingLeft: 40 }}>
+        <div className="setup-right">
           {!codes ? (
             <>
               <p style={{ margin: 0 }}>1. Apri un’app di autenticazione (Google Authenticator, Microsoft Authenticator o 1Password) e inquadra il codice QR.</p>
-              {/* The SVG is made by the backend (Breezy) from the otpauth URI: our own markup, not user input. */}
-              {setup ? <div className="qr" dangerouslySetInnerHTML={{ __html: setup.qr_svg }} /> : <span className="skeleton" style={{ width: 176, height: 176, borderRadius: 14 }} />}
+              {/* The backend's SVG as an image: it can never run anything. */}
+              {setup ? (
+                // eslint-disable-next-line @next/next/no-img-element -- a data URI, nothing to optimise
+                <img className="qr" alt="Codice QR per l’app di autenticazione" src={`data:image/svg+xml;utf8,${encodeURIComponent(setup.qr_svg)}`} />
+              ) : (
+                <span className="skeleton" style={{ width: 176, height: 176, borderRadius: 14 }} />
+              )}
               {showKey && setup ? (
                 <div>
                   <p className="note" style={{ fontSize: 14 }}>Scrivi questa chiave nell’app, come «chiave di configurazione».</p>
@@ -133,7 +140,7 @@ export default function SetupPage() {
                 disabled={!saved}
                 onClick={() => {
                   toast({ title: "Verifica in due passaggi attiva", body: "Dal prossimo accesso ti chiediamo il codice dell’app." });
-                  router.replace("/");
+                  router.replace(firstRoute(new Set(me?.permissions ?? [])));
                 }}
               >
                 Entra nella console

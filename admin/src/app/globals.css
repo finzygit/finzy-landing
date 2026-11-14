@@ -113,7 +113,7 @@ button { font: inherit; }
 .table tr:last-child td { border-bottom: 0; }
 .table tbody tr[data-clickable="true"] { cursor: pointer; }
 .table tbody tr[data-clickable="true"]:hover { background: rgba(255, 255, 255, 0.05); }
-.table tbody tr[aria-selected="true"] { background: linear-gradient(90deg, rgba(39, 204, 216, 0.1), rgba(39, 204, 216, 0.03)); box-shadow: inset 2px 0 0 var(--accent); }
+.table tbody tr[aria-current="true"] { background: linear-gradient(90deg, rgba(39, 204, 216, 0.1), rgba(39, 204, 216, 0.03)); box-shadow: inset 2px 0 0 var(--accent); }
 .muted { color: var(--text-3); }
 .sub { display: block; font-size: 13px; color: var(--text-3); }
 .skeleton { display: block; height: 12px; border-radius: 7px; background: linear-gradient(90deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)); }
@@ -169,3 +169,11 @@ button { font: inherit; }
 .grid-tools { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
 .kv { display: flex; justify-content: space-between; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--hair); font-size: 15px; }
 .kv span:first-child { color: var(--text-2); }
+
+/* the mandatory set-up: two columns on a wide screen, one under 900 */
+.setup-grid { display: grid; grid-template-columns: minmax(0, 260px) minmax(0, 1fr); gap: 40px; }
+.setup-right { display: flex; flex-direction: column; gap: 16px; border-left: 1px solid var(--hair); padding-left: 40px; }
+@media (max-width: 899px) {
+  .setup-grid { grid-template-columns: 1fr; gap: 24px; }
+  .setup-right { border-left: 0; padding-left: 0; }
+}

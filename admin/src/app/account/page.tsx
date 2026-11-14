@@ -32,6 +32,7 @@ export default function AccountPage() {
       reloadMe();
     } catch (e) {
       setError(e instanceof ApiError && e.code === "locked" ? "Troppi codici sbagliati. Riprova tra 5 minuti." : "Codice non valido. Riprova con il codice che vedi adesso nell’app.");
+      setCode("");
     }
     setBusy(false);
   };

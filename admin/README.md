@@ -12,6 +12,12 @@ MOB-1369 / MOB-1372 (D399, D400). This is the new admin panel: a Next.js static 
 - **Shell components.** In `src/components/shell/` (owned by MOB-1372): `AdminFrame`, `PageHead`, `Section`, `DataTable`, `Pager`, `Drawer`, `ConfirmDialog`, `Banner`, `Level`, `LevelPicker`, `Status`, `VerbChip`, `StateBlock`, `Toasts`, `AuthCard`, `CodeInput`. Other admin lanes use them and add their own pages under `src/app/<their routes>`.
 - **Look.** The tokens in `src/app/globals.css` come from the 2.0 kit (design PR #701, Kit-ADM-1/2). When the dashboard (#26) merges, they move to a shared `kit/` package used by both apps.
 
+## Deploy notes (server steps: Victor's OK, knowledge/65)
+- Build with `ADMIN_DEPLOY=1 NEXT_PUBLIC_ADMIN_BASE=/<path> pnpm build`. Without the path, the build refuses.
+- nginx serves `out/` under `/<path>/` with `try_files $uri $uri.html =404` and `error_page 404 /<path>/404.html`. It also needs an `auth_request` to the backend gate, so the static files also answer 404 to anyone not allowed.
+- `/robots.txt` and `X-Robots-Tag: noindex` come from nginx at the host root: the copy in `public/` sits under the hidden path, where crawlers never look.
+- `pnpm dev` has no proxy (rewrites don't work with `output: "export"`). Point a local nginx, or the backend's own host, at `/api/admin`.
+
 ## Commands
 ```
 pnpm install --frozen-lockfile

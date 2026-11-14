@@ -23,7 +23,6 @@ export function CodeInput({ value, onChange, onComplete, invalid, disabled, id =
         className="input"
         inputMode="numeric"
         autoComplete="one-time-code"
-        maxLength={6}
         value={value}
         disabled={disabled}
         aria-invalid={invalid || undefined}

@@ -88,10 +88,10 @@ export function DataTable<T>({
         <tr
           key={k}
           data-clickable={onRowClick ? "true" : undefined}
-          aria-selected={selectedKey === k ? true : undefined}
+          aria-current={selectedKey === k ? "true" : undefined}
           tabIndex={onRowClick ? 0 : undefined}
           onClick={onRowClick ? () => onRowClick(row) : undefined}
-          onKeyDown={onRowClick ? (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), onRowClick(row)) : undefined}
+          onKeyDown={onRowClick ? (e) => e.target === e.currentTarget && (e.key === "Enter" || e.key === " ") && (e.preventDefault(), onRowClick(row)) : undefined}
         >
           {columns.map((c) => (
             <td key={c.key} style={{ textAlign: c.align ?? "left" }}>

@@ -142,3 +142,9 @@ export function permissionFor(route: string): string | undefined {
   }
   return undefined;
 }
+
+/** Where an admin lands after signing in: Home if the role opens it, else its first page. */
+export function firstRoute(perms: ReadonlySet<string>): string {
+  const first = visibleNav(perms)[0]?.groups[0];
+  return first ? (first.pages[0]?.route ?? first.route) : "/";
+}

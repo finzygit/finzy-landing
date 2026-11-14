@@ -7,6 +7,13 @@ import type { NextConfig } from "next";
 // origin. The path comes from the build environment and is never committed
 // (D400: a guessed URL shows nothing; the nginx gate answers 404 too).
 const base = (process.env.NEXT_PUBLIC_ADMIN_BASE ?? "").replace(/\/+$/, "");
+if (base && !/^\/[A-Za-z0-9_-]+(\/[A-Za-z0-9_-]+)*$/.test(base)) {
+  throw new Error("NEXT_PUBLIC_ADMIN_BASE must be a path like /abc123 (no trailing slash)");
+}
+if (!base && process.env.ADMIN_DEPLOY === "1") {
+  // The deploy build must never put the console at the site root (D400).
+  throw new Error("NEXT_PUBLIC_ADMIN_BASE is required for a deploy build");
+}
 
 const nextConfig: NextConfig = {
   output: "export",

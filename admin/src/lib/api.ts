@@ -79,8 +79,6 @@ function codeOf(body: unknown): string | null {
   return null;
 }
 
-/** Calls whose 401/403 mean «wrong details», not «go to the sign-in page». */
-const NO_REDIRECT = ["/session", "/session/two-factor", "/two-factor/confirm", "/two-factor/recovery-codes"];
 
 export function createApi(options: ApiOptions = {}): Api {
   const doFetch = options.fetch ?? ((...args: Parameters<typeof fetch>) => fetch(...args));
@@ -104,7 +102,8 @@ export function createApi(options: ApiOptions = {}): Api {
     const data = await readBody(res);
     if (res.ok) return data as T;
     const code = codeOf(data);
-    const to = NO_REDIRECT.includes(path) && res.status !== 404 ? null : redirectFor(res.status, code);
+    // A wrong password or code is 422/429, never 401/403: those always mean «go elsewhere».
+    const to = path === "/session" ? null : redirectFor(res.status, code);
     if (to && options.onRedirect) options.onRedirect(to);
     throw new ApiError(res.status, code, data);
   }

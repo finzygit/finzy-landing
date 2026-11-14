@@ -7,17 +7,36 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { Icon } from "./Icon";
 
+// Escape closes only the overlay opened last (a dialog over a drawer closes the dialog).
+const stack: number[] = [];
+let nextId = 0;
 function useEscape(onClose: () => void) {
   useEffect(() => {
-    const h = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const id = ++nextId;
+    stack.push(id);
+    const h = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && stack[stack.length - 1] === id) {
+        e.stopPropagation();
+        onClose();
+      }
+    };
     window.addEventListener("keydown", h);
-    return () => window.removeEventListener("keydown", h);
+    return () => {
+      window.removeEventListener("keydown", h);
+      stack.splice(stack.indexOf(id), 1);
+    };
   }, [onClose]);
 }
 
 export function Drawer({ title, sub, footer, loading, onClose, children }: { title: string; sub?: string; footer?: ReactNode; loading?: boolean; onClose: () => void; children?: ReactNode }) {
   useEscape(onClose);
   const id = useId();
+  const closeRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const back = document.activeElement as HTMLElement | null;
+    closeRef.current?.focus();
+    return () => back?.focus?.();
+  }, []);
   return (
     <>
       <div className="scrim" onClick={onClose} />
@@ -27,7 +46,7 @@ export function Drawer({ title, sub, footer, loading, onClose, children }: { tit
             <h2 id={id}>{title}</h2>
             {sub ? <span className="sub" style={{ fontSize: 14 }}>{sub}</span> : null}
           </div>
-          <button type="button" className="icon-btn" aria-label="Chiudi" onClick={onClose}>
+          <button ref={closeRef} type="button" className="icon-btn" aria-label="Chiudi" onClick={onClose}>
             <Icon name="close" size={18} />
           </button>
         </header>
@@ -59,6 +78,7 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
   cancelLabel = "Annulla",
+  safeIsConfirm = false,
   children,
 }: {
   title: string;
@@ -71,17 +91,25 @@ export function ConfirmDialog({
   onConfirm: () => void;
   onCancel: () => void;
   cancelLabel?: string;
+  /** The confirm button is the safe answer («Resta collegato»): Escape, the scrim and the first focus go to it. */
+  safeIsConfirm?: boolean;
   children?: ReactNode;
 }) {
-  useEscape(onCancel);
+  const safe = safeIsConfirm ? onConfirm : onCancel;
+  useEscape(safe);
   const [value, setValue] = useState("");
   const ok = !typed || value.trim() === typed;
   const id = useId();
   const cancelRef = useRef<HTMLButtonElement>(null);
-  useEffect(() => cancelRef.current?.focus(), []);
+  const confirmRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    // The safe answer gets the focus, unless a field inside the dialog wants it.
+    if (document.activeElement && document.activeElement.closest?.("[role=alertdialog]")) return;
+    (safeIsConfirm ? confirmRef : cancelRef).current?.focus();
+  }, [safeIsConfirm]);
   return (
     <>
-      <div className="scrim" onClick={onCancel} />
+      <div className="scrim" onClick={safe} />
       <div className="dialog-wrap">
         <div className="dialog" role="alertdialog" aria-modal="true" aria-labelledby={id}>
           <div>
@@ -104,7 +132,7 @@ export function ConfirmDialog({
             <button ref={cancelRef} type="button" className="btn" onClick={onCancel}>
               {cancelLabel}
             </button>
-            <button type="button" className={kind === "destructive" ? "btn btn-danger" : "btn btn-primary"} disabled={!ok || busy} aria-busy={busy || undefined} onClick={onConfirm}>
+            <button ref={confirmRef} type="button" className={kind === "destructive" ? "btn btn-danger" : "btn btn-primary"} disabled={!ok || busy} aria-busy={busy || undefined} onClick={onConfirm}>
               {busy ? "…" : confirmLabel}
             </button>
           </div>
