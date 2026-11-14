@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // La dashboard web (MOB-1198) è un'app a parte con il suo eslint.
+    "dashboard/**",
   ]),
 ]);
 

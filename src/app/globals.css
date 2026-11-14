@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* La dashboard web (MOB-1198) ha il suo Tailwind: le sue classi non entrano nel CSS del sito. */
+@source not "../../dashboard";
 
 /*
   Design tokens finzy — tema dark.
