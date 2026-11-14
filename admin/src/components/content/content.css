@@ -7,7 +7,7 @@
 .cc-switch[data-on="true"] > span { transform: translateX(22px); }
 .cc-switch:disabled { opacity: 0.4; cursor: default; }
 
-.cc-lang button { min-width: 64px; position: relative; }
+.segmented.cc-lang button { min-width: 56px; position: relative; }
 .cc-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--warn); margin-left: 6px; vertical-align: middle; }
 
 .cc-last { display: flex; align-items: center; gap: 8px; margin: 8px 0 0; font-size: 13px; color: var(--text-3); }
@@ -32,8 +32,8 @@
 .cc-progress[data-paused="true"] > span { background: var(--warn); }
 
 .cc-card { display: flex; flex-direction: column; gap: 16px; }
-.cc-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.cc-card-head h2 { margin: 0; white-space: nowrap; display: inline-flex; align-items: center; gap: 10px; font-size: 18px; }
+.cc-card-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.cc-card-head h2 { margin: 0; display: inline-flex; align-items: center; gap: 10px; font-size: 18px; }
 
 .cc-tray { position: fixed; z-index: 45; right: 32px; bottom: 28px; width: 380px; max-width: calc(100vw - 32px); padding: 16px 18px; border-radius: 22px; background: rgba(9, 18, 19, 0.97); border: 1px solid rgba(158, 230, 235, 0.3); box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55); display: flex; flex-direction: column; gap: 10px; }
 .cc-tray header { display: flex; align-items: center; justify-content: space-between; }
