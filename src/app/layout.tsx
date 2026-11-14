@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display, Poppins } from "next/font/google";
+import { Inter, Poppins } from "next/font/google";
 import { CookieConsentProvider } from "@/components/layout/cookie-consent";
 import { JsonLd } from "@/components/seo/json-ld";
 import { LanguageProvider } from "@/lib/i18n";
@@ -19,14 +19,6 @@ const poppins = Poppins({
   variable: "--font-display",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
-
-// Serif editoriale SOLO per i wordmark di Forbes e la Repubblica (fascia fonti).
-const playfair = Playfair_Display({
-  variable: "--font-serif",
-  subsets: ["latin"],
-  weight: ["400", "700", "900"],
   display: "swap",
 });
 
@@ -68,7 +60,7 @@ export default function RootLayout({
   return (
     <html
       lang="it"
-      className={`${inter.variable} ${poppins.variable} ${playfair.variable} h-full`}
+      className={`${inter.variable} ${poppins.variable} h-full`}
     >
       <body className="min-h-full flex flex-col antialiased">
         {/* Organization + WebSite su ogni pagina del sito. */}
