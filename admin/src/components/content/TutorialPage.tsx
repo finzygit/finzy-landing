@@ -16,7 +16,7 @@ import { postForm } from "@/lib/content/form";
 import { fill, pageLabel } from "@/lib/content/format";
 import { T } from "@/lib/content/texts";
 import type { Lang, TutorialStep, Tutorials } from "@/lib/content/types";
-import { Card, CRUMB, Glyph, Grip, LangSwitch, LastChangeLine, SaveBar } from "./bits";
+import { Card, CRUMB, UploadsTray, Glyph, Grip, LangSwitch, LastChangeLine, SaveBar } from "./bits";
 import { FileButton } from "./LessonPage";
 import "./content.css";
 
@@ -95,11 +95,14 @@ export function TutorialPage() {
       return;
     }
     setBusy(true);
+    let created: TutorialStep | null = edit.step;
     try {
       const texts = { title_it: edit.title_it, body_it: edit.body_it, title_en: edit.title_en, body_en: edit.body_en };
       let step = edit.step
         ? await api.put<TutorialStep>(`/tutorial-steps/${edit.step.id}`, texts)
         : await api.post<TutorialStep>("/tutorial-steps", { ...texts, page: pageKey, feature: edit.feature });
+      // Created: a failing picture below must not make «Aggiungi passo» create it twice.
+      created = step;
       for (const l of ["it", "en"] as Lang[]) {
         const f = edit.files[l];
         if (!f) continue;
@@ -113,7 +116,8 @@ export function TutorialPage() {
       setSel(step.id);
       await load();
     } catch (e) {
-      setEdit({ ...edit, error: e instanceof ApiError && (e.code === "bad_type" || e.code === "too_large") ? T.c_err : T.save_err });
+      setEdit({ ...edit, step: created, error: e instanceof ApiError && (e.code === "bad_type" || e.code === "too_large") ? T.c_err : T.save_err });
+      if (created && !edit.step) await load();
     }
     setBusy(false);
   };
@@ -202,7 +206,22 @@ export function TutorialPage() {
           ) : (
             <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 12 }}>
               {shown.map((s, i) => (
-                <li key={s.id} className="cc-step" aria-current={current?.id === s.id || undefined} data-over={drag?.over === s.id && drag.id !== s.id ? true : undefined} onClick={() => setSel(s.id)} {...dragProps(s)}>
+                <li
+                  key={s.id}
+                  className="cc-step"
+                  tabIndex={0}
+                  aria-label={`${i + 1}. ${s.title_it || s.title_en || s.step_key}`}
+                  aria-current={current?.id === s.id || undefined}
+                  data-over={drag?.over === s.id && drag.id !== s.id ? true : undefined}
+                  onClick={() => setSel(s.id)}
+                  onKeyDown={(e) => {
+                    if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
+                      e.preventDefault();
+                      setSel(s.id);
+                    }
+                  }}
+                  {...dragProps(s)}
+                >
                   {canEdit ? <Grip label={`Sposta il passo ${i + 1}`} onMove={(d) => move(s.id, i + d)} /> : <span style={{ width: 8 }} />}
                   <span className="cc-stepnum">{i + 1}</span>
                   <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 8 }}>
@@ -343,6 +362,7 @@ export function TutorialPage() {
           onCancel={() => setConfirmDel(false)}
         />
       ) : null}
+      <UploadsTray />
     </AdminFrame>
   );
 }

@@ -2,6 +2,8 @@ import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { LessonDetail, Library } from "@/lib/content/types";
 import { getUploads, resetUploads, setTransport } from "@/lib/content/uploads";
+import Page from "@/app/contenuti/lezioni/scheda/page";
+import { ConsoleProvider } from "@/lib/console";
 import { LessonPage, normalizeTag } from "./LessonPage";
 import { EDITOR, READER, fakeApi, notFound, renderPage } from "./testkit";
 
@@ -139,4 +141,22 @@ describe("Lezione", () => {
     expect(normalizeTag("##Tassi")).toBe("#Tassi");
     expect(normalizeTag("#")).toBeNull();
   });
+
+  it("after «Crea lezione» the page opens the new lesson with nothing left of the form", async () => {
+    nav.query = "nuova=1&sezione=foundations";
+    const fake = fakeApi(EDITOR, { "GET /lessons": LIB, "POST /lessons": { ...LESSON, id: 41 }, "GET /lessons/41": { ...LESSON, id: 41, title: { it: "Le borse valori", en: "" } } });
+    const view = renderPage(<Page />, fake.api);
+    fireEvent.change(await screen.findByLabelText("Titolo"), { target: { value: "Le borse valori" } });
+    fireEvent.click(screen.getByRole("button", { name: "Crea lezione" }));
+    await waitFor(() => expect(nav.replace).toHaveBeenCalledWith("/contenuti/lezioni/scheda?id=41"));
+    nav.query = "id=41";
+    view.rerender(
+      <ConsoleProvider api={fake.api}>
+        <Page />
+      </ConsoleProvider>,
+    );
+    expect(await screen.findByRole("heading", { level: 1, name: "Le borse valori" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Crea lezione" })).toBeNull();
+  });
 });
+

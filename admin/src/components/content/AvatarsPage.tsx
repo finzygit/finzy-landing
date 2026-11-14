@@ -17,7 +17,7 @@ import { imageSize, postForm } from "@/lib/content/form";
 import { fill } from "@/lib/content/format";
 import { T } from "@/lib/content/texts";
 import type { AvatarItem, Avatars } from "@/lib/content/types";
-import { Card, CRUMB, Glyph, Grip, LastChangeLine, SaveBar, Switch } from "./bits";
+import { Card, CRUMB, UploadsTray, Glyph, Grip, LastChangeLine, SaveBar, Switch } from "./bits";
 import { FileButton } from "./LessonPage";
 import "./content.css";
 
@@ -92,23 +92,27 @@ export function AvatarsPage() {
     setBusy(false);
   };
 
+  const [switching, setSwitching] = useState<number | null>(null);
   const setActive = async (a: AvatarItem, on: boolean, quiet = false) => {
+    if (switching !== null) return;
+    setSwitching(a.id);
     try {
       const saved = await api.put<AvatarItem>(`/avatars/${a.id}`, { active: on });
       setData((d) => (d ? { ...d, avatars: d.avatars.map((x) => (x.id === a.id ? saved : x)) } : d));
-      setOrder(null);
+      // An unsaved order keeps its other avatars; the one switched off leaves it.
+      setOrder((o) => (o && !on ? o.filter((id) => id !== a.id) : o && on ? null : o));
       if (!quiet) setUndo(on ? null : saved);
     } catch {
       toast({ title: T.save_err, kind: "error" });
     }
+    setSwitching(null);
   };
 
   const openEdit = (a: AvatarItem | null) => setEdit({ avatar: a, name_it: a?.name_it ?? "", name_en: a?.name_en ?? "", file: null, error: null });
 
   const pick = async (file: File) => {
-    if (!edit) return;
     const why = refusePicture(file, await imageSize(file));
-    setEdit({ ...edit, file: why ? null : file, error: why });
+    setEdit((cur) => (cur ? { ...cur, file: why ? null : file, error: why } : cur));
   };
 
   const saveEdit = async () => {
@@ -263,6 +267,7 @@ export function AvatarsPage() {
           {edit.error ? <p className="error-line" role="alert">{edit.error}</p> : null}
         </Drawer>
       ) : null}
+      <UploadsTray />
     </AdminFrame>
   );
 }

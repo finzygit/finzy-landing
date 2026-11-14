@@ -38,7 +38,7 @@ export function LessonsPage() {
   const [legacyOpen, setLegacyOpen] = useState(false);
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [order, setOrder] = useState<{ key: string; ids: number[] } | null>(null);
-  const [drag, setDrag] = useState<{ id: number; over: number | null } | null>(null);
+  const [drag, setDrag] = useState<{ id: number; section: string; over: number | null } | null>(null);
   const [busy, setBusy] = useState(false);
   const [bulkError, setBulkError] = useState<string | null>(null);
 
@@ -114,6 +114,8 @@ export function LessonsPage() {
   const all = lib?.sections.flatMap((s) => s.lessons) ?? [];
   const selectedRows = all.filter((l) => selected.has(l.id));
   const noVideo = selectedRows.filter((l) => !l.videos.it && !l.videos.en).length;
+  const legacyIds = new Set(legacy.flatMap((s) => s.lessons.map((l) => l.id)));
+  const anyLegacy = selectedRows.some((l) => legacyIds.has(l.id));
   const shown = lib ? [...current, ...(legacyOpen || filtering ? legacy : [])].reduce((n, s) => n + rowsOf(s).length, 0) : 0;
   const pills: [Quick, string, number][] = lib
     ? [["all", T.q_all, lib.counts.all], ["vis", T.q_vis, lib.counts.visible], ["noit", T.q_noit, lib.counts.no_it], ["noen", T.q_noen, lib.counts.no_en]]
@@ -124,19 +126,19 @@ export function LessonsPage() {
     const sortable = canEdit && !filtering && !s.legacy;
     const dragProps = sortable
       ? {
-          draggable: true,
+          draggable: !order || order.key === s.key,
           onDragStart: (e: DragEvent) => {
             e.dataTransfer.effectAllowed = "move";
-            setDrag({ id: l.id, over: null });
+            setDrag({ id: l.id, section: s.key, over: null });
           },
           onDragOver: (e: DragEvent) => {
-            if (!drag) return;
+            if (!drag || drag.section !== s.key) return;
             e.preventDefault();
             if (drag.over !== l.id) setDrag({ ...drag, over: l.id });
           },
           onDrop: (e: DragEvent) => {
             e.preventDefault();
-            if (drag && drag.id !== l.id) move(s, drag.id, rowsOf(s).findIndex((x) => x.id === l.id));
+            if (drag && drag.section === s.key && drag.id !== l.id) move(s, drag.id, rowsOf(s).findIndex((x) => x.id === l.id));
             setDrag(null);
           },
           onDragEnd: () => setDrag(null),
@@ -159,7 +161,7 @@ export function LessonsPage() {
                   setSelected(next);
                 }}
               />
-              {sortable ? <Grip label={`Sposta ${l.title}`} onMove={(d) => move(s, l.id, i + d)} /> : null}
+              {sortable && (!order || order.key === s.key) ? <Grip label={`Sposta ${l.title}`} onMove={(d) => move(s, l.id, i + d)} /> : null}
             </span>
           </td>
         ) : null}
@@ -227,7 +229,8 @@ export function LessonsPage() {
             {noVideo ? <span className="note" style={{ color: "var(--warn)" }}>{fill(T.bulk_note, { n: noVideo })}</span> : null}
             {bulkError ? <span className="error-line" role="alert">{bulkError}</span> : null}
             <span style={{ flex: 1 }} />
-            <button type="button" className="btn" disabled={busy} onClick={() => bulk(true)}>{T.bulk_show}</button>
+            {anyLegacy ? <span className="note">{T.legacy_locked}</span> : null}
+            <button type="button" className="btn" disabled={busy || anyLegacy} onClick={() => bulk(true)}>{T.bulk_show}</button>
             <button type="button" className="btn" disabled={busy} onClick={() => bulk(false)}>{T.bulk_hide}</button>
             <button type="button" className="link-btn" onClick={() => setSelected(new Set())}>{T.bulk_clear}</button>
           </div>

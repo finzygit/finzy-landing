@@ -18,6 +18,8 @@ export type UploadStatus = "starting" | "uploading" | "paused" | "error" | "chec
 
 export type Upload = {
   id: string;
+  /** The admin who started it (the tray drops other admins' uploads after a sign-out in the same tab). */
+  owner: number | null;
   lessonId: number;
   lessonTitle: string;
   lang: Lang;
@@ -64,7 +66,7 @@ let snapshot: Upload[] = [];
 let transport: Transport = browserTransport();
 
 function publish() {
-  snapshot = [...jobs.values()].map(({ id, lessonId, lessonTitle, lang, fileName, size, sent, status, rate }) => ({ id, lessonId, lessonTitle, lang, fileName, size, sent, status, rate }));
+  snapshot = [...jobs.values()].map(({ id, owner, lessonId, lessonTitle, lang, fileName, size, sent, status, rate }) => ({ id, owner, lessonId, lessonTitle, lang, fileName, size, sent, status, rate }));
   listeners.forEach((l) => l());
   syncUnloadGuard();
 }
@@ -92,12 +94,12 @@ export function resetUploads() {
 
 export const isActive = (u: Upload) => u.status === "starting" || u.status === "uploading" || u.status === "checking" || u.status === "paused" || u.status === "error";
 
-export function startVideoUpload(args: { api: Api; lessonId: number; lessonTitle: string; lang: Lang; file: File; onDone?: (lesson: LessonDetail) => void }): string {
+export function startVideoUpload(args: { api: Api; owner?: number | null; lessonId: number; lessonTitle: string; lang: Lang; file: File; onDone?: (lesson: LessonDetail) => void }): string {
   // One upload per lesson and language: a new file replaces a running one.
   for (const j of jobs.values()) if (j.lessonId === args.lessonId && j.lang === args.lang && isActive(j)) cancelUpload(j.id);
   const id = `${args.lessonId}-${args.lang}-${Date.now()}`;
   const job: Job = {
-    id, lessonId: args.lessonId, lessonTitle: args.lessonTitle, lang: args.lang, fileName: args.file.name, size: args.file.size,
+    id, owner: args.owner ?? null, lessonId: args.lessonId, lessonTitle: args.lessonTitle, lang: args.lang, fileName: args.file.name, size: args.file.size,
     sent: 0, status: "starting", rate: 0, file: args.file, api: args.api, uploadId: null, partSize: 0, partCount: 0,
     etags: new Map(), duration: undefined, inFlight: new Map(), controller: null, lastTick: { t: Date.now(), sent: 0 }, onDone: args.onDone,
   };
@@ -135,6 +137,11 @@ export function cancelUpload(id: string) {
 }
 
 /** Takes the finished ones off the tray. */
+/** Signing out: nothing of this admin's uploads stays in the tab for the next one. */
+export function cancelAllUploads() {
+  for (const id of [...jobs.keys()]) cancelUpload(id);
+}
+
 export function clearFinished() {
   for (const [id, j] of jobs) if (j.status === "done") jobs.delete(id);
   publish();
@@ -164,9 +171,14 @@ function tick(j: Job) {
 }
 
 async function run(j: Job) {
+  // One live run per upload: a resume aborts the previous run, and a run that is no longer the
+  // job's own (paused, cancelled, replaced) never writes to the job again.
+  j.controller?.abort();
   const controller = new AbortController();
   j.controller = controller;
-  const stopped = () => controller.signal.aborted || j.status === "paused" || j.status === "cancelled";
+  const stopped = () => controller.signal.aborted || j.controller !== controller || j.status === "paused" || j.status === "cancelled";
+  j.lastTick = { t: Date.now(), sent: j.sent };
+  j.rate = 0;
   try {
     if (j.duration === undefined) {
       // Unreadable (a codec the browser cannot open): sent as null, the lesson shows no length.
@@ -177,12 +189,18 @@ async function run(j: Job) {
       const up = await j.api.post<{ upload_id: string; part_size: number; part_count: number }>(`/lessons/${j.lessonId}/video-upload`, {
         lang: j.lang, name: j.fileName, size: j.size, type: j.file.type || null,
       });
+      if (stopped()) {
+        // Paused or cancelled while the server was starting it: drop that upload, the next run starts its own.
+        j.api.post(`/lessons/${j.lessonId}/video-upload/abort`, { upload_id: up.upload_id }).catch(() => undefined);
+        return;
+      }
       j.uploadId = up.upload_id;
       j.partSize = up.part_size;
       j.partCount = up.part_count;
     } else {
       // Resume: the server says which parts are already stored.
       const have = await j.api.get<{ parts: { number: number; etag: string }[] }>(`/lessons/${j.lessonId}/video-upload`, { upload_id: j.uploadId });
+      if (stopped()) return;
       j.etags = new Map(have.parts.map((p) => [p.number, p.etag]));
     }
     if (stopped()) return;
@@ -194,14 +212,17 @@ async function run(j: Job) {
     for (let todo = missing(); todo.length; todo = missing()) {
       const batch = todo.slice(0, BATCH);
       const { urls } = await j.api.post<{ urls: Record<string, string> }>(`/lessons/${j.lessonId}/video-upload/parts`, { upload_id: j.uploadId, part_numbers: batch });
+      if (stopped()) return;
       for (const n of batch) {
         if (stopped()) return;
         const start = (n - 1) * j.partSize;
         const blob = j.file.slice(start, start + partBytes(j, n));
         const etag = await transport.putPart(urls[String(n)], blob, (loaded) => {
+          if (stopped()) return;
           j.inFlight.set(n, loaded);
           tick(j);
         }, controller.signal);
+        if (stopped()) return;
         j.inFlight.delete(n);
         j.etags.set(n, etag);
         tick(j);
@@ -212,12 +233,13 @@ async function run(j: Job) {
     publish();
     const parts = [...j.etags.entries()].sort((a, b) => a[0] - b[0]).map(([number, etag]) => ({ number, etag }));
     const lesson = await j.api.post<LessonDetail>(`/lessons/${j.lessonId}/video-upload/complete`, { upload_id: j.uploadId, parts, duration_seconds: j.duration ? Math.round(j.duration) : null });
+    if (j.controller !== controller || (j.status as UploadStatus) === "cancelled") return;
     j.status = "done";
     j.sent = j.size;
     publish();
     j.onDone?.(lesson);
   } catch (e) {
-    if (j.status === "paused" || j.status === "cancelled") return;
+    if (stopped()) return;
     j.inFlight.clear();
     // An upload id the server forgot (two days, or another tab finished it): start again from zero.
     if (e instanceof ApiError && e.code === "upload_not_found") {
@@ -240,7 +262,8 @@ function onBeforeUnload(e: BeforeUnloadEvent) {
 }
 function syncUnloadGuard() {
   if (typeof window === "undefined") return;
-  const live = snapshot.some((u) => u.status === "starting" || u.status === "uploading" || u.status === "checking");
+  // Paused or failed uploads count too: reloading loses the file they still need.
+  const live = snapshot.some(isActive);
   if (live && !guarded) window.addEventListener("beforeunload", onBeforeUnload);
   if (!live && guarded) window.removeEventListener("beforeunload", onBeforeUnload);
   guarded = live;

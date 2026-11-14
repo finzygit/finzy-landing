@@ -108,4 +108,70 @@ describe("lesson video uploads", () => {
     expect(getUploads()).toEqual([]);
     expect(calls.some((c) => c.p === "/lessons/5/video-upload/abort")).toBe(true);
   });
+
+  it("pausing while the server starts the upload, then resuming, leaves one upload and drops the other", async () => {
+    let n = 0;
+    let release: (v: unknown) => void = () => undefined;
+    const calls: { p: string; b?: unknown }[] = [];
+    const a: Api = {
+      get: vi.fn() as Api["get"],
+      post: vi.fn(async (p: string, b?: unknown) => {
+        calls.push({ p, b });
+        if (p.endsWith("/video-upload")) {
+          n++;
+          if (n === 1) return new Promise((r) => (release = r));
+          return { upload_id: "U2", part_size: 16 * MB, part_count: 1 };
+        }
+        if (p.endsWith("/parts")) return { urls: { "1": "https://s3/p1" } };
+        if (p.endsWith("/complete")) return { id: 5, videos: { it: null, en: null } };
+        return null;
+      }) as Api["post"],
+      put: vi.fn() as Api["put"],
+      del: vi.fn() as Api["del"],
+      blob: vi.fn() as Api["blob"],
+    };
+    setTransport({ putPart: async () => '"e"', readDuration: async () => 60 });
+    const done = vi.fn();
+    startVideoUpload({ api: a, lessonId: 5, lessonTitle: "L", lang: "it", file: file("a.mp4", 1 * MB), onDone: done });
+    await vi.waitFor(() => expect(n).toBe(1));
+    const id = getUploads()[0].id;
+    pauseUpload(id);
+    resumeUpload(id);
+    await vi.waitFor(() => expect(done).toHaveBeenCalled());
+    release({ upload_id: "U1", part_size: 16 * MB, part_count: 1 });
+    await vi.waitFor(() => expect(calls.some((c) => c.p.endsWith("/abort") && (c.b as { upload_id: string }).upload_id === "U1")).toBe(true));
+    const complete = calls.find((c) => c.p.endsWith("/complete"))!;
+    expect((complete.b as { upload_id: string }).upload_id).toBe("U2");
+    expect(getUploads()[0].status).toBe("done");
+  });
+
+  it("a paused upload resumes from the parts the server lists", async () => {
+    let gate: () => void = () => undefined;
+    const put: string[] = [];
+    setTransport({
+      putPart: (url, _b, _p, signal) =>
+        new Promise((resolve, reject) => {
+          if (url.endsWith("p1") && put.length === 0) {
+            gate = () => (put.push(url), resolve('"e1"'));
+            signal.addEventListener("abort", () => reject(new DOMException("aborted", "AbortError")));
+            return;
+          }
+          put.push(url);
+          resolve('"e"');
+        }),
+      readDuration: async () => 60,
+    });
+    const { a, calls } = api([{ number: 1, etag: '"e1"' }]);
+    const done = vi.fn();
+    startVideoUpload({ api: a, lessonId: 5, lessonTitle: "L", lang: "it", file: file("a.mp4", 40 * MB), onDone: done });
+    await vi.waitFor(() => expect(getUploads()[0].status).toBe("uploading"));
+    await flush();
+    pauseUpload(getUploads()[0].id);
+    gate();
+    resumeUpload(getUploads()[0].id);
+    await vi.waitFor(() => expect(done).toHaveBeenCalled());
+    expect(calls.filter((c) => c.m === "GET").map((c) => c.b)).toEqual([{ upload_id: "U1" }]);
+    expect(put.filter((u) => u.endsWith("p1")).length).toBe(1);
+  });
 });
+

@@ -48,7 +48,7 @@ export function LessonPage() {
   const id = Number(params.get("id") ?? 0);
   const isNew = params.get("nuova") === "1";
   const wanted = params.get("sezione");
-  const { api, can, toast } = useConsole();
+  const { api, can, toast, me } = useConsole();
   const router = useRouter();
   const canEdit = can("console.content.update");
 
@@ -59,7 +59,7 @@ export function LessonPage() {
   const [lang, setLang] = useState<Lang>("it");
   const [previewLang, setPreviewLang] = useState<Lang>("it");
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<"title" | "server" | null>(null);
+  const [error, setError] = useState<"title" | "server" | "legacy" | null>(null);
   const [confirm, setConfirm] = useState<"delete" | Lang | null>(null);
   const [confirmError, setConfirmError] = useState<string | null>(null);
   const live = useRef(true);
@@ -123,8 +123,8 @@ export function LessonPage() {
         setDraft(draftOf(saved));
         toast({ title: T.saved, body: "La modifica è nel registro attività." });
       }
-    } catch {
-      setError("server");
+    } catch (e) {
+      setError(e instanceof ApiError && e.code === "legacy_section" ? "legacy" : "server");
     }
     setBusy(false);
   };
@@ -163,7 +163,7 @@ export function LessonPage() {
   const uploads = useUploads().filter((u) => u.lessonId === lesson?.id && u.status !== "done");
   const pickVideo = (l: Lang, file: File) => {
     if (!lesson) return;
-    startVideoUpload({ api, lessonId: lesson.id, lessonTitle: lesson.title.it || lesson.title.en, lang: l, file, onDone: onUploaded });
+    startVideoUpload({ api, owner: me?.user.id ?? null, lessonId: lesson.id, lessonTitle: lesson.title.it || lesson.title.en, lang: l, file, onDone: onUploaded });
   };
 
   const sendCover = async (file: File | null) => {
@@ -191,7 +191,7 @@ export function LessonPage() {
     setBusy(false);
   };
 
-  if (state === "loading" || state === "error" || state === "missing" || !draft) {
+  if (state === "loading" || state === "error" || state === "missing" || !draft || (!isNew && !lesson)) {
     return (
       <AdminFrame title={T.l_title}>
         {state === "missing" ? (
@@ -340,7 +340,7 @@ export function LessonPage() {
           message={isNew ? T.new_title : T.unsaved}
           saveLabel={isNew ? T.create : T.save}
           busy={busy}
-          error={error === "server" ? T.save_err_srv : error === "title" ? T.err_title : null}
+          error={error === "server" ? T.save_err_srv : error === "title" ? T.err_title : error === "legacy" ? T.legacy_locked : null}
           onCancel={() => (isNew ? router.push("/contenuti/lezioni") : (setDraft(draftOf(lesson!)), setError(null)))}
           onSave={save}
         />
@@ -374,8 +374,8 @@ function Objectives({ items, ro, onChange }: { items: string[]; ro: boolean; onC
     onChange(next);
   };
   return (
-    <div className="field">
-      <label>{T.e_objectives}</label>
+    <div className="field" role="group" aria-labelledby="l-obj">
+      <label id="l-obj">{T.e_objectives}</label>
       {items.map((o, i) => (
         <span key={i} className="cc-row">
           {ro ? null : <Grip label={`Sposta obiettivo ${i + 1}`} onMove={(d) => move(i, d)} />}
@@ -410,7 +410,7 @@ function Hashtags({ tags, ro, onChange }: { tags: string[]; ro: boolean; onChang
   };
   return (
     <div className="field">
-      <label htmlFor="l-tags">{T.e_tags}</label>
+      <label htmlFor={ro ? undefined : "l-tags"} id="l-tags-label">{T.e_tags}</label>
       <div className="cc-tags">
         {tags.map((t) => (
           <span key={t} className="cc-tag">

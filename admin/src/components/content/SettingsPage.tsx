@@ -15,7 +15,7 @@ import { useConsole } from "@/lib/console";
 import { day, fill, hour, longWhen } from "@/lib/content/format";
 import { T } from "@/lib/content/texts";
 import type { AppSettings, Lang } from "@/lib/content/types";
-import { Card, CRUMB, LastChangeLine, SaveBar, Switch } from "./bits";
+import { Card, CRUMB, UploadsTray, LastChangeLine, SaveBar, Switch } from "./bits";
 import "./content.css";
 
 type Form = { links: Record<string, string>; ask_review: boolean; ask_review_android: boolean; min_version: string };
@@ -61,7 +61,7 @@ export function SettingsPage() {
   const changedLinks = form && base ? Object.keys(form.links).filter((k) => form.links[k].trim() !== base.links[k]) : [];
   const dirty = !!form && !!base && (changedLinks.length > 0 || form.ask_review !== base.ask_review || form.ask_review_android !== base.ask_review_android || form.min_version.trim() !== base.min_version);
   const badLinks = form ? changedLinks.filter((k) => !validUrl(form.links[k])) : [];
-  const badMin = !!form && !/^\d{1,7}$/.test(form.min_version.trim());
+  const badMin = !!form && (!/^\d{1,7}$/.test(form.min_version.trim()) || Number(form.min_version.trim()) > 1000000);
 
   const put = async (body: Record<string, unknown>, okTitle: string) => {
     setBusy(true);
@@ -78,7 +78,20 @@ export function SettingsPage() {
     setBusy(false);
   };
 
-  const maintenance = (on: boolean) => put({ maintenance: on }, on ? T.m_toast_on : T.m_toast_off);
+  // Maintenance applies at once and keeps whatever else is being edited on the page.
+  const maintenance = async (on: boolean) => {
+    setBusy(true);
+    try {
+      const s = await api.put<AppSettings>("/app-settings", { maintenance: on });
+      setData((d) => (d ? { ...d, maintenance: s.maintenance, last_change: s.last_change } : s));
+      setConfirm(null);
+      toast({ title: on ? T.m_toast_on : T.m_toast_off, body: "La modifica è nel registro attività." });
+    } catch {
+      setConfirm(null);
+      toast({ title: T.save_err, kind: "error" });
+    }
+    setBusy(false);
+  };
 
   const save = () => {
     if (!form || !base || badLinks.length || badMin) return;
@@ -167,9 +180,13 @@ export function SettingsPage() {
                         aria-invalid={bad || undefined}
                         onChange={(e) => setForm({ ...form, links: { ...form.links, [k]: e.target.value } })}
                       />
-                      <a href={v} target="_blank" rel="noreferrer noopener" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                        {T.lg_open} <Icon name="external" size={15} />
-                      </a>
+                      {validUrl(v) ? (
+                        <a href={v.trim()} target="_blank" rel="noreferrer noopener" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                          {T.lg_open} <Icon name="external" size={15} />
+                        </a>
+                      ) : (
+                        <span />
+                      )}
                       {isStd ? (
                         <span className="cc-std">{T.lg_default}</span>
                       ) : canEdit ? (
@@ -252,6 +269,7 @@ export function SettingsPage() {
           onCancel={() => setConfirm(null)}
         />
       ) : null}
+      <UploadsTray />
     </AdminFrame>
   );
 }

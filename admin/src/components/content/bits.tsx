@@ -5,7 +5,7 @@
 // drag grip, video chip, uploads tray. Built on the shell's classes (globals.css).
 
 import Link from "next/link";
-import type { CSSProperties, KeyboardEvent, ReactNode } from "react";
+import { useEffect, useRef, type CSSProperties, type KeyboardEvent, type ReactNode } from "react";
 import { Icon } from "@/components/shell/Icon";
 import { useConsole } from "@/lib/console";
 import { duration, fill, longWhen, timeLeft, bytes } from "@/lib/content/format";
@@ -85,16 +85,19 @@ export function SaveBar({ message = T.unsaved, saveLabel = T.save, busy, error, 
 
 /** A drag handle that also moves with the arrow keys (the same order change, without a mouse). */
 export function Grip({ label, onMove, style }: { label: string; onMove?: (delta: -1 | 1) => void; style?: CSSProperties }) {
+  const ref = useRef<HTMLSpanElement>(null);
   const onKey = (e: KeyboardEvent) => {
     if (!onMove) return;
     const d = e.key === "ArrowUp" || e.key === "ArrowLeft" ? -1 : e.key === "ArrowDown" || e.key === "ArrowRight" ? 1 : 0;
     if (d) {
       e.preventDefault();
       onMove(d);
+      // The row moved in the DOM: keep the focus on its grip so the next arrow keeps moving it.
+      requestAnimationFrame(() => ref.current?.focus());
     }
   };
   return (
-    <span className="cc-grip" role="button" tabIndex={0} aria-label={label} onKeyDown={onKey} style={style}>
+    <span ref={ref} className="cc-grip" role="button" tabIndex={0} aria-label={label} aria-keyshortcuts="ArrowUp ArrowDown" onKeyDown={onKey} style={style}>
       <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
         {[3, 7, 11].flatMap((y) => [4, 10].map((x) => <circle key={`${x}-${y}`} cx={x} cy={y} r="1.4" fill="currentColor" />))}
       </svg>
@@ -141,7 +144,14 @@ export function uploadLine(u: Upload): string {
 
 /** The docked «Caricamenti» tray: every running upload, with pause, resume and cancel; it stays while the admin browses. */
 export function UploadsTray() {
-  const uploads = useUploads();
+  const { me } = useConsole();
+  const all = useUploads();
+  const meId = me?.user.id ?? null;
+  // Another admin signed in in this tab: the previous admin's uploads stop and leave the tray.
+  useEffect(() => {
+    if (meId !== null) all.filter((u) => u.owner !== null && u.owner !== meId).forEach((u) => cancelUpload(u.id));
+  }, [all, meId]);
+  const uploads = all.filter((u) => u.owner === null || u.owner === meId);
   if (!uploads.length) return null;
   const live = uploads.filter((u) => u.status !== "done");
   return (
