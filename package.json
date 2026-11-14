@@ -7,7 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test src/lib/news.test.ts src/lib/consent.test.ts src/lib/plans.test.ts src/lib/account-deletion.test.ts src/lib/redirects.test.ts src/lib/security-headers.test.ts src/lib/contact-form-removed.test.ts src/lib/footer-links.test.ts src/lib/backend-outage.test.ts src/lib/seo.test.ts"
+    "admin:install": "pnpm --dir admin install --frozen-lockfile --prefer-offline",
+    "admin:test": "pnpm run admin:install && pnpm --dir admin test",
+    "admin:check": "pnpm run admin:install && pnpm --dir admin check",
+    "admin:build": "pnpm run admin:install && pnpm --dir admin build",
+    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test src/lib/news.test.ts src/lib/consent.test.ts src/lib/plans.test.ts src/lib/account-deletion.test.ts src/lib/redirects.test.ts src/lib/security-headers.test.ts src/lib/contact-form-removed.test.ts src/lib/footer-links.test.ts src/lib/backend-outage.test.ts src/lib/seo.test.ts src/lib/admin-isolation.test.ts && pnpm run admin:test"
   },
   "dependencies": {
     "clsx": "^2.1.1",
