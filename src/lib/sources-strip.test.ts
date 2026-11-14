@@ -39,6 +39,19 @@ describe("fascia «Fonti» (MOB-958)", () => {
     assert.match(sources, /alt: "Adnkronos"/);
   });
 
+  test("solo questi tre, nessun nome nuovo", () => {
+    const keys = [...sources.matchAll(/key: "([^"]+)"/g)].map((m) => m[1]);
+    assert.deepEqual(keys, ["benzinga", "mt-newswires", "adnkronos"]);
+  });
+
+  test("ogni metà della fascia ripete i tre nomi, senza gap della riga", () => {
+    // Una copia sola è più stretta di uno schermo largo: resterebbe un buco.
+    assert.match(sources, /const HALF = \[\.\.\.BRANDS, \.\.\.BRANDS, \.\.\.BRANDS\];/);
+    assert.match(sources, /\[\.\.\.HALF, \.\.\.HALF\]\.map/);
+    // Un gap tra 2n elementi fa n-1/2 gap per metà: il -50% scatta a ogni giro.
+    assert.doesNotMatch(sources, /animate-marquee[^"]*\bgap-/);
+  });
+
   test("il font serif dei wordmark tolti non si carica più", () => {
     assert.doesNotMatch(layout, /Playfair/);
   });

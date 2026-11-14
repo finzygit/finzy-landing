@@ -29,8 +29,10 @@ const BRANDS: Brand[] = [
     logo: {
       src: "/mtnews-logo.webp",
       alt: "MT Newswires",
-      width: 2878,
-      height: 426,
+      // Misura mostrata da sm in su (h-11): next/image non scarica il file
+      // da 2878 px per un logo largo circa 300 px.
+      width: 297,
+      height: 44,
       className: "h-9 sm:h-11",
     },
   },
@@ -39,8 +41,8 @@ const BRANDS: Brand[] = [
     logo: {
       src: "/adnkronos-logo.webp",
       alt: "Adnkronos",
-      width: 1280,
-      height: 360,
+      width: 199,
+      height: 56,
       className: "h-11 sm:h-14",
     },
   },
@@ -48,7 +50,9 @@ const BRANDS: Brand[] = [
 
 // Con tre soli nomi una copia è più stretta di uno schermo largo: ogni metà
 // della fascia ripete i nomi tre volte, così lo scorrimento (-50%) non lascia
-// mai un buco a destra.
+// mai un buco a destra. Lo spazio tra i nomi è un padding a destra di ogni
+// nome, non un gap della riga: così ogni metà è esattamente il 50% e il giro
+// riparte senza scatto.
 const HALF = [...BRANDS, ...BRANDS, ...BRANDS];
 
 export function Sources() {
@@ -59,14 +63,14 @@ export function Sources() {
     >
       {/* Fascia scorrevole dei fornitori (a tutta larghezza, con dissolvenza ai bordi) */}
       <div className="w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_7%,black_93%,transparent)]">
-        <div className="flex w-max animate-marquee items-center gap-12 text-5xl text-white/55 sm:gap-32 sm:text-6xl">
+        <div className="flex w-max animate-marquee items-center text-5xl text-white/55 sm:text-6xl">
           {[...HALF, ...HALF].map((b, i) => {
             const hidden = i >= BRANDS.length;
             return (
               <span
                 key={`${b.key}-${i}`}
                 aria-hidden={hidden}
-                className="group whitespace-nowrap leading-none transition-colors duration-200 hover:text-white/80"
+                className="group whitespace-nowrap pr-12 leading-none transition-colors duration-200 hover:text-white/80 sm:pr-32"
               >
                 {"logo" in b ? (
                   <Image
