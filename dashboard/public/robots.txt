@@ -1,0 +1,3 @@
+# MOB-1198: the web dashboard is for signed-in Unlimited users only.
+User-agent: *
+Disallow: /
