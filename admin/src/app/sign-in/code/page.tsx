@@ -29,7 +29,7 @@ export default function CodePage() {
 
   useEffect(() => {
     api.get<Me>("/me").then(setMe, (e) => {
-      if (e instanceof ApiError && e.status === 401) router.replace("/accedi");
+      if (e instanceof ApiError && e.status === 401) router.replace("/sign-in");
     });
   }, [api, router]);
 
@@ -81,7 +81,7 @@ export default function CodePage() {
           className="link-btn"
           onClick={async () => {
             await api.del("/session").catch(() => undefined);
-            router.replace("/accedi");
+            router.replace("/sign-in");
           }}
         >
           Torna all’accesso

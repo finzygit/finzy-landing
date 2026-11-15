@@ -13,12 +13,12 @@ export const NAV: NavSection[] = [
   {
     label: "Clienti e ricavi",
     groups: [
-      { id: "users", label: "Utenti", icon: "users", perm: "console.users.view", route: "/utenti", pages: [] },
+      { id: "users", label: "Utenti", icon: "users", perm: "console.users.view", route: "/users", pages: [] },
       {
-        id: "revenue", label: "Ricavi e promozioni", icon: "coins", perm: "console.revenue.view", route: "/ricavi",
+        id: "revenue", label: "Ricavi e promozioni", icon: "coins", perm: "console.revenue.view", route: "/revenue",
         pages: [
-          { id: "revenue", label: "Ricavi del mese", route: "/ricavi" },
-          { id: "promotions", label: "Promozioni", route: "/promozioni", perm: "console.promotions.view" },
+          { id: "revenue", label: "Ricavi del mese", route: "/revenue" },
+          { id: "promotions", label: "Promozioni", route: "/promotions", perm: "console.promotions.view" },
         ],
       },
     ],
@@ -27,30 +27,30 @@ export const NAV: NavSection[] = [
     label: "Contenuti e dati",
     groups: [
       {
-        id: "news", label: "Notizie", icon: "news", perm: "console.news.view", route: "/notizie",
+        id: "news", label: "Notizie", icon: "news", perm: "console.news.view", route: "/news",
         pages: [
-          { id: "today", label: "Oggi", route: "/notizie" },
-          { id: "articles", label: "Articoli", route: "/notizie/articoli" },
-          { id: "review", label: "Da verificare", route: "/notizie/verifica" },
-          { id: "taxonomies", label: "Classificazioni", route: "/notizie/classificazioni" },
+          { id: "today", label: "Oggi", route: "/news" },
+          { id: "articles", label: "Articoli", route: "/news/articles" },
+          { id: "review", label: "Da verificare", route: "/news/review" },
+          { id: "taxonomies", label: "Classificazioni", route: "/news/taxonomies" },
         ],
       },
-      { id: "stocks", label: "Titoli", icon: "candles", perm: "console.stocks.view", route: "/titoli", pages: [] },
+      { id: "stocks", label: "Titoli", icon: "candles", perm: "console.stocks.view", route: "/stocks", pages: [] },
       {
         id: "reports", label: "Report AI", icon: "report", perm: "console.reports.view", route: "/report",
         pages: [
           { id: "reports", label: "Report e copertura", route: "/report" },
           { id: "builder", label: "Portfolio Builder", route: "/portfolio-builder" },
-          { id: "consents", label: "Consensi", route: "/consensi" },
+          { id: "consents", label: "Consensi", route: "/consents" },
         ],
       },
       {
-        id: "content", label: "Contenuti app", icon: "layers", perm: "console.content.view", route: "/contenuti/lezioni",
+        id: "content", label: "Contenuti app", icon: "layers", perm: "console.content.view", route: "/content/lessons",
         pages: [
-          { id: "lessons", label: "Lezioni", route: "/contenuti/lezioni" },
-          { id: "tutorial", label: "Tutorial", route: "/contenuti/tutorial" },
-          { id: "avatars", label: "Avatar", route: "/contenuti/avatar" },
-          { id: "settings", label: "Impostazioni app", route: "/contenuti/impostazioni" },
+          { id: "lessons", label: "Lezioni", route: "/content/lessons" },
+          { id: "tutorial", label: "Tutorial", route: "/content/tutorial" },
+          { id: "avatars", label: "Avatar", route: "/content/avatars" },
+          { id: "settings", label: "Impostazioni app", route: "/content/settings" },
         ],
       },
     ],
@@ -59,19 +59,19 @@ export const NAV: NavSection[] = [
     label: "Sistema",
     groups: [
       {
-        id: "spend", label: "Costi e servizi", icon: "pulse", perm: "console.spend.view", route: "/costi",
+        id: "spend", label: "Costi e servizi", icon: "pulse", perm: "console.spend.view", route: "/spend",
         pages: [
-          { id: "spend", label: "Spesa AI", route: "/costi" },
-          { id: "health", label: "Salute dei servizi", route: "/servizi" },
+          { id: "spend", label: "Spesa AI", route: "/spend" },
+          { id: "health", label: "Salute dei servizi", route: "/health" },
         ],
       },
       {
-        id: "admin", label: "Amministrazione", icon: "shield", perm: "console.admin.view", route: "/amministrazione/ruoli",
+        id: "admin", label: "Amministrazione", icon: "shield", perm: "console.admin.view", route: "/admin/roles",
         pages: [
-          { id: "roles", label: "Ruoli e permessi", route: "/amministrazione/ruoli" },
-          { id: "people", label: "Persone con accesso", route: "/amministrazione/persone" },
-          { id: "log", label: "Registro attività", route: "/amministrazione/registro" },
-          { id: "tools", label: "Strumenti esterni", route: "/amministrazione/strumenti", perm: "console.tools.view" },
+          { id: "roles", label: "Ruoli e permessi", route: "/admin/roles" },
+          { id: "people", label: "Persone con accesso", route: "/admin/people" },
+          { id: "log", label: "Registro attività", route: "/admin/audit-log" },
+          { id: "tools", label: "Strumenti esterni", route: "/admin/tools", perm: "console.tools.view" },
         ],
       },
     ],
@@ -114,7 +114,7 @@ export function visibleNav(perms: ReadonlySet<string>): VisibleSection[] {
 /** The group and page a route belongs to (for the active item). */
 export function locate(route: string): { group: string | null; page: string | null } {
   const clean = route.replace(/\?.*$/, "").replace(/\/+$/, "") || "/";
-  // The longest route that matches wins («/notizie/articoli» over «/notizie»).
+  // The longest route that matches wins («/news/articles» over «/news»).
   let best: { group: string; page: string | null; len: number } | null = null;
   const consider = (r: string, group: string, page: string | null) => {
     const hit = clean === r || (r !== "/" && clean.startsWith(`${r}/`));
