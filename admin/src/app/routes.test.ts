@@ -5,7 +5,6 @@
 // the English words below. A new page adds its word here, in English.
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
-import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { redirectFor } from "@/lib/api";
 import { NAV } from "@/lib/nav";
@@ -28,7 +27,8 @@ const ITALIAN = [
 ];
 const ITALIAN_QUERY = ["scaduta", "duplica", "nuova", "sezione", "periodo"];
 
-const src = fileURLToPath(new URL("..", import.meta.url));
+// vitest runs in admin/ (pnpm --dir admin test); jsdom has no file: import.meta.url.
+const src = join(process.cwd(), "src");
 const app = join(src, "app");
 
 function walk(dir: string): string[] {
