@@ -54,7 +54,7 @@ describe("AdminFrame", () => {
   });
 
   it("a page the role cannot open shows «Non hai accesso», not the page", async () => {
-    nav.pathname = "/amministrazione/ruoli";
+    nav.pathname = "/admin/roles";
     render(
       <ConsoleProvider api={api(me(MARKETING))}>
         <AdminFrame>
@@ -74,7 +74,7 @@ describe("AdminFrame", () => {
         </AdminFrame>
       </ConsoleProvider>,
     );
-    await waitFor(() => expect(nav.replace).toHaveBeenCalledWith("/accedi/codice"));
+    await waitFor(() => expect(nav.replace).toHaveBeenCalledWith("/sign-in/code"));
   });
 
   it("an admin without the authenticator is sent to the set-up", async () => {
@@ -85,6 +85,6 @@ describe("AdminFrame", () => {
         </AdminFrame>
       </ConsoleProvider>,
     );
-    await waitFor(() => expect(nav.replace).toHaveBeenCalledWith("/accedi/attiva"));
+    await waitFor(() => expect(nav.replace).toHaveBeenCalledWith("/sign-in/setup"));
   });
 });

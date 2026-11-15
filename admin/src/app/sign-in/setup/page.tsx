@@ -29,8 +29,8 @@ export default function SetupPage() {
   useEffect(() => {
     api.get<Me>("/me").then(setMe, () => undefined);
     api.get<Setup>("/two-factor/setup").then(setSetup, (e) => {
-      if (e instanceof ApiError && e.code === "already_confirmed") router.replace("/accedi/codice");
-      else if (e instanceof ApiError && e.status === 401) router.replace("/accedi");
+      if (e instanceof ApiError && e.code === "already_confirmed") router.replace("/sign-in/code");
+      else if (e instanceof ApiError && e.status === 401) router.replace("/sign-in");
       else setError("Non è stato possibile preparare il codice QR. Ricarica la pagina.");
     });
   }, [api, router]);
@@ -75,7 +75,7 @@ export default function SetupPage() {
               className="link-btn"
               onClick={async () => {
                 await api.del("/session").catch(() => undefined);
-                router.replace("/accedi");
+                router.replace("/sign-in");
               }}
             >
               Esci
