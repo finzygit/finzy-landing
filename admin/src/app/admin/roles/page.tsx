@@ -207,7 +207,7 @@ export default function RolesPage() {
             confirmLabel="Vai alle persone"
             kind="primary"
             cancelLabel="Chiudi"
-            onConfirm={() => router.push("/amministrazione/persone")}
+            onConfirm={() => router.push("/admin/people")}
             onCancel={() => setDeleting(null)}
           />
         ) : (
