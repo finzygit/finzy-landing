@@ -30,7 +30,7 @@ type ConsoleState = {
 
 const Ctx = createContext<ConsoleState | null>(null);
 
-const PUBLIC = ["/accedi"];
+const PUBLIC = ["/sign-in"];
 
 export function ConsoleProvider({ children, api: injected }: { children: ReactNode; api?: Api }) {
   const router = useRouter();
@@ -63,15 +63,15 @@ export function ConsoleProvider({ children, api: injected }: { children: ReactNo
     api.get<Me>("/me").then(
       (m) => {
         if (!live) return;
-        if (!m.two_factor.confirmed) router.replace("/accedi/attiva");
-        else if (!m.two_factor.verified) router.replace("/accedi/codice");
+        if (!m.two_factor.confirmed) router.replace("/sign-in/setup");
+        else if (!m.two_factor.verified) router.replace("/sign-in/code");
         setMe(m);
         setMeState("ready");
       },
       (e) => {
         if (!live) return;
         // 403 «forbidden» on /me: the account has no console access any more (the session is gone).
-        if (e instanceof ApiError && e.status === 403 && !redirectFor(e.status, e.code)) router.replace("/accedi");
+        if (e instanceof ApiError && e.status === 403 && !redirectFor(e.status, e.code)) router.replace("/sign-in");
         else if (!(e instanceof ApiError) || (e.status !== 401 && e.status !== 403)) setMeState("error");
       },
     );

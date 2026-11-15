@@ -17,8 +17,8 @@ describe("console menu", () => {
     const items = nav.flatMap((s) => s.groups);
     expect(items.map((g) => [g.label, g.route])).toEqual([
       ["Home", "/"],
-      ["Promozioni", "/promozioni"],
-      ["Strumenti esterni", "/amministrazione/strumenti"],
+      ["Promozioni", "/promotions"],
+      ["Strumenti esterni", "/admin/tools"],
     ]);
     expect(JSON.stringify(nav)).not.toContain("Ricavi");
   });
@@ -30,28 +30,28 @@ describe("console menu", () => {
   });
 
   it("finds the active item and the permission of a route", () => {
-    expect(locate("/amministrazione/registro")).toEqual({ group: "admin", page: "log" });
-    expect(locate("/utenti/scheda?id=4")).toEqual({ group: "users", page: null });
+    expect(locate("/admin/audit-log")).toEqual({ group: "admin", page: "log" });
+    expect(locate("/users/detail?id=4")).toEqual({ group: "users", page: null });
     expect(locate("/")).toEqual({ group: "home", page: null });
-    expect(permissionFor("/promozioni")).toBe("console.promotions.view");
-    expect(permissionFor("/amministrazione/strumenti")).toBe("console.tools.view");
-    expect(permissionFor("/amministrazione/ruoli")).toBe("console.admin.view");
+    expect(permissionFor("/promotions")).toBe("console.promotions.view");
+    expect(permissionFor("/admin/tools")).toBe("console.tools.view");
+    expect(permissionFor("/admin/roles")).toBe("console.admin.view");
     expect(permissionFor("/account")).toBeUndefined();
   });
 });
 
 describe("routes inside a group", () => {
   it("the longest route wins", () => {
-    expect(locate("/notizie/articoli")).toEqual({ group: "news", page: "articles" });
-    expect(locate("/notizie")).toEqual({ group: "news", page: "today" });
-    expect(locate("/ricavi")).toEqual({ group: "revenue", page: "revenue" });
+    expect(locate("/news/articles")).toEqual({ group: "news", page: "articles" });
+    expect(locate("/news")).toEqual({ group: "news", page: "today" });
+    expect(locate("/revenue")).toEqual({ group: "revenue", page: "revenue" });
   });
 });
 
 describe("where an admin lands", () => {
   it("Home when the role opens it, else its first page", () => {
     expect(firstRoute(all)).toBe("/");
-    expect(firstRoute(new Set(["console.promotions.view", "console.tools.view"]))).toBe("/promozioni");
-    expect(firstRoute(new Set(["console.news.view"]))).toBe("/notizie");
+    expect(firstRoute(new Set(["console.promotions.view", "console.tools.view"]))).toBe("/promotions");
+    expect(firstRoute(new Set(["console.news.view"]))).toBe("/news");
   });
 });
