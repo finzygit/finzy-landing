@@ -82,17 +82,17 @@ describe("Home", () => {
     expect(within(ai).getByText("1–13 nov")).toBeTruthy();
     expect(within(ai).getByText("$105,07")).toBeTruthy();
     expect(within(ai).getByText("Ultima chiamata AI registrata: oggi alle 22:18")).toBeTruthy();
-    expect(within(ai).getByRole("link", { name: /Apri Spesa AI/ }).getAttribute("href")).toBe("/costi");
+    expect(within(ai).getByRole("link", { name: /Apri Spesa AI/ }).getAttribute("href")).toBe("/spend");
 
     const users = screen.getByRole("region", { name: "Utenti" });
     expect(within(users).getByText("1.079")).toBeTruthy();
     expect(within(users).getByText("1.478 registrati")).toBeTruthy();
-    expect(within(users).getByRole("link", { name: /Apri Utenti/ }).getAttribute("href")).toBe("/utenti");
+    expect(within(users).getByRole("link", { name: /Apri Utenti/ }).getAttribute("href")).toBe("/users");
 
     const news = screen.getByRole("region", { name: "Notizie" });
     expect(within(news).getByText("11.795")).toBeTruthy();
     expect(within(news).getByText("Ultimo articolo: 12/11/2026, 22:29")).toBeTruthy();
-    expect(within(news).getByRole("link", { name: /Apri Notizie/ }).getAttribute("href")).toBe("/notizie");
+    expect(within(news).getByRole("link", { name: /Apri Notizie/ }).getAttribute("href")).toBe("/news");
 
     expect(screen.getByText("Aggiornato alle 22:30")).toBeTruthy();
     expect(screen.getByText(/I costi AI sono stime in dollari/)).toBeTruthy();
@@ -119,7 +119,7 @@ describe("Home", () => {
       "3 invii a Customer.io non riusciti negli ultimi 7 giorni.Apri Salute dei servizi",
       "Nessun nuovo articolo MT Newswires da 3 ore (l’ultimo alle 09:12).Apri Notizie",
     ]);
-    expect(within(rows[1]).getByRole("link").getAttribute("href")).toBe("/servizi");
+    expect(within(rows[1]).getByRole("link").getAttribute("href")).toBe("/health");
   });
 
   it("a role without AI spend sees neither the group nor the sentence on AI costs", async () => {
@@ -170,7 +170,7 @@ describe("Home", () => {
     const a = api(me(["console.home.view", "console.promotions.view", "console.tools.view"]), [home({ groups: {} })]);
     show(a);
 
-    await waitFor(() => expect(nav.replace).toHaveBeenCalledWith("/promozioni"));
+    await waitFor(() => expect(nav.replace).toHaveBeenCalledWith("/promotions"));
     expect(homeCalls(a)).toBe(0);
   });
 

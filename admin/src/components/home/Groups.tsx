@@ -37,12 +37,12 @@ function GoLink({ href, children }: { href: string; children: ReactNode }) {
 function alertLine(a: Alert, now: string): { text: string; href: string; go: string; strong: boolean } | null {
   switch (a.kind) {
     case "budget":
-      return { text: T.alBudget(provider(a.provider), usd(a.spend), usd(a.budget), a.percent), href: "/costi", go: T.goAi, strong: true };
+      return { text: T.alBudget(provider(a.provider), usd(a.spend), usd(a.budget), a.percent), href: "/spend", go: T.goAi, strong: true };
     case "customer_io":
-      return { text: T.alCio(count(a.count)), href: "/servizi", go: T.goHealth, strong: false };
+      return { text: T.alCio(count(a.count)), href: "/health", go: T.goHealth, strong: false };
     case "mt_stopped": {
       const last = when(a.latest_at, now);
-      return { text: last.startsWith("oggi ") ? T.alMt(hours(a.hours), clock(a.latest_at)) : T.alMtDay(hours(a.hours), last), href: "/notizie", go: T.goNews, strong: false };
+      return { text: last.startsWith("oggi ") ? T.alMt(hours(a.hours), clock(a.latest_at)) : T.alMtDay(hours(a.hours), last), href: "/news", go: T.goNews, strong: false };
     }
     default:
       return null; // a kind this page does not know yet: no row, never a blank page

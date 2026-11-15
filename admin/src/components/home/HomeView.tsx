@@ -142,12 +142,12 @@ export function HomeView() {
 
   const now = data?.generated_at ?? new Date().toISOString();
   const users = groups.includes("users") ? (
-    <GroupCard id="users" title={T.users} icon="users" href="/utenti" go={T.goUsers} state={stateOf<Users>(data, "users")} onRetry={retryGroup("users")} retrying={busy} fresh={(d) => freshLine(d.latest_at, T.usersFresh, T.usersNone, now)}>
+    <GroupCard id="users" title={T.users} icon="users" href="/users" go={T.goUsers} state={stateOf<Users>(data, "users")} onRetry={retryGroup("users")} retrying={busy} fresh={(d) => freshLine(d.latest_at, T.usersFresh, T.usersNone, now)}>
       {(d) => <UsersBody d={d} />}
     </GroupCard>
   ) : null;
   const news = groups.includes("news") ? (
-    <GroupCard id="news" title={T.news} icon="news" href="/notizie" go={T.goNews} state={stateOf<News>(data, "news")} onRetry={retryGroup("news")} retrying={busy} fresh={(d) => freshLine(d.latest_at, T.newsFresh, T.newsNone, now)}>
+    <GroupCard id="news" title={T.news} icon="news" href="/news" go={T.goNews} state={stateOf<News>(data, "news")} onRetry={retryGroup("news")} retrying={busy} fresh={(d) => freshLine(d.latest_at, T.newsFresh, T.newsNone, now)}>
       {(d) => <NewsBody d={d} />}
     </GroupCard>
   ) : null;
@@ -157,7 +157,7 @@ export function HomeView() {
       {head}
       {data ? <Alerts alerts={data.alerts} now={data.generated_at} /> : null}
       {groups.includes("ai_spend") ? (
-        <GroupCard id="ai" title={T.ai} icon="pulse" href="/costi" go={T.goAi} state={stateOf<AiSpend>(data, "ai_spend")} onRetry={retryGroup("ai")} retrying={busy} fresh={(d) => freshLine(d.latest_at, T.aiFresh, T.aiNone, now)}>
+        <GroupCard id="ai" title={T.ai} icon="pulse" href="/spend" go={T.goAi} state={stateOf<AiSpend>(data, "ai_spend")} onRetry={retryGroup("ai")} retrying={busy} fresh={(d) => freshLine(d.latest_at, T.aiFresh, T.aiNone, now)}>
           {(d) => <AiSpendBody d={d} now={now} />}
         </GroupCard>
       ) : null}
