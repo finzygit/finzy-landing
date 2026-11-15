@@ -63,7 +63,7 @@ export default function AccountPage() {
           <Section title="Sessione">
             <p style={{ margin: 0, color: "var(--text-2)" }}>Per sicurezza la console ti fa uscire dopo {me.idle_minutes} minuti senza attività.</p>
             <div>
-              <button type="button" className="btn" onClick={async () => { await api.del("/session").catch(() => undefined); router.replace("/accedi"); }}>Esci</button>
+              <button type="button" className="btn" onClick={async () => { await api.del("/session").catch(() => undefined); router.replace("/sign-in"); }}>Esci</button>
             </div>
           </Section>
         </div>

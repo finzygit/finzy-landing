@@ -26,12 +26,12 @@ export class ApiError extends Error {
 }
 
 /** Where a shared error sends the admin (routes inside the console). */
-export type Redirect = "/accedi" | "/accedi?scaduta=1" | "/accedi/codice" | "/accedi/attiva";
+export type Redirect = "/sign-in" | "/sign-in?expired=1" | "/sign-in/code" | "/sign-in/setup";
 
 export function redirectFor(status: number, code: string | null): Redirect | null {
-  if (status === 401) return code === "session_expired" ? "/accedi?scaduta=1" : "/accedi";
-  if (status === 403 && code === "two_factor_required") return "/accedi/codice";
-  if (status === 403 && code === "two_factor_setup_required") return "/accedi/attiva";
+  if (status === 401) return code === "session_expired" ? "/sign-in?expired=1" : "/sign-in";
+  if (status === 403 && code === "two_factor_required") return "/sign-in/code";
+  if (status === 403 && code === "two_factor_setup_required") return "/sign-in/setup";
   return null;
 }
 

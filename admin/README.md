@@ -9,6 +9,7 @@ MOB-1369 / MOB-1372 (D399, D400). This is the new admin panel: a Next.js static 
   - Without a confirmed authenticator, the only page is the set-up.
   - The client sends `X-Finzy-Admin: 1` on every call (CSRF) and maps the shared error codes to pages (`src/lib/api.ts`).
 - **Menu.** `src/lib/nav.ts` holds the 9 page groups (same as `design/v2/ui_admin.py` NAV). Only what the role may open is drawn, and a page the role cannot open shows the 403 state.
+- **Addresses in English (D428).** Page folders, menu routes, links, redirects and query keys are English (`/sign-in`, `/users/detail?id=`, `/admin/audit-log`); only the words on screen are Italian. `src/app/routes.test.ts` holds the allowed words: a new page adds its own.
 - **Shell components.** In `src/components/shell/` (owned by MOB-1372): `AdminFrame`, `PageHead`, `Section`, `DataTable`, `Pager`, `Drawer`, `ConfirmDialog`, `Banner`, `Level`, `LevelPicker`, `Status`, `VerbChip`, `StateBlock`, `Toasts`, `AuthCard`, `CodeInput`. Other admin lanes use them and add their own pages under `src/app/<their routes>`.
 - **Look.** The tokens in `src/app/globals.css` come from the 2.0 kit (design PR #701, Kit-ADM-1/2). When the dashboard (#26) merges, they move to a shared `kit/` package used by both apps.
 
