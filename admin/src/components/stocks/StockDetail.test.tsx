@@ -7,7 +7,7 @@ import { EDIT, VIEW, fakeApi, page } from "./testing";
 
 const nav = vi.hoisted(() => ({ search: "id=1" }));
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/titoli/scheda",
+  usePathname: () => "/stocks/detail",
   useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
   useSearchParams: () => new URLSearchParams(nav.search),
 }));
@@ -72,7 +72,7 @@ describe("Stock page (MOB-1377)", () => {
     window.sessionStorage.setItem("console.stocks.list", "price=stale&sort=oldest");
     setup(VIEW, page());
     await screen.findByRole("heading", { name: "Nvidia" });
-    expect(screen.getByRole("link", { name: "Titoli" }).getAttribute("href")).toBe("/titoli?price=stale&sort=oldest");
+    expect(screen.getByRole("link", { name: "Titoli" }).getAttribute("href")).toBe("/stocks?price=stale&sort=oldest");
   });
 
   it("tabs: reports with their state and the link to Report AI; empty news", async () => {

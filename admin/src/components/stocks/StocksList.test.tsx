@@ -7,7 +7,7 @@ import { VIEW, fakeApi, list, row } from "./testing";
 
 const nav = vi.hoisted(() => ({ search: "", push: vi.fn(), replace: vi.fn() }));
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/titoli",
+  usePathname: () => "/stocks",
   useRouter: () => ({ replace: nav.replace, push: nav.push }),
   useSearchParams: () => new URLSearchParams(nav.search),
 }));
@@ -24,7 +24,7 @@ describe("Titoli list (MOB-1377)", () => {
   beforeEach(() => {
     nav.search = "";
     nav.push.mockReset();
-    window.history.replaceState(null, "", "/titoli");
+    window.history.replaceState(null, "", "/stocks");
   });
 
   it("shows the rows with price, its time, report marks and the freshness line; prices are text, never inputs", async () => {
@@ -112,6 +112,6 @@ describe("Titoli list (MOB-1377)", () => {
     setup({ "/stocks": list([row({ id: 7 })]) });
     const cell = await screen.findByText("NVDA");
     fireEvent.click(cell.closest("tr") as HTMLElement);
-    expect(nav.push).toHaveBeenCalledWith("/titoli/scheda?id=7");
+    expect(nav.push).toHaveBeenCalledWith("/stocks/detail?id=7");
   });
 });

@@ -1,6 +1,6 @@
 "use client";
 
-// MOB-1377: the body of /titoli (see app/titoli/page.tsx). The filters live
+// MOB-1377: the body of /stocks (see app/stocks/page.tsx). The filters live
 // in the address bar, so «‹ Titoli» from a stock page returns to the same list.
 
 import Link from "next/link";
@@ -62,7 +62,7 @@ export function StocksList() {
       // storage blocked: «‹ Titoli» opens the plain list
     }
   }, [f]);
-  // A navigation to /titoli with other filters (the sidebar link) while the page stays mounted.
+  // A navigation to /stocks with other filters (the sidebar link) while the page stays mounted.
   const search = params?.toString() ?? "";
   useEffect(() => {
     if (search !== ours.current) queueMicrotask(() => setF(fromSearch(new URLSearchParams(search))));
@@ -122,10 +122,10 @@ export function StocksList() {
   const updated = summary?.last_quote_at
     ? isToday(summary.last_quote_at) ? `Prezzi aggiornati alle ${time(summary.last_quote_at)}` : `Prezzi aggiornati il ${moment(summary.last_quote_at)}`
     : null;
-  const open = (r: StockRow) => router.push(`/titoli/scheda?id=${r.id}`);
+  const open = (r: StockRow) => router.push(`/stocks/detail?id=${r.id}`);
 
   const columns: Column<StockRow>[] = [
-    { key: "stock", label: "Titolo", render: (r) => <Link href={`/titoli/scheda?id=${r.id}`} style={{ color: "inherit", fontWeight: "inherit", display: "block", minWidth: 0, maxWidth: wide ? 280 : 190 }} onClick={(e) => e.stopPropagation()}><StockCell row={r} compact={!wide} /></Link> },
+    { key: "stock", label: "Titolo", render: (r) => <Link href={`/stocks/detail?id=${r.id}`} style={{ color: "inherit", fontWeight: "inherit", display: "block", minWidth: 0, maxWidth: wide ? 280 : 190 }} onClick={(e) => e.stopPropagation()}><StockCell row={r} compact={!wide} /></Link> },
     ...(wide
       ? [
           { key: "type", label: "Tipo", width: "104px", render: (r: StockRow) => <TypeTag type={r.type} /> },

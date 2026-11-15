@@ -6,7 +6,7 @@ import { EditDrawer } from "./EditDrawer";
 import { EDIT, fakeApi, page } from "./testing";
 
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/titoli/scheda",
+  usePathname: () => "/stocks/detail",
   useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
   useSearchParams: () => new URLSearchParams("id=1"),
 }));

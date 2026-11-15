@@ -1,6 +1,6 @@
 "use client";
 
-// MOB-1377: the body of /titoli/scheda?id= (see app/titoli/scheda/page.tsx).
+// MOB-1377: the body of /stocks/detail?id= (see app/stocks/detail/page.tsx).
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -41,9 +41,9 @@ const TABS = ["Prezzi", "Documenti", "Report", "Notizie"] as const;
 function listHref(): string {
   try {
     const qs = window.sessionStorage.getItem(LIST_QUERY_KEY);
-    return qs ? `/titoli?${qs}` : "/titoli";
+    return qs ? `/stocks?${qs}` : "/stocks";
   } catch {
-    return "/titoli";
+    return "/stocks";
   }
 }
 
@@ -81,7 +81,7 @@ export function StockDetail() {
   );
 
   if (state === "missing") {
-    return <StateBlock kind="missing" title="Titolo non trovato" body="Il titolo non esiste più o il link è sbagliato. Cercalo nell’elenco." action={<Link className="btn" href="/titoli">Vai ai Titoli</Link>} />;
+    return <StateBlock kind="missing" title="Titolo non trovato" body="Il titolo non esiste più o il link è sbagliato. Cercalo nell’elenco." action={<Link className="btn" href="/stocks">Vai ai Titoli</Link>} />;
   }
   if (state === "error") {
     return <StateBlock kind="error" title="Non è stato possibile caricare il titolo" action={<button type="button" className="btn" onClick={load}>Riprova</button>} />;
@@ -204,7 +204,7 @@ export function StockDetail() {
           <Section
             title="Ultime modifiche"
             pad="20px 22px"
-            action={can("console.admin.view") ? <Link href="/amministrazione/registro" style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 14 }}>Registro attività<Icon name="chevron" size={14} /></Link> : undefined}
+            action={can("console.admin.view") ? <Link href="/admin/audit-log" style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 14 }}>Registro attività<Icon name="chevron" size={14} /></Link> : undefined}
           >
             <ActivityList entries={s.activity} symbol={s.symbol} when={(iso) => moment(iso)} />
           </Section>
@@ -365,7 +365,7 @@ function NewsTab({ stock }: { stock: StockPage }) {
           </div>
         ))}
       </div>
-      {can("console.news.view") ? <MoreLink href="/notizie/articoli">Apri in Notizie</MoreLink> : null}
+      {can("console.news.view") ? <MoreLink href="/news/articles">Apri in Notizie</MoreLink> : null}
     </div>
   );
 }
