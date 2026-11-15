@@ -54,7 +54,7 @@ export function PromotionsList() {
   const rows = (data?.rows ?? []).filter((r) => !filter || r.state === filter);
   const state: TableState = loading || !res ? "loading" : res.error && !data ? "error" : (data?.counts.all ?? 0) === 0 ? "empty" : rows.length === 0 ? "filtered" : "default";
 
-  const open = (r: PromoRow) => router.push(`/promozioni?id=${r.id}`);
+  const open = (r: PromoRow) => router.push(`/promotions?id=${r.id}`);
   const run = async () => {
     if (!pending) return;
     setPending({ ...pending, busy: true, error: null });
@@ -87,7 +87,7 @@ export function PromotionsList() {
         crumbs={[T.group, T.promo_title]}
         actions={
           canUpdate ? (
-            <button type="button" className="btn btn-primary" onClick={() => router.push("/promozioni?nuova=1")}>
+            <button type="button" className="btn btn-primary" onClick={() => router.push("/promotions?new=1")}>
               + {T.new_promo}
             </button>
           ) : null
@@ -127,7 +127,7 @@ export function PromotionsList() {
               kind="empty"
               title={T.promo_empty_t}
               body={T.promo_empty_b}
-              action={canUpdate ? <button type="button" className="btn btn-primary" onClick={() => router.push("/promozioni?nuova=1")}>+ {T.new_promo}</button> : undefined}
+              action={canUpdate ? <button type="button" className="btn btn-primary" onClick={() => router.push("/promotions?new=1")}>+ {T.new_promo}</button> : undefined}
             />
           }
           columns={[
@@ -162,7 +162,7 @@ export function PromotionsList() {
                   onToggle={(o) => setMenu(o ? r.id : null)}
                   items={[
                     ...(canUpdate && r.state !== "ended" ? [{ label: T.m_edit, icon: "edit", run: () => open(r) }] : [{ label: T.m_open, icon: "eye", run: () => open(r) }]),
-                    ...(canUpdate ? [{ label: T.m_dup, icon: "copy", run: () => router.push(`/promozioni?duplica=${r.id}`) }] : []),
+                    ...(canUpdate ? [{ label: T.m_dup, icon: "copy", run: () => router.push(`/promotions?duplicate=${r.id}`) }] : []),
                     ...(canUpdate && r.state === "active" ? [{ label: T.m_stop, icon: "close", danger: true, run: () => setPending({ kind: "end", row: r, busy: false, error: null }) }] : []),
                     ...(canUpdate && r.state === "scheduled" ? [{ label: T.m_delete, icon: "close", danger: true, run: () => setPending({ kind: "delete", row: r, busy: false, error: null }) }] : []),
                   ]}

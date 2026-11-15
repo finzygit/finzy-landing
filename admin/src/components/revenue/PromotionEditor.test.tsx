@@ -7,7 +7,7 @@ import { emptyDraft, type PromoDetail } from "./types";
 
 const nav = vi.hoisted(() => ({ push: vi.fn() }));
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/promozioni",
+  usePathname: () => "/promotions",
   useRouter: () => ({ replace: vi.fn(), push: nav.push }),
   useSearchParams: () => new URLSearchParams(),
 }));
@@ -82,7 +82,7 @@ describe("PromotionEditor · new", () => {
     const body = api.post.mock.calls[0][1] as ReturnType<typeof bodyOf>;
     expect(body.code).toBe("SALDI");
     expect((body.formulas.quarterly as { prices: Record<string, string> }).prices).toEqual({ IT: "6.99" });
-    await waitFor(() => expect(nav.push).toHaveBeenCalledWith("/promozioni"));
+    await waitFor(() => expect(nav.push).toHaveBeenCalledWith("/promotions"));
   });
 
   it("server errors go back to their step and sit on their field", async () => {
@@ -116,7 +116,7 @@ describe("PromotionEditor · new", () => {
 
     expect(screen.getByText("Uscire senza salvare?")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Esci senza salvare" }));
-    expect(nav.push).toHaveBeenCalledWith("/promozioni");
+    expect(nav.push).toHaveBeenCalledWith("/promotions");
   });
 });
 
@@ -175,7 +175,7 @@ describe("PromotionEditor · existing", () => {
     fireEvent.click(within(screen.getByRole("alertdialog")).getByRole("button", { name: "Termina ora" }));
 
     await waitFor(() => expect(api.post).toHaveBeenCalledWith("/promotions/2/end"));
-    await waitFor(() => expect(nav.push).toHaveBeenCalledWith("/promozioni"));
+    await waitFor(() => expect(nav.push).toHaveBeenCalledWith("/promotions"));
   });
 
   it("the server's overlap on the end shows under the end", async () => {
@@ -194,7 +194,7 @@ describe("PromotionEditor · existing", () => {
     expect(await screen.findByText("È finita: non si cambia più. Per rifarla uguale usa Duplica.")).toBeTruthy();
     await waitFor(() => expect(screen.getByRole("button", { name: /Duplica/ })).toBeTruthy());
     fireEvent.click(screen.getByRole("button", { name: /Duplica/ }));
-    expect(nav.push).toHaveBeenCalledWith("/promozioni?duplica=2");
+    expect(nav.push).toHaveBeenCalledWith("/promotions?duplicate=2");
   });
 
   it("a role that only sees opens even a scheduled one read-only", async () => {

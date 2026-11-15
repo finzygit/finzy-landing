@@ -223,7 +223,7 @@ export function RevenueView({ initialMonth }: { initialMonth?: string }) {
                   label: T.c_customer,
                   render: (r) =>
                     r.user ? (
-                      canOpenUser ? <Link href={`/utenti/scheda?id=${r.user.id}`}>{r.user.name}</Link> : <strong>{r.user.name}</strong>
+                      canOpenUser ? <Link href={`/users/detail?id=${r.user.id}`}>{r.user.name}</Link> : <strong>{r.user.name}</strong>
                     ) : (
                       <span className={s.deleted}>{T.deleted}</span>
                     ),

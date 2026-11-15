@@ -1,9 +1,9 @@
 "use client";
 
-// MOB-1375: «Promozioni» (route /promozioni, console.promotions.view). The
+// MOB-1375: «Promozioni» (route /promotions, console.promotions.view). The
 // static export has no dynamic segments, so one promotion is a query string:
-// ?nuova=1 (new), ?id=N (open: edit, end-only or read-only by its state and
-// the role), ?duplica=N (a new one from a copy).
+// ?new=1 (new), ?id=N (open: edit, end-only or read-only by its state and
+// the role), ?duplicate=N (a new one from a copy).
 
 import { useSearchParams } from "next/navigation";
 import { AdminFrame } from "@/components/shell/AdminFrame";

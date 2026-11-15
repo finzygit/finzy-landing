@@ -7,7 +7,7 @@ import type { PromoList, PromoRow } from "./types";
 
 const nav = vi.hoisted(() => ({ push: vi.fn() }));
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/promozioni",
+  usePathname: () => "/promotions",
   useRouter: () => ({ replace: vi.fn(), push: nav.push }),
   useSearchParams: () => new URLSearchParams(),
 }));
@@ -58,7 +58,7 @@ describe("PromotionsList", () => {
     const running = menuOf("Black Friday");
     expect(within(running).getAllByRole("menuitem").map((b) => b.textContent?.trim())).toEqual(["Modifica", "Duplica", "Termina ora"]);
     fireEvent.click(screen.getByText("Natale"));
-    expect(nav.push).toHaveBeenCalledWith("/promozioni?id=3");
+    expect(nav.push).toHaveBeenCalledWith("/promotions?id=3");
     const scheduled = menuOf("Natale");
     expect(within(scheduled).getAllByRole("menuitem").map((b) => b.textContent?.trim())).toEqual(["Modifica", "Duplica", "Elimina"]);
     const ended = menuOf("Rientro dalle vacanze");

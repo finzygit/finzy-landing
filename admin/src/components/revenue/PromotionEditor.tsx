@@ -23,11 +23,11 @@ import { COUNTRIES, CURRENCY, emptyDraft, FORMULAS, MONTHS, STATES, type Country
 
 export type EditorMode = { kind: "new" } | { kind: "open"; id: number } | { kind: "duplicate"; id: number };
 
-/** ?nuova=1 · ?id=N · ?duplica=N (the static export has no dynamic segments); null = the list. */
+/** ?new=1 · ?id=N · ?duplicate=N (the static export has no dynamic segments); null = the list. */
 export function modeOf(q: URLSearchParams | null): EditorMode | null {
   const id = Number(q?.get("id"));
-  const dup = Number(q?.get("duplica"));
-  if (q?.get("nuova") === "1") return { kind: "new" };
+  const dup = Number(q?.get("duplicate"));
+  if (q?.get("new") === "1") return { kind: "new" };
   if (Number.isInteger(id) && id > 0) return { kind: "open", id };
   if (Number.isInteger(dup) && dup > 0) return { kind: "duplicate", id: dup };
   return null;
@@ -149,7 +149,7 @@ export function PromotionEditor({ mode }: { mode: EditorMode }) {
     };
   }, [api, id, retry]);
 
-  const back = () => router.push("/promozioni");
+  const back = () => router.push("/promotions");
   if (id !== null && res?.id !== id) return <StateBlock kind="loading" />;
   if (id !== null && !res?.data)
     return (
@@ -486,7 +486,7 @@ function ReadOnly({ p, canDuplicate }: { p: PromoDetail; canDuplicate: boolean }
       <PageHead
         title={p.name}
         crumbs={[T.group, T.promo_title, p.name]}
-        actions={canDuplicate ? <button type="button" className="btn" onClick={() => router.push(`/promozioni?duplica=${p.id}`)}><Icon name="copy" size={17} /> {T.m_dup}</button> : null}
+        actions={canDuplicate ? <button type="button" className="btn" onClick={() => router.push(`/promotions?duplicate=${p.id}`)}><Icon name="copy" size={17} /> {T.m_dup}</button> : null}
       />
       <div className={s.formCol}>
         {p.state === "ended" ? <Lock>{T.ended_note}</Lock> : null}

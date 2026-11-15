@@ -1,6 +1,6 @@
 "use client";
 
-// MOB-1375: «Ricavi del mese» (route /ricavi, console.revenue.view).
+// MOB-1375: «Ricavi del mese» (route /revenue, console.revenue.view).
 
 import { AdminFrame } from "@/components/shell/AdminFrame";
 import { RevenueView } from "@/components/revenue/RevenueView";

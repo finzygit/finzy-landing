@@ -6,7 +6,7 @@ import { ALL, fakeApi, withConsole } from "./testkit";
 import type { Revenue } from "./types";
 
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/ricavi",
+  usePathname: () => "/revenue",
   useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
   useSearchParams: () => new URLSearchParams(),
 }));
@@ -52,7 +52,7 @@ describe("RevenueView", () => {
     expect(screen.getByRole("img", { name: "Netto, ultimi 12 mesi" })).toBeTruthy();
 
     const table = screen.getByRole("table", { name: "Pagamenti e rimborsi di novembre" });
-    await waitFor(() => expect(within(table).getByRole("link", { name: "Giulia Bianchi" }).getAttribute("href")).toBe("/utenti/scheda?id=7"));
+    await waitFor(() => expect(within(table).getByRole("link", { name: "Giulia Bianchi" }).getAttribute("href")).toBe("/users/detail?id=7"));
     expect(within(table).getByText("Account eliminato")).toBeTruthy();
     expect(within(table).getByText("−€ 49,90")).toBeTruthy();
     expect(within(table).getByText("£ 8,99")).toBeTruthy();
