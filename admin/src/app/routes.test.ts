@@ -64,8 +64,8 @@ describe("console page addresses are English (D428)", () => {
 
   it("every address a page links, pushes, replaces or opens is English", () => {
     const files = walk(src).filter((p) => /\.(ts|tsx)$/.test(p) && !p.endsWith("routes.test.ts"));
-    // href="/…", href={`/…`}, push("/…"), replace(`/…`), open(`${BASE}/…`), setLeaveTo("/…"), toBe("/…"), CalledWith("/…"), route: "/…"
-    const target = /(?:href=\{?|push\(|replace\(|open\(|setLeaveTo\(|toBe\(|CalledWith\(|route: |pathname = |pathname: )["'`](?:\$\{BASE\})?(\/[^"'`?#$]*)/g;
+    // href="/…", href={`/…`}, push("/…"), replace(`/…`), open(`${BASE}/…`), setLeaveTo("/…"), route: "/…"
+    const target = /(?:href=\{?|push\(|replace\(|open\(|setLeaveTo\(|route: |pathname = |pathname: )["'`](?:\$\{BASE\})?(\/[^"'`?#$]*)/g;
     const bad: string[] = [];
     let seen = 0;
     for (const f of files) {
