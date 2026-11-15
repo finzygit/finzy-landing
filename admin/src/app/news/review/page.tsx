@@ -123,7 +123,7 @@ export default function QueuePage() {
       else if (k === "g") judge("correct");
       else if (k === "s") judge("wrong");
       else if (k === "r") judge("remove");
-      else if (k === "o" && cur) window.open(`${BASE}/notizie/articoli/scheda?id=${cur.blog_id}`, "_blank", "noopener");
+      else if (k === "o" && cur) window.open(`${BASE}/news/articles/detail?id=${cur.blog_id}`, "_blank", "noopener");
       else return;
       e.preventDefault();
     };
@@ -220,7 +220,7 @@ export default function QueuePage() {
                 <strong style={{ fontSize: 18, lineHeight: "24px" }}>{cur.article.title}</strong>
                 <span className="muted" style={{ fontSize: 13 }}>{cur.article.source?.name} · {dayTime(cur.article.created_at)}</span>
                 {cur.article.excerpt ? <p style={{ margin: 0, color: "rgba(244,247,246,0.82)", lineHeight: "23px" }}>{cur.article.excerpt}</p> : null}
-                <Link href={`/notizie/articoli/scheda?id=${cur.blog_id}`} target="_blank" style={{ display: "inline-flex", gap: 4, alignItems: "center", fontSize: 14 }}>
+                <Link href={`/news/articles/detail?id=${cur.blog_id}`} target="_blank" style={{ display: "inline-flex", gap: 4, alignItems: "center", fontSize: 14 }}>
                   Apri l’articolo <NewsIcon name="external" size={14} />
                 </Link>
               </div>

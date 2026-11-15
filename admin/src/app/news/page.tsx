@@ -44,7 +44,7 @@ export default function TodayPage() {
         sub={data ? `Le notizie arrivate oggi, fonte per fonte. Aggiornato alle ${hhmm(data.updated_at)}.` : "Le notizie arrivate oggi, fonte per fonte."}
         crumbs={["Notizie", "Oggi"]}
         actions={
-          <Link className="btn" href="/notizie/articoli?periodo=oggi">
+          <Link className="btn" href="/news/articles?period=today">
             Articoli di oggi
           </Link>
         }
@@ -56,7 +56,7 @@ export default function TodayPage() {
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           {stopped.map((s) => (
-            <Banner key={s.id} action={can("console.spend.view") ? <Link href="/servizi">Salute dei servizi</Link> : undefined}>
+            <Banner key={s.id} action={can("console.spend.view") ? <Link href="/health">Salute dei servizi</Link> : undefined}>
               {s.name} non manda articoli dalle {hhmm(s.latest_at)}.
             </Banner>
           ))}
@@ -69,7 +69,7 @@ export default function TodayPage() {
             ))}
           </div>
           <div className={styles.gridToday}>
-            <Section title="Ultimi arrivati" action={<Link href="/notizie/articoli?periodo=oggi">Tutti gli articoli di oggi ›</Link>}>
+            <Section title="Ultimi arrivati" action={<Link href="/news/articles?period=today">Tutti gli articoli di oggi ›</Link>}>
               {data.latest.length === 0 ? (
                 <p className="muted" style={{ margin: 0 }}>Ancora nessun articolo oggi.</p>
               ) : (
@@ -85,7 +85,7 @@ export default function TodayPage() {
                     {data.latest.map((a) => (
                       <tr key={a.id}>
                         <td>
-                          <Link href={`/notizie/articoli/scheda?id=${a.id}`} className={styles.titleCell} style={{ color: "var(--text)" }}>
+                          <Link href={`/news/articles/detail?id=${a.id}`} className={styles.titleCell} style={{ color: "var(--text)" }}>
                             <Thumb url={a.image_url} state={a.image} size={40} />
                             <span style={{ minWidth: 0 }}>
                               <strong>{a.title}</strong>

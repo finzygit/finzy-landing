@@ -23,7 +23,7 @@ export default function ArticlesPage() {
   const { api } = useConsole();
   const router = useRouter();
   const params = useSearchParams();
-  const [f, setF] = useState<Filters>(() => ({ ...EMPTY, period: (params?.get("periodo") as Period) ?? "" }));
+  const [f, setF] = useState<Filters>(() => ({ ...EMPTY, period: (params?.get("period") as Period) ?? "" }));
   const [data, setData] = useState<ArticlePage | null>(null);
   const [state, setState] = useState<TableState>("loading");
   const [sources, setSources] = useState<TaxonomyRow[]>([]);
@@ -55,7 +55,7 @@ export default function ArticlesPage() {
   }, [load, f.q]);
 
   const set = (patch: Partial<Filters>) => setF((old) => ({ ...old, ...patch, page: patch.page ?? 1 }));
-  const open = (r: ArticleRow) => router.push(`/notizie/articoli/scheda?id=${r.id}`);
+  const open = (r: ArticleRow) => router.push(`/news/articles/detail?id=${r.id}`);
 
   return (
     <AdminFrame title="Articoli">
@@ -67,7 +67,7 @@ export default function ArticlesPage() {
           <input className="input" type="search" placeholder="Cerca nel titolo" value={f.q} onChange={(e) => set({ q: e.target.value })} />
         </label>
         <FilterSelect<Period> label="Periodo" value={f.period} onChange={(v) => set({ period: v })}
-          options={[["", "Tutto il periodo"], ["oggi", "Oggi"], ["ieri", "Ieri"], ["7", "Ultimi 7 giorni"], ["30", "Ultimi 30 giorni"], ["range", "Dal … al …"]]} />
+          options={[["", "Tutto il periodo"], ["today", "Oggi"], ["yesterday", "Ieri"], ["7", "Ultimi 7 giorni"], ["30", "Ultimi 30 giorni"], ["range", "Dal … al …"]]} />
         {f.period === "range" ? (
           <span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}>
             <input className="input" style={{ height: 40, width: 160 }} type="date" aria-label="Dal" value={f.from} onChange={(e) => set({ from: e.target.value })} />

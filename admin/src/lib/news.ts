@@ -132,14 +132,14 @@ export function romeDay(d: Date): string {
   return p;
 }
 
-export type Period = "" | "oggi" | "ieri" | "7" | "30" | "range";
+export type Period = "" | "today" | "yesterday" | "7" | "30" | "range";
 
 /** The period as from/to days in Rome. */
 export function periodRange(p: Period, from: string, to: string, now = new Date()): { from?: string; to?: string } {
   const day = (offset: number) => romeDay(new Date(now.getTime() - offset * 86_400_000));
   switch (p) {
-    case "oggi": return { from: day(0), to: day(0) };
-    case "ieri": return { from: day(1), to: day(1) };
+    case "today": return { from: day(0), to: day(0) };
+    case "yesterday": return { from: day(1), to: day(1) };
     case "7": return { from: day(6), to: day(0) };
     case "30": return { from: day(29), to: day(0) };
     case "range": return { from: from || undefined, to: to || undefined };

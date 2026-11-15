@@ -17,8 +17,8 @@ describe("news words", () => {
 
   it("turns a period into Rome days", () => {
     const now = new Date("2026-11-12T23:30:00Z"); // 13 Nov 00:30 in Rome
-    expect(periodRange("oggi", "", "", now)).toEqual({ from: "2026-11-13", to: "2026-11-13" });
-    expect(periodRange("ieri", "", "", now)).toEqual({ from: "2026-11-12", to: "2026-11-12" });
+    expect(periodRange("today", "", "", now)).toEqual({ from: "2026-11-13", to: "2026-11-13" });
+    expect(periodRange("yesterday", "", "", now)).toEqual({ from: "2026-11-12", to: "2026-11-12" });
     expect(periodRange("7", "", "", now)).toEqual({ from: "2026-11-07", to: "2026-11-13" });
     expect(periodRange("range", "2026-11-01", "", now)).toEqual({ from: "2026-11-01", to: undefined });
     expect(periodRange("", "", "", now)).toEqual({});

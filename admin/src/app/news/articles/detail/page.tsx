@@ -157,7 +157,7 @@ export default function ArticlePage() {
   };
 
   const crumbs = (
-    <Link href="/notizie/articoli" style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 14 }} onClick={(e) => dirty && (e.preventDefault(), setLeaveTo("/notizie/articoli"), setAsk("leave"))}>
+    <Link href="/news/articles" style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 14 }} onClick={(e) => dirty && (e.preventDefault(), setLeaveTo("/news/articles"), setAsk("leave"))}>
       <span style={{ display: "inline-flex", transform: "scaleX(-1)" }}><NewsIcon name="chevron" size={16} /></span> Articoli
     </Link>
   );
@@ -170,7 +170,7 @@ export default function ArticlePage() {
           {state === "loading" ? (
             <StateBlock kind="loading" />
           ) : state === "missing" ? (
-            <StateBlock kind="missing" title="Articolo non trovato" body="Forse l’indirizzo è sbagliato." action={<Link className="btn" href="/notizie/articoli">Torna agli articoli</Link>} />
+            <StateBlock kind="missing" title="Articolo non trovato" body="Forse l’indirizzo è sbagliato." action={<Link className="btn" href="/news/articles">Torna agli articoli</Link>} />
           ) : (
             <StateBlock kind="error" title="Non è stato possibile caricare l’articolo" action={<button type="button" className="btn" onClick={() => (setState("loading"), load())}>Riprova</button>} />
           )}
@@ -293,7 +293,7 @@ export default function ArticlePage() {
                     <span>Ultima modifica</span>
                     <span style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
                       <strong>{a.last_edit ? `${a.last_edit.who?.name ?? "—"}, ${fullDate(a.last_edit.at)}` : "Nessuna: com’è arrivato dalla fonte"}</strong>
-                      {can("console.admin.view") ? <Link href="/amministrazione/registro" style={{ fontSize: 14 }}>Registro attività ›</Link> : null}
+                      {can("console.admin.view") ? <Link href="/admin/audit-log" style={{ fontSize: 14 }}>Registro attività ›</Link> : null}
                     </span>
                   </div>
                 </div>

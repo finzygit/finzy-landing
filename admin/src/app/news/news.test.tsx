@@ -4,12 +4,12 @@ import { EDITOR, READER, fakeApi, renderPage } from "@/components/news/test-util
 import { ApiError } from "@/lib/api";
 import type { Article, ArticleRow, QueuePage, Today } from "@/lib/news";
 import TodayPage from "./page";
-import ArticlesPage from "./articoli/page";
-import ArticlePage from "./articoli/scheda/page";
-import QueuePageView from "./verifica/page";
-import TaxonomiesPage from "./classificazioni/page";
+import ArticlesPage from "./articles/page";
+import ArticlePage from "./articles/detail/page";
+import QueuePageView from "./review/page";
+import TaxonomiesPage from "./taxonomies/page";
 
-const nav = vi.hoisted(() => ({ pathname: "/notizie", search: "", replace: vi.fn(), push: vi.fn() }));
+const nav = vi.hoisted(() => ({ pathname: "/news", search: "", replace: vi.fn(), push: vi.fn() }));
 vi.mock("next/navigation", () => ({
   usePathname: () => nav.pathname,
   useRouter: () => ({ replace: nav.replace, push: nav.push }),
@@ -45,7 +45,7 @@ const ARTICLE: Article = {
 };
 
 beforeEach(() => {
-  nav.pathname = "/notizie";
+  nav.pathname = "/news";
   nav.search = "";
   nav.push.mockReset();
 });
@@ -79,7 +79,7 @@ describe("Oggi", () => {
 
 describe("Articoli", () => {
   it("lists the rows, sends the filters and opens an article", async () => {
-    nav.pathname = "/notizie/articoli";
+    nav.pathname = "/news/articles";
     const api = fakeApi(READER, (p) => (p === "/news/articles" ? { rows: [row(5), row(6, { active: false, summary: "none", in_feed: false })], total: 37747, page: 1, per_page: 25 } : { rows: [{ id: 8, name: { it: "MT Newswires", en: "MT Newswires" }, articles: 1 }] }));
     renderPage(<ArticlesPage />, api);
     await screen.findByText("37.747 articoli");
@@ -89,12 +89,12 @@ describe("Articoli", () => {
     fireEvent.change(screen.getByLabelText("Riassunto"), { target: { value: "failed" } });
     await waitFor(() => expect(api.get).toHaveBeenCalledWith("/news/articles", expect.objectContaining({ summary: "failed", page: 1 })));
     fireEvent.click(await screen.findByText("Articolo 5"));
-    expect(nav.push).toHaveBeenCalledWith("/notizie/articoli/scheda?id=5");
+    expect(nav.push).toHaveBeenCalledWith("/news/articles/detail?id=5");
   });
 
   it("no row with the filters: «Togli i filtri» clears them", async () => {
-    nav.pathname = "/notizie/articoli";
-    nav.search = "periodo=oggi";
+    nav.pathname = "/news/articles";
+    nav.search = "period=today";
     const api = fakeApi(READER, (p, _b, q) => (p === "/news/articles" ? (q?.from ? { rows: [], total: 0, page: 1, per_page: 25 } : { rows: [row(1)], total: 1, page: 1, per_page: 25 }) : { rows: [] }));
     renderPage(<ArticlesPage />, api);
     await screen.findByText("Nessun risultato con questi filtri");
@@ -105,7 +105,7 @@ describe("Articoli", () => {
 
 describe("Articolo", () => {
   beforeEach(() => {
-    nav.pathname = "/notizie/articoli/scheda";
+    nav.pathname = "/news/articles/detail";
     nav.search = "id=195702";
   });
 
@@ -208,7 +208,7 @@ describe("Collegamenti da verificare", () => {
   });
 
   it("G judges the open link and moves to the next; R removes with Annulla", async () => {
-    nav.pathname = "/notizie/verifica";
+    nav.pathname = "/news/review";
     const api = fakeApi(EDITOR, (p) => {
       if (p.endsWith("/review")) return { ...ARTICLE.links[0], review: "correct" };
       if (p.startsWith("DELETE")) return { ...ARTICLE.links[0], azione_id: 12, removed: true };
@@ -228,7 +228,7 @@ describe("Collegamenti da verificare", () => {
   });
 
   it("keys do nothing while typing, on a removed link, or held down", async () => {
-    nav.pathname = "/notizie/verifica";
+    nav.pathname = "/news/review";
     const page = q();
     page.rows[0] = { ...page.rows[0], removed: true };
     const api = fakeApi(EDITOR, (p) => (p === "/news/links" ? page : { rows: [] }));
@@ -247,7 +247,7 @@ describe("Collegamenti da verificare", () => {
   });
 
   it("a read-only role cannot judge, not even with the keys", async () => {
-    nav.pathname = "/notizie/verifica";
+    nav.pathname = "/news/review";
     const api = fakeApi(READER, (p) => (p === "/news/links" ? q() : { rows: [] }));
     renderPage(<QueuePageView />, api);
     await screen.findByRole("region", { name: "Collegamento JPM" });
@@ -258,7 +258,7 @@ describe("Collegamenti da verificare", () => {
 
 describe("Classificazioni", () => {
   it("categories: the note, a duplicate name and an entry in use that cannot be deleted", async () => {
-    nav.pathname = "/notizie/classificazioni";
+    nav.pathname = "/news/taxonomies";
     const api = fakeApi(EDITOR, (p) => {
       if (p === "/news/taxonomies/sources") return { rows: [{ id: 8, name: { it: "MT Newswires", en: "MT Newswires" }, articles: 36600, visible: true, description: { it: "", en: "" }, last_article_at: null }] };
       if (p === "/news/taxonomies/categories") return { rows: [{ id: 1, name: { it: "Azioni", en: "Stocks" }, articles: 3 }], with_category: 0 };
@@ -277,7 +277,7 @@ describe("Classificazioni", () => {
   });
 
   it("a source is hidden only after the confirm", async () => {
-    nav.pathname = "/notizie/classificazioni";
+    nav.pathname = "/news/taxonomies";
     const api = fakeApi(EDITOR, (p) => (p.startsWith("PUT") ? {} : { rows: [{ id: 6, name: { it: "Adnkronos", en: "Adnkronos" }, articles: 1147, visible: true, description: { it: "Agenzia", en: "Agency" }, last_article_at: null }] }));
     renderPage(<TaxonomiesPage />, api);
     fireEvent.click(await screen.findByText("Adnkronos"));
