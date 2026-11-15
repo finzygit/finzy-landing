@@ -56,7 +56,7 @@ export function LastChangeLine({ change }: { change: LastChange }) {
       {can("console.admin.view") ? (
         <>
           <span aria-hidden="true">·</span>
-          <Link href="/amministrazione/registro">{T.log_link}</Link>
+          <Link href="/admin/audit-log">{T.log_link}</Link>
         </>
       ) : null}
     </p>
@@ -172,7 +172,7 @@ export function UploadsTray() {
               <span className="cc-tray-name">
                 <b>{u.lang.toUpperCase()}</b> {u.lessonTitle}
               </span>
-              <Link href={`/contenuti/lezioni/scheda?id=${u.lessonId}`}>{T.tray_open}</Link>
+              <Link href={`/content/lessons/detail?id=${u.lessonId}`}>{T.tray_open}</Link>
             </div>
             <Progress value={u.size ? u.sent / u.size : 0} paused={u.status === "paused" || u.status === "error"} />
             <div className="cc-tray-row">

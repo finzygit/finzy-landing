@@ -5,7 +5,7 @@ import { AvatarsPage, refusePicture } from "./AvatarsPage";
 import { EDITOR, READER, fakeApi, renderPage } from "./testkit";
 
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/contenuti/avatar",
+  usePathname: () => "/content/avatars",
   useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
   useSearchParams: () => new URLSearchParams(),
 }));

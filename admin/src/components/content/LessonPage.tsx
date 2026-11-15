@@ -4,7 +4,7 @@
 // and visibility wait for «Salva» (save bar); videos go straight to storage and
 // link themselves when done (no Salva, decision 7: «Sostituisci» keeps the old
 // one live until then, «Rimuovi» asks and deletes at once); cover upload; the
-// card as the app draws it. «?nuova=1» is the new-lesson form: videos and cover
+// card as the app draws it. «?new=1» is the new-lesson form: videos and cover
 // come after «Crea lezione».
 
 import Link from "next/link";
@@ -46,8 +46,8 @@ export function normalizeTag(raw: string): string | null {
 export function LessonPage() {
   const params = useSearchParams();
   const id = Number(params.get("id") ?? 0);
-  const isNew = params.get("nuova") === "1";
-  const wanted = params.get("sezione");
+  const isNew = params.get("new") === "1";
+  const wanted = params.get("section");
   const { api, can, toast, me } = useConsole();
   const router = useRouter();
   const canEdit = can("console.content.update");
@@ -111,7 +111,7 @@ export function LessonPage() {
       if (isNew) {
         const created = await api.post<LessonDetail>("/lessons", { ...draft, active: false });
         toast({ title: T.saved });
-        router.replace(`/contenuti/lezioni/scheda?id=${created.id}`);
+        router.replace(`/content/lessons/detail?id=${created.id}`);
       } else if (lesson) {
         const base = draftOf(lesson);
         const body: Record<string, unknown> = {};
@@ -148,7 +148,7 @@ export function LessonPage() {
     try {
       await api.del(`/lessons/${lesson.id}`);
       toast({ title: T.e_delete_t, body: "La modifica è nel registro attività." });
-      router.replace("/contenuti/lezioni");
+      router.replace("/content/lessons");
     } catch {
       setConfirmError(T.save_err);
       setBusy(false);
@@ -195,7 +195,7 @@ export function LessonPage() {
     return (
       <AdminFrame title={T.l_title}>
         {state === "missing" ? (
-          <StateBlock kind="missing" title={T.lesson_404} body={T.lesson_404_b} action={<Link className="btn" href="/contenuti/lezioni">{T.back_list}</Link>} />
+          <StateBlock kind="missing" title={T.lesson_404} body={T.lesson_404_b} action={<Link className="btn" href="/content/lessons">{T.back_list}</Link>} />
         ) : state === "error" ? (
           <StateBlock kind="error" title={T.l_err_one} action={<button type="button" className="btn" onClick={() => (setState("loading"), load())}>{T.retry}</button>} />
         ) : (
@@ -341,7 +341,7 @@ export function LessonPage() {
           saveLabel={isNew ? T.create : T.save}
           busy={busy}
           error={error === "server" ? T.save_err_srv : error === "title" ? T.err_title : error === "legacy" ? T.legacy_locked : null}
-          onCancel={() => (isNew ? router.push("/contenuti/lezioni") : (setDraft(draftOf(lesson!)), setError(null)))}
+          onCancel={() => (isNew ? router.push("/content/lessons") : (setDraft(draftOf(lesson!)), setError(null)))}
           onSave={save}
         />
       ) : null}

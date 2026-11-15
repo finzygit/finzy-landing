@@ -4,7 +4,7 @@ import type { Library } from "@/lib/content/types";
 import { LessonsPage } from "./LessonsPage";
 import { EDITOR, READER, fakeApi, renderPage, serverError } from "./testkit";
 
-const nav = vi.hoisted(() => ({ pathname: "/contenuti/lezioni", replace: vi.fn(), push: vi.fn() }));
+const nav = vi.hoisted(() => ({ pathname: "/content/lessons", replace: vi.fn(), push: vi.fn() }));
 vi.mock("next/navigation", () => ({
   usePathname: () => nav.pathname,
   useRouter: () => ({ replace: nav.replace, push: nav.push }),

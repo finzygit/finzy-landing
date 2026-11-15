@@ -169,7 +169,7 @@ export function LessonsPage() {
           <span className="cc-title-cell">
             <span className="cc-num">{i + 1}</span>
             <Thumb url={l.thumbnail_url} size={36} />
-            <Link href={`/contenuti/lezioni/scheda?id=${l.id}`} title={l.title}>{l.title}</Link>
+            <Link href={`/content/lessons/detail?id=${l.id}`} title={l.title}>{l.title}</Link>
           </span>
         </td>
         <td style={{ width: 220 }}>
@@ -197,7 +197,7 @@ export function LessonsPage() {
         </td>
         {canEdit && !s.legacy ? (
           <td style={{ textAlign: "right" }}>
-            <button type="button" className="link-btn" onClick={() => router.push(`/contenuti/lezioni/scheda?nuova=1&sezione=${s.key}`)}>{T.add_here}</button>
+            <button type="button" className="link-btn" onClick={() => router.push(`/content/lessons/detail?new=1&section=${s.key}`)}>{T.add_here}</button>
           </td>
         ) : null}
       </tr>
@@ -326,7 +326,7 @@ export function LessonsPage() {
         title={T.l_title}
         sub={T.l_sub}
         crumbs={[CRUMB, T.l_title]}
-        actions={canEdit ? <button type="button" className="btn btn-primary" onClick={() => router.push("/contenuti/lezioni/scheda?nuova=1")}><Glyph name="plus" size={16} />{T.l_new}</button> : undefined}
+        actions={canEdit ? <button type="button" className="btn btn-primary" onClick={() => router.push("/content/lessons/detail?new=1")}><Glyph name="plus" size={16} />{T.l_new}</button> : undefined}
       />
       {body}
       <UploadsTray />

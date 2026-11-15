@@ -5,7 +5,7 @@ import { SettingsPage, validUrl } from "./SettingsPage";
 import { EDITOR, READER, fakeApi, renderPage } from "./testkit";
 
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/contenuti/impostazioni",
+  usePathname: () => "/content/settings",
   useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
   useSearchParams: () => new URLSearchParams(),
 }));

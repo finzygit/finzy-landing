@@ -2,12 +2,12 @@ import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { LessonDetail, Library } from "@/lib/content/types";
 import { getUploads, resetUploads, setTransport } from "@/lib/content/uploads";
-import Page from "@/app/contenuti/lezioni/scheda/page";
+import Page from "@/app/content/lessons/detail/page";
 import { ConsoleProvider } from "@/lib/console";
 import { LessonPage, normalizeTag } from "./LessonPage";
 import { EDITOR, READER, fakeApi, notFound, renderPage } from "./testkit";
 
-const nav = vi.hoisted(() => ({ pathname: "/contenuti/lezioni/scheda", query: "id=2", replace: vi.fn(), push: vi.fn() }));
+const nav = vi.hoisted(() => ({ pathname: "/content/lessons/detail", query: "id=2", replace: vi.fn(), push: vi.fn() }));
 vi.mock("next/navigation", () => ({
   usePathname: () => nav.pathname,
   useRouter: () => ({ replace: nav.replace, push: nav.push }),
@@ -116,7 +116,7 @@ describe("Lezione", () => {
   });
 
   it("a new lesson is created hidden, then opens on its page", async () => {
-    nav.query = "nuova=1&sezione=financial_markets";
+    nav.query = "new=1&section=financial_markets";
     const fake = fakeApi(EDITOR, { "GET /lessons": LIB, "POST /lessons": { ...LESSON, id: 41 } });
     renderPage(<LessonPage />, fake.api);
     expect((await screen.findAllByText("Crea la lezione per caricare video e copertina. La lezione nuova va in fondo alla sua sezione, nascosta.")).length).toBeGreaterThan(0);
@@ -124,7 +124,7 @@ describe("Lezione", () => {
     expect(screen.queryByRole("option", { name: "Criptovalute" })).toBeNull();
     fireEvent.change(screen.getByLabelText("Titolo"), { target: { value: "Le borse valori" } });
     fireEvent.click(screen.getByRole("button", { name: "Crea lezione" }));
-    await waitFor(() => expect(nav.replace).toHaveBeenCalledWith("/contenuti/lezioni/scheda?id=41"));
+    await waitFor(() => expect(nav.replace).toHaveBeenCalledWith("/content/lessons/detail?id=41"));
     const body = fake.writes()[0].body as { title: { it: string }; active: boolean; category: string };
     expect([body.title.it, body.active, body.category]).toEqual(["Le borse valori", false, "financial_markets"]);
   });
@@ -143,12 +143,12 @@ describe("Lezione", () => {
   });
 
   it("after «Crea lezione» the page opens the new lesson with nothing left of the form", async () => {
-    nav.query = "nuova=1&sezione=foundations";
+    nav.query = "new=1&section=foundations";
     const fake = fakeApi(EDITOR, { "GET /lessons": LIB, "POST /lessons": { ...LESSON, id: 41 }, "GET /lessons/41": { ...LESSON, id: 41, title: { it: "Le borse valori", en: "" } } });
     const view = renderPage(<Page />, fake.api);
     fireEvent.change(await screen.findByLabelText("Titolo"), { target: { value: "Le borse valori" } });
     fireEvent.click(screen.getByRole("button", { name: "Crea lezione" }));
-    await waitFor(() => expect(nav.replace).toHaveBeenCalledWith("/contenuti/lezioni/scheda?id=41"));
+    await waitFor(() => expect(nav.replace).toHaveBeenCalledWith("/content/lessons/detail?id=41"));
     nav.query = "id=41";
     view.rerender(
       <ConsoleProvider api={fake.api}>

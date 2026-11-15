@@ -5,7 +5,7 @@ import { TutorialPage } from "./TutorialPage";
 import { EDITOR, READER, fakeApi, renderPage } from "./testkit";
 
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/contenuti/tutorial",
+  usePathname: () => "/content/tutorial",
   useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
   useSearchParams: () => new URLSearchParams(),
 }));
