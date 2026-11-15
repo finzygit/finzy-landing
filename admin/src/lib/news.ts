@@ -133,6 +133,9 @@ export function romeDay(d: Date): string {
 }
 
 export type Period = "" | "today" | "yesterday" | "7" | "30" | "range";
+export const PERIODS: readonly Period[] = ["", "today", "yesterday", "7", "30", "range"];
+/** The period of a ?period= address: an unknown value (an old Italian link) is no filter. */
+export const periodOf = (v: string | null | undefined): Period => (PERIODS as readonly string[]).includes(v ?? "") ? ((v ?? "") as Period) : "";
 
 /** The period as from/to days in Rome. */
 export function periodRange(p: Period, from: string, to: string, now = new Date()): { from?: string; to?: string } {

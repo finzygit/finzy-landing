@@ -14,7 +14,7 @@ import { FeedChip, FilterSelect, SummaryWord, Thumb } from "@/components/news/pa
 import { NewsIcon } from "@/components/news/NewsIcon";
 import styles from "@/components/news/news.module.css";
 import { useConsole } from "@/lib/console";
-import { dayTime, num, periodRange, type ArticlePage, type Period, type ArticleRow, type TaxonomyRow } from "@/lib/news";
+import { dayTime, num, periodOf, periodRange, type ArticlePage, type Period, type ArticleRow, type TaxonomyRow } from "@/lib/news";
 
 type Filters = { q: string; period: Period; from: string; to: string; source: string; feed: string; summary: string; image: string; state: string; page: number };
 const EMPTY: Filters = { q: "", period: "", from: "", to: "", source: "", feed: "", summary: "", image: "", state: "", page: 1 };
@@ -23,7 +23,7 @@ export default function ArticlesPage() {
   const { api } = useConsole();
   const router = useRouter();
   const params = useSearchParams();
-  const [f, setF] = useState<Filters>(() => ({ ...EMPTY, period: (params?.get("period") as Period) ?? "" }));
+  const [f, setF] = useState<Filters>(() => ({ ...EMPTY, period: periodOf(params?.get("period")) }));
   const [data, setData] = useState<ArticlePage | null>(null);
   const [state, setState] = useState<TableState>("loading");
   const [sources, setSources] = useState<TaxonomyRow[]>([]);

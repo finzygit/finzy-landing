@@ -62,6 +62,9 @@ describe("Oggi", () => {
     expect(screen.getByText("101 pronti")).toBeTruthy();
     expect(screen.getByText("1 non riuscita")).toBeTruthy();
     expect(screen.getByText("Borsa: Milano chiude in rialzo")).toBeTruthy();
+    // D428: both «today» links write the English address the Articoli page reads.
+    expect(screen.getByRole("link", { name: "Articoli di oggi" }).getAttribute("href")).toBe("/news/articles?period=today");
+    expect(screen.getByRole("link", { name: /Tutti gli articoli di oggi/ }).getAttribute("href")).toBe("/news/articles?period=today");
   });
 
   it("an error offers Riprova", async () => {

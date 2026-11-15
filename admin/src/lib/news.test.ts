@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ago, conf, num, periodRange } from "./news";
+import { ago, conf, num, periodOf, periodRange } from "./news";
 
 describe("news words", () => {
   it("says how long ago in Italian", () => {
@@ -22,5 +22,14 @@ describe("news words", () => {
     expect(periodRange("7", "", "", now)).toEqual({ from: "2026-11-07", to: "2026-11-13" });
     expect(periodRange("range", "2026-11-01", "", now)).toEqual({ from: "2026-11-01", to: undefined });
     expect(periodRange("", "", "", now)).toEqual({});
+  });
+});
+
+describe("periodOf (D428)", () => {
+  it("keeps a known period and drops anything else", () => {
+    expect(periodOf("today")).toBe("today");
+    expect(periodOf("7")).toBe("7");
+    expect(periodOf("oggi")).toBe("");
+    expect(periodOf(null)).toBe("");
   });
 });
