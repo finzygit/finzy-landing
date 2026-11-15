@@ -187,7 +187,7 @@ export default function UsersPage() {
             rows={data?.users ?? []}
             rowKey={(u) => u.id}
             loadingRows={8}
-            onRowClick={(u) => router.push(`/utenti/scheda?id=${u.id}`)}
+            onRowClick={(u) => router.push(`/users/detail?id=${u.id}`)}
             onRetry={reload}
             onClearFilters={reset}
             errorText="Non è stato possibile caricare gli utenti"
@@ -216,7 +216,7 @@ export default function UsersPage() {
       </div>
 
       {dialog === "csv" && data ? <CsvDialog total={data.total} plans={plans} q={query} onCancel={() => setDialog(null)} /> : null}
-      {dialog === "new" ? <NewUserDialog onCancel={() => setDialog(null)} onDone={(id) => router.push(`/utenti/scheda?id=${id}`)} /> : null}
+      {dialog === "new" ? <NewUserDialog onCancel={() => setDialog(null)} onDone={(id) => router.push(`/users/detail?id=${id}`)} /> : null}
       <style>{`.users-table table { table-layout: fixed; }
 .users-table td:first-child { overflow: hidden; }
 @media (max-width: 599px) {

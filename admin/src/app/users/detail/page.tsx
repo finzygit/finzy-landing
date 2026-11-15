@@ -71,7 +71,7 @@ function UserScreen() {
     return (
       <AdminFrame title="Utente non trovato">
         <div className="crumbs" style={{ marginBottom: 12 }}><span>Utenti</span><span style={{ color: "var(--text-2)" }}>› Utente non trovato</span></div>
-        <StateBlock kind="missing" title="Utente non trovato" body="Può essere stato eliminato. Cercalo di nuovo nella lista." action={<Link className="btn" href="/utenti">Torna agli utenti</Link>} />
+        <StateBlock kind="missing" title="Utente non trovato" body="Può essere stato eliminato. Cercalo di nuovo nella lista." action={<Link className="btn" href="/users">Torna agli utenti</Link>} />
       </AdminFrame>
     );
   }
@@ -102,7 +102,7 @@ function UserScreen() {
 
       <header style={{ display: "flex", flexDirection: "column", gap: 18, marginBottom: 24 }}>
         <div className="crumbs">
-          <Link href="/utenti" style={{ color: "var(--text-3)", fontWeight: 550 }}>Utenti</Link>
+          <Link href="/users" style={{ color: "var(--text-3)", fontWeight: 550 }}>Utenti</Link>
           <span style={{ color: "var(--text-2)", overflowWrap: "anywhere" }}>› {u.name ?? u.email}</span>
         </div>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
@@ -137,7 +137,7 @@ function UserScreen() {
                   <Icon name="copy" size={16} /> Copia il link della pagina
                 </button>
                 {can("console.admin.view") ? (
-                  <Link role="menuitem" href="/amministrazione/registro" onClick={() => setMenu(false)}>
+                  <Link role="menuitem" href="/admin/audit-log" onClick={() => setMenu(false)}>
                     <Icon name="external" size={16} /> Apri nel registro attività
                   </Link>
                 ) : null}
@@ -184,7 +184,7 @@ function UserScreen() {
       {dialog === "gift" ? <GiftDialog page={page} onCancel={() => setDialog(null)} onDone={(p) => (setPage(p), setDialog(null))} /> : null}
       {dialog === "revoke" ? <RevokeDialog page={page} onCancel={() => setDialog(null)} onDone={(p) => (setPage(p), setDialog(null))} /> : null}
       {dialog === "edit" ? <EditDialog page={page} roles={roles} isSuper={isSuper} isSelf={me?.user.id === u.id} onCancel={() => setDialog(null)} onPage={setPage} onDone={(p) => (setPage(p), setDialog(null))} /> : null}
-      {dialog === "delete" ? <DeleteDialog page={page} onCancel={() => setDialog(null)} onDone={() => router.push("/utenti")} /> : null}
+      {dialog === "delete" ? <DeleteDialog page={page} onCancel={() => setDialog(null)} onDone={() => router.push("/users")} /> : null}
       <style>{`.user-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 20px; align-items: start; }
 @media (max-width: 1199px) { .user-grid { grid-template-columns: minmax(0, 1fr); } }`}</style>
     </AdminFrame>

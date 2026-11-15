@@ -1,12 +1,12 @@
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import UsersPage from "@/app/utenti/page";
-import UserPageRoute from "@/app/utenti/scheda/page";
+import UsersPage from "@/app/users/page";
+import UserPageRoute from "@/app/users/detail/page";
 import { ApiError, type Api } from "@/lib/api";
 import { ConsoleProvider, type Me } from "@/lib/console";
 import { monthsAhead, type UserList, type UserPage } from "./model";
 
-const nav = vi.hoisted(() => ({ pathname: "/utenti", search: "", replace: vi.fn(), push: vi.fn() }));
+const nav = vi.hoisted(() => ({ pathname: "/users", search: "", replace: vi.fn(), push: vi.fn() }));
 vi.mock("next/navigation", () => ({
   usePathname: () => nav.pathname,
   useRouter: () => ({ replace: nav.replace, push: nav.push }),
@@ -81,7 +81,7 @@ function mount(node: React.ReactNode, api: Api) {
 
 describe("Utenti list", () => {
   beforeEach(() => {
-    nav.pathname = "/utenti";
+    nav.pathname = "/users";
     nav.push.mockReset();
   });
 
@@ -96,7 +96,7 @@ describe("Utenti list", () => {
     expect(screen.getByRole("button", { name: /Esporta CSV/ })).toBeTruthy();
     expect(screen.getByRole("button", { name: /Nuovo utente/ })).toBeTruthy();
     fireEvent.click(screen.getByText("Marco Bellini"));
-    expect(nav.push).toHaveBeenCalledWith("/utenti/scheda?id=41377");
+    expect(nav.push).toHaveBeenCalledWith("/users/detail?id=41377");
   });
 
   it("the Piano filter takes several plans, with the counts, after Applica", async () => {
@@ -192,7 +192,7 @@ describe("Utenti list", () => {
     await within(dialog).findByText("Questa email è già usata da un altro account.");
     taken = false;
     await act(async () => fireEvent.click(go));
-    await waitFor(() => expect(nav.push).toHaveBeenCalledWith("/utenti/scheda?id=50200"));
+    await waitFor(() => expect(nav.push).toHaveBeenCalledWith("/users/detail?id=50200"));
   });
 
   it("the CSV dialog says what goes in the file and downloads through api.blob", async () => {
@@ -228,7 +228,7 @@ describe("Utenti list", () => {
 
 describe("User page", () => {
   beforeEach(() => {
-    nav.pathname = "/utenti/scheda";
+    nav.pathname = "/users/detail";
     nav.search = "id=41377";
     nav.push.mockReset();
   });
@@ -262,7 +262,7 @@ describe("User page", () => {
       throw new ApiError(404, null);
     }));
     await screen.findByRole("heading", { name: "Utente non trovato" });
-    expect(screen.getByRole("link", { name: "Torna agli utenti" }).getAttribute("href")).toBe("/utenti");
+    expect(screen.getByRole("link", { name: "Torna agli utenti" }).getAttribute("href")).toBe("/users");
   });
 
   it("Regala stays off until the form is complete, warns about the store, then saves", async () => {
@@ -348,7 +348,7 @@ describe("User page", () => {
     await act(async () => fireEvent.click(go));
     await screen.findByText("Account eliminato");
     expect(calls.find(([m]) => m === "POST")).toEqual(["POST", "/users/41377/delete", { confirm_email: "Marco.Bellini@posta.it" }]);
-    expect(nav.push).toHaveBeenCalledWith("/utenti");
+    expect(nav.push).toHaveBeenCalledWith("/users");
   });
 
   it("a revoke someone already did closes the dialog and shows the page as it is", async () => {
