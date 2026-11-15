@@ -43,7 +43,7 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
 
   const signOut = async () => {
     await api.del("/session").catch(() => undefined);
-    router.replace("/accedi");
+    router.replace("/sign-in");
   };
 
   return (
@@ -209,7 +209,7 @@ export function AdminFrame({ children, banner, title }: { children: ReactNode; b
   const online = useOnline();
   const signOut = useCallback(() => {
     api.del("/session").catch(() => undefined);
-    router.replace("/accedi?scaduta=1");
+    router.replace("/sign-in?expired=1");
   }, [api, router]);
   const keepAlive = useCallback(() => {
     api.get("/me").catch(() => undefined);

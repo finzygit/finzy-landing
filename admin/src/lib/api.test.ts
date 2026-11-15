@@ -19,10 +19,10 @@ describe("console api client", () => {
   });
 
   it("maps the shared codes to where the admin must go", () => {
-    expect(redirectFor(401, "unauthenticated")).toBe("/accedi");
-    expect(redirectFor(401, "session_expired")).toBe("/accedi?scaduta=1");
-    expect(redirectFor(403, "two_factor_required")).toBe("/accedi/codice");
-    expect(redirectFor(403, "two_factor_setup_required")).toBe("/accedi/attiva");
+    expect(redirectFor(401, "unauthenticated")).toBe("/sign-in");
+    expect(redirectFor(401, "session_expired")).toBe("/sign-in?expired=1");
+    expect(redirectFor(403, "two_factor_required")).toBe("/sign-in/code");
+    expect(redirectFor(403, "two_factor_setup_required")).toBe("/sign-in/setup");
     expect(redirectFor(403, "forbidden")).toBeNull();
     expect(redirectFor(404, "not_found")).toBeNull();
   });
@@ -31,7 +31,7 @@ describe("console api client", () => {
     const onRedirect = vi.fn();
     const api = createApi({ fetch: reply(401, { code: "session_expired" }) as unknown as typeof fetch, onRedirect });
     await expect(api.get("/roles")).rejects.toMatchObject({ status: 401, code: "session_expired" });
-    expect(onRedirect).toHaveBeenCalledWith("/accedi?scaduta=1");
+    expect(onRedirect).toHaveBeenCalledWith("/sign-in?expired=1");
   });
 
   it("does not redirect when the sign-in itself is refused", async () => {
@@ -56,6 +56,6 @@ describe("console api client", () => {
     const onRedirect = vi.fn();
     const api = createApi({ fetch: reply(401, { code: "session_expired" }) as unknown as typeof fetch, onRedirect });
     await expect(api.post("/session/two-factor", { code: "123456" })).rejects.toMatchObject({ status: 401 });
-    expect(onRedirect).toHaveBeenCalledWith("/accedi?scaduta=1");
+    expect(onRedirect).toHaveBeenCalledWith("/sign-in?expired=1");
   });
 });

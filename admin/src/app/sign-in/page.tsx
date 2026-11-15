@@ -13,7 +13,7 @@ import { useConsole } from "@/lib/console";
 export default function SignInPage() {
   const { api } = useConsole();
   const router = useRouter();
-  const expired = useSearchParams()?.get("scaduta") === "1";
+  const expired = useSearchParams()?.get("expired") === "1";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -25,7 +25,7 @@ export default function SignInPage() {
     setError(null);
     try {
       const res = await api.post<{ next: "two_factor" | "setup" }>("/session", { email, password });
-      router.replace(res.next === "setup" ? "/accedi/attiva" : "/accedi/codice");
+      router.replace(res.next === "setup" ? "/sign-in/setup" : "/sign-in/code");
     } catch (err) {
       const status = err instanceof ApiError ? err.status : 0;
       setError(status === 429 ? "Troppi tentativi. Riprova tra qualche minuto." : status === 0 ? "Sei offline. Riprova quando torna la connessione." : "Email o password non corretti.");
