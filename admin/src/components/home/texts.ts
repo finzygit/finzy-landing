@@ -56,6 +56,27 @@ export const T = {
   alMtDay: (h: string, at: string) => `Nessun nuovo articolo MT Newswires da ${h} (l’ultimo il ${at}).`,
   alBudget: (p: string, s: string, b: string, pct: number) => `Spesa ${p} del mese: ${s} su un budget di ${b} (${pct}%).`,
 
+  // MOB-1461 (D444, design finzygit/finzy#750): new, waiting for Victor's OK (D385).
+  revenue: "Ricavi",
+  goRevenue: "Apri Ricavi e promozioni",
+  mrr: "MRR · ricavo ricorrente al mese",
+  mrrDesc: "Gli abbonamenti attivi sugli store riportati a un mese: un annuale conta un dodicesimo. Lordo, prima delle commissioni degli store.",
+  mrrNone: "Nessun abbonamento attivo sugli store",
+  mrrAt: (t: string) => `Calcolato alle ${t}`,
+  growthPrev: (n: string) => `sui 30 giorni prima (${n})`,
+  growthNone: "nessun utente nei 30 giorni prima",
+  perDay: "Nuovi utenti al giorno",
+  perDaySub: "Ultimi 30 giorni, senza gli account interni. L’ultima barra è oggi, ancora in corso.",
+  perDayEmpty: "Nessun nuovo utente negli ultimi 30 giorni",
+  unitHead: "Costo medio · 30 giorni",
+  archive: "Articoli in archivio",
+  archiveDesc: "MT Newswires e Adnkronos, solo gli articoli con testo.",
+  archiveRow: "Articoli",
+  allTime: "Da sempre",
+  points: "Prezzi dei titoli in archivio",
+  pointsDesc: "Prezzi giornalieri e durante la giornata, per tutti i titoli. Numero indicativo.",
+  mln: (v: string) => `${v} milioni`,
+
   pageError: "Non è stato possibile caricare la Home",
   pageErrorBody: "Il server non ha risposto. Riprova tra poco.",
   deniedTitle: "Nessuna pagina disponibile",
@@ -68,6 +89,14 @@ export const LINES = [
   { key: "stock_snapshot", label: "Costo Stock Snapshot", desc: "Generazione dei report e loro traduzione", dot: "var(--accent)" },
   { key: "financial_report", label: "Costo financial report", desc: "Testi, fonti e roadmap dei financial report", dot: "#E2BE78" },
 ] as const;
+
+/** MOB-1461: what one generation of each line is (the unit under «Costo medio»). */
+export const UNIT: Record<string, { one: string; none: string }> = {
+  images: { one: "per immagine", none: "nessuna immagine in 30 giorni" },
+  articles: { one: "per articolo", none: "nessun articolo in 30 giorni" },
+  stock_snapshot: { one: "per titolo", none: "nessun titolo in 30 giorni" },
+  financial_report: { one: "per report", none: "nessun report in 30 giorni" },
+};
 
 export const PLANS = [
   { key: "free", label: "Free", dot: "rgba(236, 244, 241, 0.4)" },

@@ -72,3 +72,22 @@ export function provider(key: string): string {
 export function hours(h: number): string {
   return h === 1 ? "1 ora" : `${count(h)} ore`;
 }
+
+/** MOB-1461: an average cost, always 4 decimals so a column lines up: «$0,0390». */
+export function usd4(n: number): string {
+  const [int, dec] = Math.abs(n).toFixed(4).split(".");
+  return `$${group3(int)},${dec}`;
+}
+
+/** MOB-1461: a change in %, one decimal, with its sign: «+110,6 %», «−17,8 %», «0 %». */
+export function change(pct: number): string {
+  if (Math.abs(pct) < 0.05) return "0 %";
+  const [int, dec] = Math.abs(pct).toFixed(1).split(".");
+  return `${pct > 0 ? "+" : "−"}${group3(int)},${dec} %`;
+}
+
+/** MOB-1461: 29_214_000 → «29,2» (millions, one decimal). */
+export function millions(n: number): string {
+  const [int, dec] = (n / 1_000_000).toFixed(1).split(".");
+  return `${group3(int)},${dec}`;
+}

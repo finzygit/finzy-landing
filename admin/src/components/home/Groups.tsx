@@ -7,10 +7,10 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Icon } from "@/components/shell/Icon";
-import { clock, count, hours, provider, span, usd, when } from "./format";
+import { change, clock, count, hours, millions, provider, span, usd, usd4, when } from "./format";
 import s from "./home.module.css";
-import { LINES, PLANS, T } from "./texts";
-import type { AiSpend, Alert, News, Users } from "./types";
+import { LINES, PLANS, T, UNIT } from "./texts";
+import type { AiSpend, Alert, News, Revenue, Users } from "./types";
 
 const dim = (n: number) => (n === 0 ? s.zero : undefined);
 
@@ -164,13 +164,15 @@ export function freshLine(latest: string | null, label: string, none: string, no
 }
 
 export function AiSpendBody({ d, now }: { d: AiSpend; now: string }) {
+  const withUnits = LINES.some((l) => d.lines[l.key] && "unit_cost_30" in d.lines[l.key]);
   return (
     <div className={s.aiGrid}>
       <div className={s.aiLeft}>
         <Block title={T.total} desc={T.totalDesc}>
-          <div className={s.tiles2}>
+          <div className={d.d30 !== undefined ? s.tiles3 : s.tiles2}>
             <Tile label={T.w7} value={usd(d.week)} foot={span(d.week_from, now)} big />
             <Tile label={T.mtd} value={usd(d.month)} foot={span(d.month_from, now)} big />
+            {d.d30 !== undefined ? <Tile label={T.d30} value={usd(d.d30)} foot={d.d30_from ? span(d.d30_from, now) : undefined} big /> : null}
           </div>
         </Block>
         <p className={`note ${s.foot}`}>{T.foot}</p>
@@ -181,11 +183,13 @@ export function AiSpendBody({ d, now }: { d: AiSpend; now: string }) {
             <th scope="col">{T.lineHead}</th>
             <th scope="col">{T.today}</th>
             <th scope="col">{T.mtd}</th>
+            {withUnits ? <th scope="col">{T.unitHead}</th> : null}
           </tr>
         </thead>
         <tbody>
           {LINES.map((l) => {
             const v = d.lines[l.key] ?? { today: 0, month: 0 };
+            const uc = v.unit_cost_30;
             return (
               <tr key={l.key}>
                 <th scope="row">
@@ -199,6 +203,12 @@ export function AiSpendBody({ d, now }: { d: AiSpend; now: string }) {
                 </th>
                 <td className={dim(v.today)}>{usd(v.today)}</td>
                 <td className={dim(v.month)}>{usd(v.month)}</td>
+                {withUnits ? (
+                  <td className={uc == null ? s.zero : undefined}>
+                    {uc == null ? "—" : usd4(uc)}
+                    <span className={s.unit}>{uc == null ? UNIT[l.key].none : UNIT[l.key].one}</span>
+                  </td>
+                ) : null}
               </tr>
             );
           })}
@@ -215,9 +225,18 @@ export function UsersBody({ d }: { d: Users }) {
         <div className={s.tiles3}>
           <Tile label={T.today} value={count(d.new.today)} />
           <Tile label={T.w7} value={count(d.new.d7)} />
-          <Tile label={T.d30} value={count(d.new.d30)} />
+          <div className={s.tile}>
+            <span className={s.tileLabel}>{T.d30}</span>
+            <strong className={s.tileValue}>{count(d.new.d30)}</strong>
+            {d.new.d30_previous !== undefined ? <Growth now={d.new.d30} before={d.new.d30_previous} /> : null}
+          </div>
         </div>
       </Block>
+      {d.per_day ? (
+        <Block title={T.perDay} desc={T.perDaySub}>
+          <DayBars days={d.per_day} />
+        </Block>
+      ) : null}
       <Block title={T.byPlan} right={<span className="note">{T.registered(count(d.registered))}</span>}>
         <div className={s.plans}>
           {PLANS.map((p) => (
@@ -236,12 +255,79 @@ export function UsersBody({ d }: { d: Users }) {
   );
 }
 
+/** MOB-1461: the change against the 30 days before (lime up, red down, grey equal; «—» when there was nobody before). */
+export function Growth({ now, before }: { now: number; before: number }) {
+  if (before === 0) {
+    return (
+      <span className={s.growth}>
+        <span className={s.pill} data-tone="flat">—</span>
+        <span className="note">{T.growthNone}</span>
+      </span>
+    );
+  }
+  const pct = ((now - before) / before) * 100;
+  const tone = Math.abs(pct) < 0.05 ? "flat" : pct > 0 ? "up" : "down";
+  return (
+    <span className={s.growth}>
+      <span className={s.pill} data-tone={tone}>
+        {change(pct)}
+      </span>
+      <span className="note">{T.growthPrev(count(before))}</span>
+    </span>
+  );
+}
+
+const MONTHS = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"];
+const dayLabel = (ymd: string) => `${Number(ymd.slice(8, 10))} ${MONTHS[Number(ymd.slice(5, 7)) - 1]}`;
+
+/** MOB-1461: new users per day, 30 bars, the last one (today) dashed. */
+export function DayBars({ days }: { days: { day: string; count: number }[] }) {
+  const top = Math.max(0, ...days.map((x) => x.count));
+  if (top === 0) return <p className="note">{T.perDayEmpty}</p>;
+  const step = [10, 20, 50, 100, 200, 500, 1000, 2000, 5000].find((x) => top / x <= 3) ?? 10000;
+  const max = step * Math.ceil(top / step);
+  const ticks = [0, step, 2 * step, 3 * step].filter((t) => t <= max);
+  return (
+    <figure className={s.bars} aria-label={T.perDay}>
+      <div className={s.barsAxis} aria-hidden="true">
+        {ticks.slice().reverse().map((t) => (
+          <span key={t}>{count(t)}</span>
+        ))}
+      </div>
+      <ol className={s.barsPlot}>
+        {days.map((x, i) => (
+          <li key={x.day} className={i === days.length - 1 ? s.barToday : undefined} title={`${dayLabel(x.day)}: ${count(x.count)}`}>
+            <span className={s.bar} style={{ height: `${(x.count / max) * 100}%` }} />
+            <span className="sr-only">{`${dayLabel(x.day)}: ${count(x.count)}`}</span>
+          </li>
+        ))}
+      </ol>
+      <div className={s.barsX} aria-hidden="true">
+        {days.map((x, i) => (
+          <span key={x.day}>{i % 7 === 0 || i === days.length - 1 ? dayLabel(x.day) : ""}</span>
+        ))}
+      </div>
+    </figure>
+  );
+}
+
+/** MOB-1461: the MRR, one figure. */
+export function RevenueBody({ d }: { d: Revenue }) {
+  return (
+    <Block title={T.mrr} desc={T.mrrDesc}>
+      <strong className={`${s.tileBig} ${dim(d.mrr) ?? ""}`}>{usd(d.mrr)}</strong>
+      {d.mrr === 0 ? <span className="note">{T.mrrNone}</span> : null}
+    </Block>
+  );
+}
+
 export function NewsBody({ d }: { d: News }) {
   const rows = [
     { label: T.collected, v: d.mt.collected },
     { label: T.selected, v: d.mt.selected },
   ];
   return (
+    <div className={s.stack}>
     <Block title={T.mt} desc={T.mtDesc}>
       <table className={s.mtTable}>
         <thead>
@@ -266,5 +352,33 @@ export function NewsBody({ d }: { d: News }) {
         </tbody>
       </table>
     </Block>
+      {d.archive ? (
+        <Block title={T.archive} desc={T.archiveDesc}>
+          <table className={s.mtTable}>
+            <thead>
+              <tr>
+                <th scope="col">
+                  <span className="sr-only">{T.archive}</span>
+                </th>
+                <th scope="col">{T.w7}</th>
+                <th scope="col">{T.d30}</th>
+                <th scope="col">{T.allTime}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">{T.archiveRow}</th>
+                <td className={dim(d.archive.d7)}>{count(d.archive.d7)}</td>
+                <td className={dim(d.archive.d30)}>{count(d.archive.d30)}</td>
+                <td className={dim(d.archive.all)}>{count(d.archive.all)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </Block>
+      ) : null}
+      {d.price_points !== undefined ? (
+        <Block title={T.points} desc={T.pointsDesc} right={<strong className={`${s.started} ${dim(d.price_points) ?? ""}`}>{d.price_points >= 100_000 ? T.mln(millions(d.price_points)) : count(d.price_points)}</strong>} />
+      ) : null}
+    </div>
   );
 }

@@ -13,10 +13,10 @@ import { PageHead, StateBlock } from "@/components/shell/parts";
 import { useConsole } from "@/lib/console";
 import { visibleNav } from "@/lib/nav";
 import { clock } from "./format";
-import { AiSpendBody, Alerts, freshLine, GroupCard, type GroupState, NewsBody, UsersBody } from "./Groups";
+import { AiSpendBody, Alerts, freshLine, GroupCard, type GroupState, NewsBody, RevenueBody, UsersBody } from "./Groups";
 import s from "./home.module.css";
 import { T } from "./texts";
-import { type AiSpend, GROUP_PERM, type GroupKey, type HomeData, isFailed, type News, type Users } from "./types";
+import { type AiSpend, GROUP_PERM, type GroupKey, type HomeData, isFailed, type News, type Revenue, type Users } from "./types";
 
 function RefreshIcon({ busy }: { busy: boolean }) {
   return (
@@ -152,6 +152,22 @@ export function HomeView() {
     </GroupCard>
   ) : null;
 
+  // MOB-1461: a backend without the revenue group (before the MOB-1461 API) leaves it out, never «Dato non disponibile».
+  const hasRevenue = groups.includes("revenue") && (data === null || "revenue" in data.groups);
+  const revenue = hasRevenue ? (
+    <GroupCard id="revenue" title={T.revenue} icon="coins" href="/revenue" go={T.goRevenue} state={stateOf<Revenue>(data, "revenue")} onRetry={retryGroup("revenue")} retrying={busy} fresh={() => T.mrrAt(clock(now))}>
+      {(d) => <RevenueBody d={d} />}
+    </GroupCard>
+  ) : null;
+  const side = revenue && news ? (
+    <div className={s.side}>
+      {revenue}
+      {news}
+    </div>
+  ) : (
+    (revenue ?? news)
+  );
+
   return (
     <div className={s.page}>
       {head}
@@ -161,13 +177,13 @@ export function HomeView() {
           {(d) => <AiSpendBody d={d} now={now} />}
         </GroupCard>
       ) : null}
-      {users && news ? (
+      {users && side ? (
         <div className={s.pair}>
           {users}
-          {news}
+          {side}
         </div>
       ) : (
-        (users ?? news)
+        (users ?? side)
       )}
     </div>
   );
