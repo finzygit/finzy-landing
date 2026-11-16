@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import { CookieConsentProvider } from "@/components/layout/cookie-consent";
+import { NavMenuProvider } from "@/components/layout/nav-menu";
 import { JsonLd } from "@/components/seo/json-ld";
 import { LanguageProvider } from "@/lib/i18n";
 import { META } from "@/lib/seo";
@@ -68,7 +69,10 @@ export default function RootLayout({
         <LanguageProvider>
           {/* Banner dei cookie di iubenda (MOB-815): spento finché manca
               NEXT_PUBLIC_IUBENDA_SITE_ID. */}
-          <CookieConsentProvider>{children}</CookieConsentProvider>
+          <CookieConsentProvider>
+            {/* Un solo menu di navigazione per pagina (MOB-1447). */}
+            <NavMenuProvider>{children}</NavMenuProvider>
+          </CookieConsentProvider>
         </LanguageProvider>
       </body>
     </html>
