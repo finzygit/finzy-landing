@@ -93,3 +93,22 @@
   .lines tbody td, .mtTable tbody td, .mtTable tbody th { padding-left: 10px; }
   .mtTable tbody th { padding-left: 0; }
 }
+
+/* MOB-1461 (design finzygit/finzy#750): growth pill, per-day bars, cost per generation */
+.unit { display: block; font-size: 12px; font-weight: 400; color: var(--text-3); margin-top: 2px; white-space: normal; max-width: 140px; margin-left: auto; }
+.lines thead th:last-child { white-space: normal; }
+.growth { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.pill { display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 12px; font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pill[data-tone="up"] { color: var(--up, #89f336); background: rgba(137, 243, 54, 0.14); }
+.pill[data-tone="down"] { color: var(--down, #ff453a); background: rgba(255, 69, 58, 0.14); }
+.pill[data-tone="flat"] { color: var(--text-2); background: rgba(255, 255, 255, 0.08); }
+.bars { margin: 0; display: grid; grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: 150px auto; column-gap: 8px; row-gap: 6px; }
+.barsAxis { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.barsPlot { list-style: none; margin: 0; padding: 0; display: flex; align-items: flex-end; gap: 3px; border-bottom: 1px solid var(--hair); min-width: 0; }
+.barsPlot li { flex: 1 1 0; height: 100%; display: flex; align-items: flex-end; min-width: 0; }
+.bar { display: block; width: 100%; background: var(--accent); border-radius: 3px 3px 0 0; min-height: 1px; }
+.barToday { outline: 1px dashed rgba(236, 244, 241, 0.3); outline-offset: 1px; border-radius: 3px; }
+.barsX { grid-column: 2; display: flex; gap: 3px; font-size: 12px; color: var(--text-3); }
+.barsX span { flex: 1 1 0; min-width: 0; white-space: nowrap; overflow: visible; }
+.barsX span:last-child { direction: rtl; } /* the last day's label grows to the left, never past the plot */
+.side { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
