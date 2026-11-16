@@ -11,7 +11,6 @@ import { Story } from "@/components/sections/story";
 import { Features } from "@/components/sections/features";
 import { Process } from "@/components/sections/process";
 import { Learning } from "@/components/sections/learning";
-import { Testimonials } from "@/components/sections/testimonials";
 // MOB-492: giveaway disattivato. Togli il commento per riattivarlo.
 // import { GiveawayBanner } from "@/components/sections/giveaway-banner";
 import { Pricing } from "@/components/sections/pricing";
@@ -43,7 +42,6 @@ export default async function Home() {
         <Features />
         <Process />
         <Learning />
-        <Testimonials />
         {/* MOB-492: giveaway disattivato. Togli il commento per riattivarlo. */}
         {/* <GiveawayBanner /> */}
         <Pricing />

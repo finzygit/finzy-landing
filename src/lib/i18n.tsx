@@ -175,28 +175,6 @@ const it = {
       },
     ],
   },
-  testimonials: {
-    overline: "Testimonianze",
-    title: "Cosa dicono i nostri utenti",
-    subtitle: "Migliaia di persone usano Finzy ogni giorno per restare sul pezzo.",
-    items: [
-      {
-        quote:
-          "Finzy mi fa risparmiare ore al giorno. I riassunti AI sono chiarissimi e finalmente capisco cosa succede nei mercati.",
-        name: "Alessandro M.",
-      },
-      {
-        quote:
-          "Il feed personalizzato mi tiene aggiornato solo sulle notizie che mi interessano. Zero rumore, solo ciò che conta.",
-        name: "Carlo C.",
-      },
-      {
-        quote:
-          "Le segnalazioni in tempo reale sono impressionanti. Catturo le opportunità prima che gli altri le vedano.",
-        name: "Giacomo M.",
-      },
-    ],
-  },
   sources: {
     title: "News e dati da fonti attendibili",
     subtitle: "Tutto ciò che serve sapere, da fonti verificate.",
@@ -469,28 +447,6 @@ const en: Dict = {
       },
     ],
   },
-  testimonials: {
-    overline: "Testimonials",
-    title: "What our users say",
-    subtitle: "Thousands of people rely on Finzy every day to stay on top of the markets.",
-    items: [
-      {
-        quote:
-          "Finzy saves me hours every day. The AI summaries are crystal clear and I finally understand what's happening in the markets.",
-        name: "Alessandro M.",
-      },
-      {
-        quote:
-          "The personalized feed keeps me updated only on the news I care about. Zero noise, only what matters.",
-        name: "Carlo C.",
-      },
-      {
-        quote:
-          "The real-time alerts are impressive. I catch opportunities before others even see them.",
-        name: "Giacomo M.",
-      },
-    ],
-  },
   sources: {
     title: "News and data from trusted sources",
     subtitle: "Everything you need to know, from verified sources.",
@@ -757,28 +713,6 @@ const es: Dict = {
         title: "Cursos básicos",
         body: "Cursos estructurados para principiantes: desde la terminología básica hasta construir una cartera.",
         badge: "8 cursos",
-      },
-    ],
-  },
-  testimonials: {
-    overline: "Testimonios",
-    title: "Lo que dicen nuestros usuarios",
-    subtitle: "Miles de personas usan Finzy cada día para estar al día de los mercados.",
-    items: [
-      {
-        quote:
-          "Finzy me ahorra horas cada día. Los resúmenes con IA son clarísimos y por fin entiendo lo que pasa en los mercados.",
-        name: "Alessandro M.",
-      },
-      {
-        quote:
-          "El feed personalizado me mantiene al día solo con las noticias que me interesan. Cero ruido, solo lo que importa.",
-        name: "Carlo C.",
-      },
-      {
-        quote:
-          "Las alertas en tiempo real son impresionantes. Capto las oportunidades antes de que los demás las vean.",
-        name: "Giacomo M.",
       },
     ],
   },
@@ -1051,28 +985,6 @@ const fr: Dict = {
       },
     ],
   },
-  testimonials: {
-    overline: "Témoignages",
-    title: "Ce que disent nos utilisateurs",
-    subtitle: "Des milliers de personnes utilisent Finzy chaque jour pour rester informées.",
-    items: [
-      {
-        quote:
-          "Finzy me fait gagner des heures chaque jour. Les résumés IA sont très clairs et je comprends enfin ce qui se passe sur les marchés.",
-        name: "Alessandro M.",
-      },
-      {
-        quote:
-          "Le flux personnalisé me tient informé uniquement des actualités qui m'intéressent. Zéro bruit, seulement l'essentiel.",
-        name: "Carlo C.",
-      },
-      {
-        quote:
-          "Les alertes en temps réel sont impressionnantes. Je saisis les opportunités avant que les autres ne les voient.",
-        name: "Giacomo M.",
-      },
-    ],
-  },
   sources: {
     title: "Actualités et données de sources fiables",
     subtitle: "Tout ce qu'il faut savoir, de sources vérifiées.",
@@ -1340,28 +1252,6 @@ const pt: Dict = {
         title: "Cursos base",
         body: "Cursos estruturados para iniciantes: da terminologia básica à construção de uma carteira.",
         badge: "8 cursos",
-      },
-    ],
-  },
-  testimonials: {
-    overline: "Testemunhos",
-    title: "O que dizem os nossos utilizadores",
-    subtitle: "Milhares de pessoas usam o Finzy todos os dias para se manterem a par.",
-    items: [
-      {
-        quote:
-          "A Finzy poupa-me horas por dia. Os resumos com IA são claríssimos e finalmente percebo o que acontece nos mercados.",
-        name: "Alessandro M.",
-      },
-      {
-        quote:
-          "O feed personalizado mantém-me atualizado apenas sobre as notícias que me interessam. Zero ruído, só o que importa.",
-        name: "Carlo C.",
-      },
-      {
-        quote:
-          "Os alertas em tempo real são impressionantes. Aproveito as oportunidades antes de os outros as verem.",
-        name: "Giacomo M.",
       },
     ],
   },

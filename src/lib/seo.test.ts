@@ -12,7 +12,7 @@
  * test legge il testo del file, come footer-links.test.ts.
  */
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { describe, test } from "node:test";
 import * as seo from "./seo.ts";
 
@@ -83,6 +83,51 @@ describe("titolo e descrizione del sito (MOB-1271)", () => {
     for (const name of ["openGraph", "twitter"]) {
       assert.match(block(name), /^\s*title: META\.it\.title,$/m, `${name}.title`);
       assert.match(block(name), /^\s*description: META\.it\.description,$/m, `${name}.description`);
+    }
+  });
+});
+
+/**
+ * Niente recensioni sul sito (MOB-1483, decisione D461). La home mostrava tre
+ * «testimonianze» firmate con le iniziali di persone interne, non di utenti:
+ * recensioni non vere sono una pratica vietata (Codice del consumo, direttiva
+ * Omnibus). Il blocco è tolto senza testo nuovo; le recensioni tornano solo
+ * se vere, con fonte e permesso, con una nuova decisione.
+ */
+describe("nessuna recensione sul sito (MOB-1483)", () => {
+  const src = new URL("../", import.meta.url);
+  const read = (path: string) => readFileSync(new URL(path, src), "utf8");
+  const code = (text: string) => text.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+  // Ogni file del sito in src/, tranne i test (che citano i nomi per cercarli).
+  const files = (readdirSync(src, { recursive: true }) as string[])
+    .filter((f) => /\.(tsx?|json)$/.test(f) && !/\.test\.tsx?$/.test(f));
+
+  test("la home non mostra il blocco delle testimonianze", () => {
+    const home = code(read("app/page.tsx"));
+    assert.doesNotMatch(home, /Testimonials/, "app/page.tsx usa ancora il blocco");
+    assert.ok(
+      !existsSync(new URL("components/sections/testimonials.tsx", src)),
+      "components/sections/testimonials.tsx esiste ancora",
+    );
+  });
+
+  test("nessun file del sito contiene le testimonianze, in nessuna lingua", () => {
+    assert.ok(files.length > 20, "elenco dei file vuoto: il test non guarda niente");
+    for (const f of files) {
+      const text = read(f);
+      for (const name of ["Alessandro M.", "Carlo C.", "Giacomo M."]) {
+        assert.ok(!text.includes(name), `${f}: contiene ancora «${name}»`);
+      }
+      assert.doesNotMatch(code(text), /\btestimonials\s*:/, `${f}: chiave testimonials`);
+      assert.doesNotMatch(code(text), /id="testimonianze"/, `${f}: sezione #testimonianze`);
+    }
+  });
+
+  test("i dati strutturati non dichiarano recensioni né voti", () => {
+    for (const f of files) {
+      const text = code(read(f));
+      assert.doesNotMatch(text, /aggregateRating|ratingValue|reviewCount/, `${f}: voto medio`);
+      assert.doesNotMatch(text, /"@type":\s*"Review"|\breview:\s*[[{]/, `${f}: recensione`);
     }
   });
 });
