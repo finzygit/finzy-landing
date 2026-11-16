@@ -53,7 +53,7 @@ export default function GenerationPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <FailureBox title={T.g_fail_title} reason={longPortfolioReason(g.failure.reason)} next={generationNext(g)} technical={g.failure.technical} defaultOpen />
           {g.failure.next_published ? (
-            <Link href={`/portfolio-builder/generazione?id=${g.failure.next_published.id}`}><GoLink>{T.g_next_link}</GoLink></Link>
+            <Link href={`/portfolio-builder/detail?id=${g.failure.next_published.id}`}><GoLink>{T.g_next_link}</GoLink></Link>
           ) : null}
         </div>
       );

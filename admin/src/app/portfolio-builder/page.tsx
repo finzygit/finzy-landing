@@ -77,7 +77,7 @@ export default function PortfolioBuilderPage() {
             state={hist}
             rows={data?.history.rows ?? []}
             rowKey={(r) => r.id}
-            onRowClick={(r) => router.push(`/portfolio-builder/generazione?id=${r.id}`)}
+            onRowClick={(r) => router.push(`/portfolio-builder/detail?id=${r.id}`)}
             onRetry={load}
             errorText={T.pb_error}
             empty={<StateBlock kind="empty" title={T.pf_empty_t} body={T.pf_empty_b} />}

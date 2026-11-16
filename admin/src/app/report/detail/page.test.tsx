@@ -4,7 +4,7 @@ import { fakeApi, renderPage } from "@/components/ai-reports/testing";
 import { ApiError } from "@/lib/api";
 import ReportPage from "./page";
 
-const nav = vi.hoisted(() => ({ pathname: "/report/scheda", search: "id=3", replace: vi.fn(), push: vi.fn() }));
+const nav = vi.hoisted(() => ({ pathname: "/report/detail", search: "id=3", replace: vi.fn(), push: vi.fn() }));
 vi.mock("next/navigation", () => ({
   usePathname: () => nav.pathname,
   useRouter: () => ({ replace: nav.replace, push: nav.push }),
@@ -35,7 +35,7 @@ describe("Report page", () => {
     expect(screen.getByText("10-K del 26/02/2026 · 0001045810-26-000012")).toBeTruthy();
     expect(screen.getByText("Anthropic · claude-sonnet-5")).toBeTruthy();
     expect(screen.getByText("Italiano e inglese")).toBeTruthy();
-    expect(screen.getByText("Scheda del titolo").closest("a")?.getAttribute("href")).toBe("/titoli/scheda?id=44");
+    expect(screen.getByText("Scheda del titolo").closest("a")?.getAttribute("href")).toBe("/stocks/detail?id=44");
     expect(screen.queryByText("Scarica PDF")).toBeNull();
 
     fireEvent.click(screen.getByRole("button", { name: "EN" }));

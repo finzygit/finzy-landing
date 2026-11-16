@@ -4,7 +4,7 @@ import { REPORTS_ADMIN, fakeApi, me, renderPage } from "@/components/ai-reports/
 import { ApiError } from "@/lib/api";
 import ConsentsPage from "./page";
 
-const nav = vi.hoisted(() => ({ pathname: "/consensi", replace: vi.fn(), push: vi.fn() }));
+const nav = vi.hoisted(() => ({ pathname: "/consents", replace: vi.fn(), push: vi.fn() }));
 vi.mock("next/navigation", () => ({
   usePathname: () => nav.pathname,
   useRouter: () => ({ replace: nav.replace, push: nav.push }),
@@ -36,7 +36,7 @@ describe("Consensi", () => {
     const { api } = fakeApi({ "/portfolio-consents": register });
     renderPage(<ConsentsPage />, api);
     await screen.findByText("giulia.bianchi@example.com");
-    expect(screen.getByText("giulia.bianchi@example.com").getAttribute("href")).toBe("/utenti/scheda?id=18");
+    expect(screen.getByText("giulia.bianchi@example.com").getAttribute("href")).toBe("/users/detail?id=18");
     expect(screen.getByText("Account eliminato")).toBeTruthy();
     expect(screen.getByText("10 consensi · tutti alla versione 1 dell’avviso")).toBeTruthy();
     expect(screen.getByText("11/11/2026, 20:16")).toBeTruthy();

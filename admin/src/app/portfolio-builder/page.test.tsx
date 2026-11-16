@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { fakeApi, renderPage } from "@/components/ai-reports/testing";
 import { ApiError } from "@/lib/api";
 import BuilderPage from "./page";
-import GenerationPage from "./generazione/page";
+import GenerationPage from "./detail/page";
 
 const nav = vi.hoisted(() => ({ pathname: "/portfolio-builder", search: "", replace: vi.fn(), push: vi.fn() }));
 vi.mock("next/navigation", () => ({
@@ -50,12 +50,12 @@ describe("Portfolio Builder", () => {
     expect(screen.getByText("24 strumenti · prompt v2 · pubblicato 14/11/2026")).toBeTruthy();
     expect(screen.getByText("Non attivo")).toBeTruthy();
     expect(screen.getByText("Non attivo: nessuna generazione finché non viene acceso.")).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Momentum: apri l’ultima generazione" }).getAttribute("href")).toBe("/portfolio-builder/generazione?id=30");
+    expect(screen.getByRole("link", { name: "Momentum: apri l’ultima generazione" }).getAttribute("href")).toBe("/portfolio-builder/detail?id=30");
     expect(screen.getByText("Azioni al 55% invece di 50%")).toBeTruthy();
     expect(screen.getByText("set 2026 · rischio dell’08/11")).toBeTruthy();
     expect(screen.getByText("1–10 di 15 generazioni")).toBeTruthy();
     fireEvent.click(screen.getByText("Growth"));
-    expect(nav.push).toHaveBeenCalledWith("/portfolio-builder/generazione?id=31");
+    expect(nav.push).toHaveBeenCalledWith("/portfolio-builder/detail?id=31");
     expect(screen.queryByRole("button", { name: /Genera|Rigenera/ })).toBeNull();
     expect(writes).not.toHaveBeenCalled();
   });
@@ -98,7 +98,7 @@ describe("Generation", () => {
     expect(screen.getByText("Il modello ha dato alle azioni pesi che sommano 55% invece di 50%: il controllo prima della pubblicazione l’ha fermata.")).toBeTruthy();
     expect(screen.getByText(/Era la prima generazione di Growth/)).toBeTruthy();
     expect(screen.getByText("instruments of 'stocks' sum to 55, expected 50")).toBeTruthy();
-    expect(screen.getByText("Apri la generazione pubblicata").closest("a")?.getAttribute("href")).toBe("/portfolio-builder/generazione?id=32");
+    expect(screen.getByText("Apri la generazione pubblicata").closest("a")?.getAttribute("href")).toBe("/portfolio-builder/detail?id=32");
   });
 
   it("not found", async () => {

@@ -79,7 +79,7 @@ function ReportsTab() {
           state={state}
           rows={data?.rows ?? []}
           rowKey={(r) => r.id}
-          onRowClick={(r) => router.push(`/report/scheda?id=${r.id}`)}
+          onRowClick={(r) => router.push(`/report/detail?id=${r.id}`)}
           onRetry={load}
           errorText={T.list_error}
           onClearFilters={() => setF({ status: "all", type: "", q: "", page: 1 })}
@@ -163,7 +163,7 @@ function UniverseTab({ pick, onPick }: { pick: CoveragePick; onPick: (p: Coverag
           state={state}
           rows={data?.rows ?? []}
           rowKey={(r) => `${r.region}-${r.azione_id}`}
-          onRowClick={(r) => (r.report_id ? router.push(`/report/scheda?id=${r.report_id}`) : undefined)}
+          onRowClick={(r) => (r.report_id ? router.push(`/report/detail?id=${r.report_id}`) : undefined)}
           onRetry={load}
           errorText={T.uni_error}
           onClearFilters={() => {
@@ -191,7 +191,7 @@ export default function ReportsPage() {
   const { api } = useConsole();
   const params = useSearchParams();
   const router = useRouter();
-  const tab = params?.get("tab") === "universo" ? "universe" : "reports";
+  const tab = params?.get("tab") === "universe" ? "universe" : "reports";
   const [cov, setCov] = useState<Coverage | null>(null);
   const [covState, setCovState] = useState<"loading" | "error" | "default">("loading");
   const [pick, setPick] = useState<CoveragePick>(null);
@@ -209,11 +209,11 @@ export default function ReportsPage() {
     queueMicrotask(loadCoverage);
   }, [loadCoverage]);
 
-  const goTab = (t: string) => router.replace(t === "universe" ? "/report?tab=universo" : "/report");
+  const goTab = (t: string) => router.replace(t === "universe" ? "/report?tab=universe" : "/report");
 
   return (
     <AdminFrame title={T.grp}>
-      <PageHead title={T.rep_title} sub={T.rep_sub} crumbs={[T.grp, T.rep_title]} actions={<Link href="/costi"><GoLink>{T.spend_link}</GoLink></Link>} />
+      <PageHead title={T.rep_title} sub={T.rep_sub} crumbs={[T.grp, T.rep_title]} actions={<Link href="/spend"><GoLink>{T.spend_link}</GoLink></Link>} />
       <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
         <CoverageCard
           data={cov}

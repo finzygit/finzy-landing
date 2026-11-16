@@ -57,7 +57,7 @@ describe("Report e copertura", () => {
     await screen.findByText("Tentato il");
 
     fireEvent.click(screen.getByText("XOM"));
-    expect(nav.push).toHaveBeenCalledWith("/report/scheda?id=1");
+    expect(nav.push).toHaveBeenCalledWith("/report/detail?id=1");
     expect(writes).not.toHaveBeenCalled();
   });
 
@@ -65,8 +65,8 @@ describe("Report e copertura", () => {
     const { api, get } = fakeApi({ "/report-coverage": coverage, "/reports": reports, "/report-coverage/members": members });
     const view = renderPage(<ReportsPage />, api);
     fireEvent.click(await screen.findByRole("button", { name: "Stati Uniti: Senza documento 2" }));
-    expect(nav.replace).toHaveBeenCalledWith("/report?tab=universo");
-    nav.search = "tab=universo";
+    expect(nav.replace).toHaveBeenCalledWith("/report?tab=universe");
+    nav.search = "tab=universe";
     view.rerender(<ConsoleProvider api={api}><ReportsPage /></ConsoleProvider>);
     await screen.findByText("SPOT");
     expect(get).toHaveBeenCalledWith("/report-coverage/members", expect.objectContaining({ region: "US", group: "no_filing", scope: "in_scope" }));

@@ -64,7 +64,7 @@ export default function ReportPage() {
     const side = (
       <aside className="card" style={{ padding: "8px 20px 18px", display: "flex", flexDirection: "column", gap: 8, minWidth: 0 }}>
         <MetaList rows={meta} />
-        {d.azione_id ? <Link href={`/titoli/scheda?id=${d.azione_id}`}><GoLink>{T.d_open_stock}</GoLink></Link> : null}
+        {d.azione_id ? <Link href={`/stocks/detail?id=${d.azione_id}`}><GoLink>{T.d_open_stock}</GoLink></Link> : null}
       </aside>
     );
     const main = failed && d.failure ? (

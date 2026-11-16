@@ -129,7 +129,7 @@ function Register() {
               {
                 key: "user", label: "Utente", render: (r) =>
                   r.email && r.user_id ? (
-                    <Link href={`/utenti/scheda?id=${r.user_id}`} style={{ overflowWrap: "anywhere" }}>{r.email}</Link>
+                    <Link href={`/users/detail?id=${r.user_id}`} style={{ overflowWrap: "anywhere" }}>{r.email}</Link>
                   ) : (
                     <span className="muted">{T.deleted_user}</span>
                   ),

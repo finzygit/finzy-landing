@@ -154,7 +154,7 @@ export function PortfolioCard({ p }: { p: PortfolioCardData }) {
   );
   const style: React.CSSProperties = { minHeight: 168, display: "flex", flexDirection: "column", gap: 12, padding: "18px 20px", opacity: p.enabled ? 1 : 0.72, fontWeight: 500 };
   return target && p.enabled ? (
-    <Link href={`/portfolio-builder/generazione?id=${target}`} className="card" style={style} aria-label={`${p.name}: apri l’ultima generazione`}>
+    <Link href={`/portfolio-builder/detail?id=${target}`} className="card" style={style} aria-label={`${p.name}: apri l’ultima generazione`}>
       {inner}
     </Link>
   ) : (
