@@ -65,6 +65,8 @@ async function expectMenuClosed(page: Page) {
 async function openMenu(page: Page) {
   // Retried: a tap that lands before React has hydrated the page does nothing.
   await expect(async () => {
+    // Already open (a slow earlier try): tapping again would hit the X.
+    if ((await shownMenus(page)) === 1) return;
     const point = await page.evaluate((label) => {
       const onScreen = [...document.querySelectorAll(`button[aria-label="${label}"]`)]
         .map((b) => b.getBoundingClientRect())
@@ -154,6 +156,7 @@ test("Home closes the menu and goes back to the top", async ({ page }) => {
   await tapMenuLink(page, "Home");
   await expectMenuClosed(page);
   await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 5_000 }).toBeLessThan(5);
+  await expect(page).toHaveURL(/\/$/);
 });
 
 test("Contatti opens the contact page with the menu closed", async ({ page }) => {
@@ -185,4 +188,14 @@ test("Escape closes the menu", async ({ page }) => {
   await openMenu(page);
   await page.keyboard.press("Escape");
   await expectMenuClosed(page);
+});
+
+test("Back to another page closes the menu", async ({ page }) => {
+  await page.goto("/contatti");
+  await page.goto("/");
+  await openMenu(page);
+  await page.goBack();
+  await expect(page).toHaveURL(/\/contatti$/);
+  await expectMenuClosed(page);
+  expect(await page.evaluate(() => document.body.style.overflow)).toBe("");
 });

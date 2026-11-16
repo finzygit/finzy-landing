@@ -12,6 +12,7 @@ import {
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { useIsClient } from "@/lib/client-snapshot";
 import { useLanguage } from "@/lib/i18n";
@@ -37,9 +38,14 @@ const NavMenuContext = createContext<NavMenuState | null>(null);
  * col Tab e gli screen reader non li leggono dietro la pagina.
  */
 export function NavMenuProvider({ children }: { children: ReactNode }) {
-  const [open, setOpen] = useState(false);
-  const openMenu = useCallback(() => setOpen(true), []);
-  const close = useCallback(() => setOpen(false), []);
+  // Il provider sta nel layout e sopravvive ai cambi di pagina: il menu resta
+  // aperto solo sulla pagina dove lo si è aperto. Con Indietro verso un'altra
+  // pagina si chiude da solo (e il body torna a scorrere).
+  const pathname = usePathname();
+  const [openOn, setOpenOn] = useState<string | null>(null);
+  const open = openOn !== null && openOn === pathname;
+  const openMenu = useCallback(() => setOpenOn(pathname), [pathname]);
+  const close = useCallback(() => setOpenOn(null), []);
   const value = useMemo(() => ({ open, openMenu }), [open, openMenu]);
 
   return (
