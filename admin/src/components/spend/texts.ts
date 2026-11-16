@@ -18,7 +18,7 @@ export const T = {
   pageErrorBody: "Il server non ha risposto. Riprova tra poco.",
 
   summary: "Riepilogo",
-  summarySub: "Sempre oggi, gli ultimi 7 e gli ultimi 30 giorni.",
+  summarySub: "Oggi, ultimi 7 e ultimi 30 giorni: non seguono il periodo scelto.",
   today: "Oggi",
   d7: "Ultimi 7 giorni",
   d30: "Ultimi 30 giorni",
@@ -54,7 +54,7 @@ export const T = {
   lastCall: (t: string) => `Ultima alle ${t}`,
   noCall: "Nessuna chiamata oggi",
   warnFail: "Oltre il 5 % delle chiamate di oggi è fallito",
-  warnCheck: "L’ultimo giro riuscito è troppo vecchio: vedi Servizi",
+  warnCheck: "L’ultimo giro riuscito della fonte è troppo vecchio",
   ok: "Regolare",
   warn: "Da guardare",
 } as const;

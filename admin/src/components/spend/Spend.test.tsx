@@ -29,7 +29,7 @@ const day = (i: number) => `2026-${i < 14 ? "10" : "11"}-${String(i < 14 ? 18 + 
 const SPEND: SpendData = {
   period: { generated_at: "2026-11-16T10:44:00+01:00" },
   summary: { today: 7.64, d7: 70.99, d30: 335.25, d7_from: "2026-11-10", d30_from: "2026-10-18", generations_30: 11724, lines_spend_30: 329.16, unit_cost_30: 329.16 / 11724 },
-  per_day: Array.from({ length: 30 }, (_, i) => ({ day: day(i), images: 9.5, articles: 3, stock_snapshot: 0, financial_report: i === 20 ? 11.51 : 0, other: 0.2 })),
+  per_day: Array.from({ length: 30 }, (_, i) => ({ day: day(i), images: i === 29 ? 5.81 : 9.5, articles: 3, stock_snapshot: 0, financial_report: i === 20 ? 11.51 : 0, other: 0.2 })),
   generations: {
     images: g([149, 1227, 5772, 22065], 225.11, 0.039),
     articles: g([149, 1294, 5829, 28331], 76.25, 0.01308),
@@ -90,7 +90,12 @@ describe("Spesa AI additions (MOB-1461)", () => {
     expect(within(sum).getByText("Ultimi 30 giorni, solo le quattro voci: $329,16 su 11.724 generazioni")).toBeTruthy();
 
     const chart = screen.getByRole("figure", { name: "Costo al giorno per tipo" });
-    expect(within(chart).getAllByRole("listitem")).toHaveLength(30);
+    const bars = within(chart).getAllByRole("listitem");
+    expect(bars).toHaveLength(30);
+    // 7 Nov: $24,21 is the top day, on an axis up to $25; each day says its types
+    expect(parseFloat((bars[20].firstChild as HTMLElement).style.height)).toBeCloseTo((24.21 / 25) * 100, 6);
+    expect(within(bars[20]).getByText("7 nov: $24,21, Immagini $9,50, Articoli $3,00, Financial report $11,51, Altri servizi $0,20")).toBeTruthy();
+    expect(screen.getByText(/Financial report \$11,51 \(/)).toBeTruthy();
 
     const gens = screen.getByRole("region", { name: "Generazioni per tipo" });
     const rows = within(gens).getAllByRole("row");
@@ -99,6 +104,7 @@ describe("Spesa AI additions (MOB-1461)", () => {
     expect(within(rows[1]).getByText("$0,0390")).toBeTruthy();
     expect(within(rows[5]).getByText("11.724")).toBeTruthy();
     expect(within(rows[5]).getByText("$329,16")).toBeTruthy();
+    expect(within(rows[5]).getByText("$0,0281")).toBeTruthy();
     expect(within(gens).getByText(/dal primo giorno registrato \(11 giugno 2026\)/)).toBeTruthy();
   });
 
@@ -161,9 +167,24 @@ describe("Fonti dati (MOB-1461)", () => {
     expect(within(card).getByText(/Conteggio attivo dal giorno 12 novembre 2026/)).toBeTruthy();
   });
 
+  it("a news source whose own check fails is «Da guardare» with its reason", async () => {
+    const items = HEALTH.sources!.items.map((x) => (x.key === "adnkronos" ? { ...x, status: "warn" as const, reason: "source_check" as const } : x));
+    render(
+      <ConsoleProvider api={api({ "/health": [{ ...HEALTH, sources: { counting_since: null, items } }] })}>
+        <HealthPage />
+      </ConsoleProvider>,
+    );
+
+    const card = await screen.findByRole("region", { name: "Fonti dati" });
+    const ak = within(card).getAllByRole("listitem")[3];
+    expect(within(ak).getByText("Da guardare")).toBeTruthy();
+    expect(within(ak).getByText("L’ultimo giro riuscito della fonte è troppo vecchio")).toBeTruthy();
+    expect(within(card).getByText(/Il conteggio parte con la prima richiesta/)).toBeTruthy();
+  });
+
   it("a failing sources read says «Dato non disponibile.» on the card only", async () => {
     render(
-      <ConsoleProvider api={api({ "/health": [{ ...HEALTH, sources: null } as unknown as HealthData] })}>
+      <ConsoleProvider api={api({ "/health": [{ ...HEALTH, sources: null }] })}>
         <HealthPage />
       </ConsoleProvider>,
     );

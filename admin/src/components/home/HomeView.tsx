@@ -47,7 +47,10 @@ function stateOf<D>(data: HomeData | null, key: GroupKey): GroupState<D> {
 export function HomeView() {
   const { api, me, can } = useConsole();
   const router = useRouter();
-  const groups = useMemo(() => (Object.keys(GROUP_PERM) as GroupKey[]).filter((k) => can(GROUP_PERM[k])), [can]);
+  // MOB-1461: «revenue» (the MRR) rides along with the other groups but never keeps a role on the Home by itself:
+  // a role with Ricavi and no other group still goes on to its first page, as before.
+  const all = useMemo(() => (Object.keys(GROUP_PERM) as GroupKey[]).filter((k) => can(GROUP_PERM[k])), [can]);
+  const groups = useMemo(() => (all.some((k) => k !== "revenue") ? all : []), [all]);
   const target = useMemo(() => (groups.length ? null : elsewhere(new Set(me?.permissions ?? []))), [groups.length, me]);
 
   const [data, setData] = useState<HomeData | null>(null);

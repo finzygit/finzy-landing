@@ -34,7 +34,7 @@ const AI = {
   lines: { images: line(5.81, 115.56, 5772, 0.039), articles: line(1.78, 42.03, 5829, 0.01308), stock_snapshot: line(0, 0.14, 1, 0.14), financial_report: line(0, 16.16, 0, null) },
   latest_at: "2026-11-16T10:20:00+01:00",
 };
-const DAYS = Array.from({ length: 30 }, (_, i) => ({ day: `2026-${i < 14 ? "10" : "11"}-${String(i < 14 ? 18 + i : i - 13).padStart(2, "0")}`, count: i === 29 ? 8 : 30 }));
+const DAYS = Array.from({ length: 30 }, (_, i) => ({ day: `2026-${i < 14 ? "10" : "11"}-${String(i < 14 ? 18 + i : i - 13).padStart(2, "0")}`, count: i === 0 ? 58 : i === 29 ? 8 : 30 }));
 const USERS = { new: { today: 8, d7: 187, d30: 1030, d30_previous: 489 }, per_day: DAYS, registered: 1555, per_plan: { free: 1537, premium: 2, unlimited: 16, trial: 0 }, store_started_month: 2, latest_at: "2026-11-16T09:23:00+01:00" };
 const NEWS = { mt: { collected: { today: 378, week: 4888, month: 12234 }, selected: { today: 146, week: 1145, month: 2886 } }, archive: { all: 37750, d7: 5020, d30: 24603 }, price_points: 29_214_000, latest_at: "2026-11-16T10:04:00+01:00" };
 
@@ -84,11 +84,18 @@ describe("Home additions (MOB-1461)", () => {
     expect(within(ai).getByText("nessun report in 30 giorni")).toBeTruthy();
 
     const users = screen.getByRole("region", { name: "Utenti" });
-    expect(within(users).getByText("+110,6 %")).toBeTruthy();
+    expect(within(users).getByText("+110,6 %").getAttribute("data-tone")).toBe("up");
     expect(within(users).getByText("sui 30 giorni prima (489)")).toBeTruthy();
     const bars = within(users).getByRole("figure", { name: "Nuovi utenti al giorno" });
     expect(within(bars).getAllByRole("listitem")).toHaveLength(30);
     expect(within(bars).getByText("16 nov: 8")).toBeTruthy();
+    // heights on one scale: 58 is the top day (axis up to 60), 8 is today
+    const h = within(bars).getAllByRole("listitem").map((li) => li.querySelector("span")?.style.height);
+    expect(h[0]).toBe(`${(58 / 60) * 100}%`);
+    expect(h[29]).toBe(`${(8 / 60) * 100}%`);
+    // days under the bars: every 7th, never next to the last one, and today
+    const x = Array.from(bars.querySelectorAll("div:last-child > span")).map((e) => e.textContent).filter(Boolean);
+    expect(x).toEqual(["18 ott", "25 ott", "1 nov", "8 nov", "16 nov"]);
 
     const news = screen.getByRole("region", { name: "Notizie" });
     expect(within(news).getByText("37.750")).toBeTruthy();
@@ -107,6 +114,20 @@ describe("Home additions (MOB-1461)", () => {
     expect(await within(users).findByText("—")).toBeTruthy();
     expect(within(users).getByText("nessun utente nei 30 giorni prima")).toBeTruthy();
     expect(within(screen.getByRole("region", { name: "Ricavi" })).getByText("Nessun abbonamento attivo sugli store")).toBeTruthy();
+  });
+
+  it("a drop is red", async () => {
+    show(api(me(ALL), home({ ai_spend: AI, users: { ...USERS, new: { ...USERS.new, d30: 402 } }, news: NEWS, revenue: { mrr: 94.6 } })));
+
+    const users = await screen.findByRole("region", { name: "Utenti" });
+    expect((await within(users).findByText("−17,8 %")).getAttribute("data-tone")).toBe("down");
+  });
+
+  it("a role with Ricavi but no other Home group still goes on to its first page", async () => {
+    nav.replace.mockReset();
+    show(api(me(["console.home.view", "console.revenue.view"]), home({ revenue: { mrr: 94.6 } })));
+
+    await vi.waitFor(() => expect(nav.replace).toHaveBeenCalledWith("/revenue"));
   });
 
   it("without Ricavi e promozioni there is no MRR group", async () => {
@@ -128,5 +149,8 @@ describe("Home additions (MOB-1461)", () => {
     expect(within(ai).queryByText("Costo medio · 30 giorni")).toBeNull();
     expect(screen.queryByRole("figure", { name: "Nuovi utenti al giorno" })).toBeNull();
     expect(screen.queryByRole("region", { name: "Ricavi" })).toBeNull();
+    expect(screen.queryByText("Ultimi 30 giorni", { selector: "span" })).toBeTruthy(); // the users tile only
+    expect(within(ai).queryByText("Ultimi 30 giorni")).toBeNull();
+    expect(screen.queryByText(/sui 30 giorni prima/)).toBeNull();
   });
 });

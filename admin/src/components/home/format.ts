@@ -73,6 +73,24 @@ export function hours(h: number): string {
   return h === 1 ? "1 ora" : `${count(h)} ore`;
 }
 
+const MONTHS_LONG = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
+
+/** MOB-1461: a date-only string as «18 ott». */
+export function dayShort(ymd: string): string {
+  return `${Number(ymd.slice(8, 10))} ${MONTHS[Number(ymd.slice(5, 7)) - 1]}`;
+}
+
+/** MOB-1461: a date-only string as «11 giugno 2026» («1° novembre 2026» on the first). */
+export function dayLong(ymd: string): string {
+  const d = Number(ymd.slice(8, 10));
+  return `${d === 1 ? "1°" : d} ${MONTHS_LONG[Number(ymd.slice(5, 7)) - 1]} ${ymd.slice(0, 4)}`;
+}
+
+/** MOB-1461: whether bar i of n gets its day under it: every 7th (5th) day, never the two just before the last, and the last. */
+export function tick(i: number, n: number, every = 7): boolean {
+  return i === n - 1 || (i % every === 0 && i <= n - 1 - Math.ceil(every / 2));
+}
+
 /** MOB-1461: an average cost, always 4 decimals so a column lines up: «$0,0390». */
 export function usd4(n: number): string {
   const [int, dec] = Math.abs(n).toFixed(4).split(".");

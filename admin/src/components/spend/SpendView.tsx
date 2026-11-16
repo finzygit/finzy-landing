@@ -7,63 +7,18 @@
 // /ai-spend, the same AdminGrowthStats as the Home. The period-driven parts of
 // MOB-1379 (budget, Dove va la spesa, failed calls) are not drawn yet.
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { clock, count, rome, span, usd, usd4 } from "@/components/home/format";
+import { clock, count, dayLong, dayShort, rome, span, tick, usd, usd4 } from "@/components/home/format";
 import { PageHead, StateBlock } from "@/components/shell/parts";
-import { Icon } from "@/components/shell/Icon";
-import { useConsole } from "@/lib/console";
+import { RefreshButton, useLoad } from "./parts";
 import s from "./spend.module.css";
 import { OTHER, T, TYPES } from "./texts";
 import type { DaySpend, SpendData } from "./types";
 
-const MONTHS = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"];
-const MONTHS_LONG = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
-const dayLabel = (ymd: string) => `${Number(ymd.slice(8, 10))} ${MONTHS[Number(ymd.slice(5, 7)) - 1]}`;
-const longDay = (ymd: string) => `${Number(ymd.slice(8, 10)) === 1 ? "1°" : Number(ymd.slice(8, 10))} ${MONTHS_LONG[Number(ymd.slice(5, 7)) - 1]} ${ymd.slice(0, 4)}`;
 const SERIES = [...TYPES, OTHER];
 const dayTotal = (d: DaySpend) => SERIES.reduce((a, x) => a + (d[x.key] ?? 0), 0);
-
-export function useLoad<D>(path: string) {
-  const { api } = useConsole();
-  const [data, setData] = useState<D | null>(null);
-  const [at, setAt] = useState<string | null>(null);
-  const [failed, setFailed] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const busyRef = useRef(false);
-  const load = useCallback(async () => {
-    if (busyRef.current) return;
-    busyRef.current = true;
-    setBusy(true);
-    try {
-      setData(await api.get<D>(path));
-      setAt(new Date().toISOString());
-      setFailed(false);
-    } catch {
-      setFailed(true);
-    } finally {
-      busyRef.current = false;
-      setBusy(false);
-    }
-  }, [api, path]);
-  const started = useRef(false);
-  useEffect(() => {
-    if (started.current) return;
-    started.current = true;
-    queueMicrotask(() => void load());
-  }, [load]);
-  return { data, at, failed, busy, load };
-}
-
-export function RefreshButton({ busy, onClick }: { busy: boolean; onClick: () => void }) {
-  return (
-    <button type="button" className="btn" onClick={() => !busy && onClick()} aria-disabled={busy || undefined} aria-busy={busy || undefined}>
-      <span className={busy ? s.spin : undefined} style={{ display: "inline-flex" }}>
-        <Icon name="pulse" size={17} />
-      </span>
-      {T.refresh}
-    </button>
-  );
-}
+/** The day in words for screen readers and the pointer: total, then each type that spent. */
+const describe = (d: DaySpend) =>
+  `${dayShort(d.day)}: ${usd(dayTotal(d))}` + SERIES.filter((x) => d[x.key] > 0).map((x) => `, ${x.label} ${usd(d[x.key])}`).join("");
 
 function Tile({ label, value, foot, zero }: { label: string; value: string; foot?: string; zero?: boolean }) {
   return (
@@ -85,7 +40,7 @@ function Summary({ d, now }: { d: SpendData; now: string }) {
         <p className="note">{T.summarySub}</p>
       </header>
       <div className={s.tiles4}>
-        <Tile label={T.today} value={usd(sm.today)} foot={T.todayUntil(`${today.d} ${MONTHS[today.m - 1]}`, clock(now))} zero={sm.today === 0} />
+        <Tile label={T.today} value={usd(sm.today)} foot={T.todayUntil(dayShort(`${today.y}-${String(today.m).padStart(2, "0")}-${String(today.d).padStart(2, "0")}`), clock(now))} zero={sm.today === 0} />
         <Tile label={T.d7} value={usd(sm.d7)} foot={span(sm.d7_from, now)} zero={sm.d7 === 0} />
         <Tile label={T.d30} value={usd(sm.d30)} foot={span(sm.d30_from, now)} zero={sm.d30 === 0} />
         <Tile
@@ -133,19 +88,19 @@ function ByType({ d }: { d: SpendData }) {
             </div>
             <ol className={s.plot}>
               {days.map((day, i) => (
-                <li key={day.day} className={i === days.length - 1 ? s.today : undefined}>
+                <li key={day.day} className={i === days.length - 1 ? s.today : undefined} title={describe(day)}>
                   <span className={s.stack} style={{ height: `${(dayTotal(day) / max) * 100}%` }}>
                     {SERIES.map((x) =>
                       day[x.key] > 0 ? <span key={x.key} style={{ flexGrow: day[x.key], background: x.dot }} /> : null,
                     )}
                   </span>
-                  <span className="sr-only">{`${dayLabel(day.day)}: ${usd(dayTotal(day))}`}</span>
+                  <span className="sr-only">{describe(day)}</span>
                 </li>
               ))}
             </ol>
             <div className={s.xaxis} aria-hidden="true">
               {days.map((day, i) => (
-                <span key={day.day}>{i % 5 === 0 || i === days.length - 1 ? dayLabel(day.day) : ""}</span>
+                <span key={day.day}>{tick(i, days.length, 5) ? dayShort(day.day) : ""}</span>
               ))}
             </div>
           </figure>
@@ -165,9 +120,9 @@ function Generations({ d }: { d: SpendData }) {
     <section className={`card ${s.card}`} aria-labelledby="sp-gens">
       <header>
         <h2 id="sp-gens">{T.gens}</h2>
-        <p className="note">{T.gensSub(d.generations_since ? longDay(d.generations_since) : null)}</p>
+        <p className="note">{T.gensSub(d.generations_since ? dayLong(d.generations_since) : null)}</p>
       </header>
-      <div className={s.scroll}>
+      <div className={s.scroll} tabIndex={0} role="group" aria-labelledby="sp-gens">
         <table className={s.table}>
           <thead>
             <tr>
@@ -224,14 +179,14 @@ function Generations({ d }: { d: SpendData }) {
 
 export function SpendView() {
   // Any period: the parts drawn here do not follow it (AiSpendReport::fixed).
-  const { data, at, failed, busy, load } = useLoad<SpendData>("/ai-spend?period=d30");
+  const { data, failed, busy, load } = useLoad<SpendData>("/ai-spend?period=d30");
   const head = (
     <PageHead
       title={T.spendTitle}
       sub={T.sub}
       actions={data ? (
         <div className={s.headRight}>
-          {failed ? <span className={s.failed} role="alert">{T.refreshFailed(clock(at ?? new Date()))}</span> : <span className={s.updated}>{T.updated(clock(data.period.generated_at))}</span>}
+          {failed ? <span className={s.failed} role="alert">{T.refreshFailed(clock(data.period.generated_at))}</span> : <span className={s.updated}>{T.updated(clock(data.period.generated_at))}</span>}
           <RefreshButton busy={busy} onClick={() => void load()} />
         </div>
       ) : undefined}

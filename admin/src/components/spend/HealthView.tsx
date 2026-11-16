@@ -6,16 +6,14 @@
 // /health → sources). The other parts of MOB-1379 (summary, services, recent
 // errors, signups) are not drawn yet.
 
-import { clock, count } from "@/components/home/format";
+import { clock, count, dayLong } from "@/components/home/format";
 import { Icon } from "@/components/shell/Icon";
 import { PageHead, StateBlock, Status } from "@/components/shell/parts";
-import { RefreshButton, useLoad } from "./SpendView";
+import { RefreshButton, useLoad } from "./parts";
 import s from "./spend.module.css";
 import { SOURCES, T } from "./texts";
 import type { HealthData, Source } from "./types";
 
-const MONTHS_LONG = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
-const longDay = (ymd: string) => `${Number(ymd.slice(8, 10)) === 1 ? "1°" : Number(ymd.slice(8, 10))} ${MONTHS_LONG[Number(ymd.slice(5, 7)) - 1]} ${ymd.slice(0, 4)}`;
 
 function SourceRow({ src }: { src: Source }) {
   const def = SOURCES[src.key] ?? { name: src.key, desc: "", icon: "info" };
@@ -46,14 +44,14 @@ function SourceRow({ src }: { src: Source }) {
 }
 
 export function HealthView() {
-  const { data, at, failed, busy, load } = useLoad<HealthData>("/health");
+  const { data, failed, busy, load } = useLoad<HealthData>("/health");
   const head = (
     <PageHead
       title={T.healthTitle}
       sub={T.subHealth}
       actions={data ? (
         <div className={s.headRight}>
-          {failed ? <span className={s.failed} role="alert">{T.refreshFailed(clock(at ?? new Date()))}</span> : <span className={s.updated}>{T.updated(clock(data.checked_at))}</span>}
+          {failed ? <span className={s.failed} role="alert">{T.refreshFailed(clock(data.checked_at))}</span> : <span className={s.updated}>{T.updated(clock(data.checked_at))}</span>}
           <RefreshButton busy={busy} onClick={() => void load()} />
         </div>
       ) : undefined}
@@ -78,7 +76,7 @@ export function HealthView() {
       <section className={`card ${s.card}`} aria-labelledby="hl-sources">
         <header>
           <h2 id="hl-sources">{T.sources}</h2>
-          <p className="note">{T.sourcesSub(src?.counting_since ? longDay(src.counting_since) : null)}</p>
+          <p className="note">{T.sourcesSub(src?.counting_since ? dayLong(src.counting_since) : null)}</p>
         </header>
         {src ? (
           <ul className={s.sources}>

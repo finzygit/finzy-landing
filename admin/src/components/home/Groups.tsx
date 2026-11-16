@@ -7,7 +7,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Icon } from "@/components/shell/Icon";
-import { change, clock, count, hours, millions, provider, span, usd, usd4, when } from "./format";
+import { change, clock, count, dayShort, hours, millions, provider, span, tick, usd, usd4, when } from "./format";
 import s from "./home.module.css";
 import { LINES, PLANS, T, UNIT } from "./texts";
 import type { AiSpend, Alert, News, Revenue, Users } from "./types";
@@ -169,11 +169,11 @@ export function AiSpendBody({ d, now }: { d: AiSpend; now: string }) {
     <div className={s.aiGrid}>
       <div className={s.aiLeft}>
         <Block title={T.total} desc={T.totalDesc}>
-          <div className={d.d30 !== undefined ? s.tiles3 : s.tiles2}>
+          <div className={s.tiles2}>
             <Tile label={T.w7} value={usd(d.week)} foot={span(d.week_from, now)} big />
             <Tile label={T.mtd} value={usd(d.month)} foot={span(d.month_from, now)} big />
-            {d.d30 !== undefined ? <Tile label={T.d30} value={usd(d.d30)} foot={d.d30_from ? span(d.d30_from, now) : undefined} big /> : null}
           </div>
+          {d.d30 !== undefined ? <Tile label={T.d30} value={usd(d.d30)} foot={d.d30_from ? span(d.d30_from, now) : undefined} big /> : null}
         </Block>
         <p className={`note ${s.foot}`}>{T.foot}</p>
       </div>
@@ -277,9 +277,6 @@ export function Growth({ now, before }: { now: number; before: number }) {
   );
 }
 
-const MONTHS = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"];
-const dayLabel = (ymd: string) => `${Number(ymd.slice(8, 10))} ${MONTHS[Number(ymd.slice(5, 7)) - 1]}`;
-
 /** MOB-1461: new users per day, 30 bars, the last one (today) dashed. */
 export function DayBars({ days }: { days: { day: string; count: number }[] }) {
   const top = Math.max(0, ...days.map((x) => x.count));
@@ -296,15 +293,15 @@ export function DayBars({ days }: { days: { day: string; count: number }[] }) {
       </div>
       <ol className={s.barsPlot}>
         {days.map((x, i) => (
-          <li key={x.day} className={i === days.length - 1 ? s.barToday : undefined} title={`${dayLabel(x.day)}: ${count(x.count)}`}>
+          <li key={x.day} className={i === days.length - 1 ? s.barToday : undefined} title={`${dayShort(x.day)}: ${count(x.count)}`}>
             <span className={s.bar} style={{ height: `${(x.count / max) * 100}%` }} />
-            <span className="sr-only">{`${dayLabel(x.day)}: ${count(x.count)}`}</span>
+            <span className="sr-only">{`${dayShort(x.day)}: ${count(x.count)}`}</span>
           </li>
         ))}
       </ol>
       <div className={s.barsX} aria-hidden="true">
         {days.map((x, i) => (
-          <span key={x.day}>{i % 7 === 0 || i === days.length - 1 ? dayLabel(x.day) : ""}</span>
+          <span key={x.day}>{tick(i, days.length) ? dayShort(x.day) : ""}</span>
         ))}
       </div>
     </figure>
@@ -377,7 +374,7 @@ export function NewsBody({ d }: { d: News }) {
         </Block>
       ) : null}
       {d.price_points !== undefined ? (
-        <Block title={T.points} desc={T.pointsDesc} right={<strong className={`${s.started} ${dim(d.price_points) ?? ""}`}>{d.price_points >= 100_000 ? T.mln(millions(d.price_points)) : count(d.price_points)}</strong>} />
+        <Block title={T.points} desc={T.pointsDesc} right={<strong className={`${s.started} ${dim(d.price_points) ?? ""}`}>{d.price_points >= 1_000_000 ? T.mln(millions(d.price_points)) : count(d.price_points)}</strong>} />
       ) : null}
     </div>
   );

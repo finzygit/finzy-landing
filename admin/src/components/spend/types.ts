@@ -23,4 +23,4 @@ export type SpendData = {
 
 export type Source = { key: string; requests: number; failed: number; last_at: string | null; status: "ok" | "warn"; reason: "failed_share" | "source_check" | null };
 
-export type HealthData = { checked_at: string; sources: { counting_since: string | null; items: Source[] } };
+export type HealthData = { checked_at: string; sources: { counting_since: string | null; items: Source[] } | null }; // null: the backend's sources read failed
