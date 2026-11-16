@@ -502,7 +502,7 @@ export function NewUserDialog({ onDone, onCancel }: { onDone: (id: number) => vo
 
 // ---------------------------------------------------------------- Esporta CSV (#234)
 
-export function CsvDialog({ total, plans, q, onCancel }: { total: number; plans: Plan[]; q: string; onCancel: () => void }) {
+export function CsvDialog({ total, plans, q, gift = false, suspended = false, onCancel }: { total: number; plans: Plan[]; q: string; gift?: boolean; suspended?: boolean; onCancel: () => void }) {
   const { api, toast } = useConsole();
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -511,7 +511,8 @@ export function CsvDialog({ total, plans, q, onCancel }: { total: number; plans:
     setBusy(true);
     setFailed(false);
     try {
-      const blob = await api.blob("/users.csv", { plans: plans.join(","), q });
+      // MOB-1462: the file takes «Con omaggio» and «Stato: Sospesi» too.
+      const blob = await api.blob("/users.csv", { plans: plans.join(","), q, ...(gift ? { gift: 1 } : {}), ...(suspended ? { suspended: 1 } : {}) });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
