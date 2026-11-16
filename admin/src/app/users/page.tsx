@@ -323,7 +323,9 @@ export default function UsersPage() {
   .users-table th:nth-child(4), .users-table td:nth-child(4), .users-table th:nth-child(7), .users-table td:nth-child(7) { display: none; }
   .users-phone-line { display: block; }
   .users-table th, .users-table td { padding-left: 8px; padding-right: 8px; }
-  .users-table th:nth-child(2), .users-table td:nth-child(2) { width: 118px; }
+  /* The column's own width is inline (180px): !important, or the user column shrinks to a sliver. */
+  .users-table th:nth-child(2), .users-table td:nth-child(2) { width: 118px !important; }
+  .users-table th:nth-child(8), .users-table td:nth-child(8) { width: 24px !important; }
 }`}</style>
     </AdminFrame>
   );

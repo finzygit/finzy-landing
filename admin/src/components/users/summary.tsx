@@ -45,7 +45,9 @@ export function SummaryTiles({ data, failed, onShowGifts }: { data: UsersSummary
   const na = "Non disponibile";
   const v = (n: number | undefined) => (data && n !== undefined ? fmt(n) : failed ? "—" : "");
   return (
-    <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }} aria-busy={loading || undefined}>
+    <div className="users-tiles" style={{ display: "flex", gap: 12, flexWrap: "wrap" }} aria-busy={loading || undefined}>
+      {/* Phone (ADM-UB-08): two numbers a row. */}
+      <style>{`@media (max-width: 599px) { .users-tiles > [data-tile] { flex: 1 1 calc(50% - 6px) !important; padding: 14px !important; } .users-tiles strong { font-size: 24px !important; } }`}</style>
       <Tile label="Paganti" loading={loading} value={v(data?.paying.count)} sub={data ? `${pct(data.paying.pct)} del totale` : failed ? na : ""} />
       <Tile label="Free" loading={loading} value={v(data?.free.count)} sub={data ? `${pct(data.free.pct)} del totale` : failed ? na : ""} />
       <Tile
