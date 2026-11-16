@@ -92,7 +92,7 @@ describe("Utenti list", () => {
     expect(screen.getByText("1.495 utenti in tutto")).toBeTruthy();
     expect(screen.getByText("Senza nome")).toBeTruthy();
     expect(screen.getByText("fino al 31/12/2026")).toBeTruthy();
-    expect(screen.getByText("EN")).toBeTruthy();
+    // MOB-1462 (#751): «Lingua» left the list for the new columns; it stays on the user's page.
     expect(screen.getByRole("button", { name: /Esporta CSV/ })).toBeTruthy();
     expect(screen.getByRole("button", { name: /Nuovo utente/ })).toBeTruthy();
     fireEvent.click(screen.getByText("Marco Bellini"));
@@ -245,7 +245,8 @@ describe("User page", () => {
     expect(screen.getByRole("button", { name: /Regala piano/ })).toBeTruthy();
     expect(screen.queryByRole("button", { name: /Revoca regalo/ })).toBeNull();
     expect(screen.getByRole("button", { name: /Elimina account/ })).toBeTruthy();
-    expect(screen.queryByText(/Ultimo accesso/)).toBeNull();
+    // MOB-1462: «Ultimo accesso» is back (user_sessions.last_used_at), «—» when not recorded.
+    expect(screen.getByText("Ultimo accesso")).toBeTruthy();
   });
 
   it("view only: the banner, no actions", async () => {

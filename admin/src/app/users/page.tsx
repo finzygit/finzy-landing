@@ -6,6 +6,11 @@
 // console.users.export, «Nuovo utente» with console.users.update. Staff is not
 // here (decision 4): it is in Amministrazione › Persone con accesso. On the
 // phone: search, Piano and the rows only (decision 7).
+// MOB-1462 (boards ADM-UB-01, 02, 08): the numbers above the list (GET
+// users/summary, not changed by the filters), the «solo abbonati» donuts, the
+// «Con omaggio» chip, «{n} sospesi» (a «Stato: Sospesi» filter), the columns
+// Ultimo accesso, Termini/Privacy accettata (1440 and up) and Generazioni 30
+// gg, the «Sospeso» pill, and «Definizioni» under the table.
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -14,9 +19,17 @@ import { DataTable, type TableState } from "@/components/shell/DataTable";
 import { Icon } from "@/components/shell/Icon";
 import { PageHead, Pager, Section, StateBlock } from "@/components/shell/parts";
 import { CsvDialog, NewUserDialog } from "@/components/users/dialogs";
-import { countLine, dmy, fmt, LANG_SHORT, PLAN_LABEL, PLANS, SORTS, type Plan, type UserList, type UserRow } from "@/components/users/model";
-import { PlanPill, UIcon, UserCell } from "@/components/users/parts";
+import { countLine, dmy, fmt, generationsLine, lastAccess, PLAN_LABEL, PLANS, SORTS, type Plan, type UserList, type UserRow, type UsersSummary } from "@/components/users/model";
+import { PlanPill, SuspendedPill, UIcon, UserCell } from "@/components/users/parts";
+import { Definitions, PayingPies, SummaryTiles } from "@/components/users/summary";
 import { useConsole } from "@/lib/console";
+
+/** MOB-1462: an answer counts only with every part the tiles and donuts read (an older backend has none). */
+function isSummary(d: unknown): d is UsersSummary {
+  if (!d || typeof d !== "object") return false;
+  const x = d as Partial<UsersSummary>;
+  return !!x.paying && !!x.free && !!x.conversions_90d && typeof x.gifts_active === "number" && Array.isArray(x.segments?.platform) && Array.isArray(x.segments?.country);
+}
 
 export default function UsersPage() {
   const { api, can } = useConsole();
@@ -34,6 +47,11 @@ export default function UsersPage() {
   const [stored, setStored] = useState<{ key: string; data: UserList | null } | null>(null);
   const [last, setLast] = useState<UserList | null>(null);
   const [dialog, setDialog] = useState<"csv" | "new" | null>(null);
+  // MOB-1462: «Con omaggio», «Stato: Sospesi», and the numbers above the list.
+  const [gift, setGift] = useState(false);
+  const [suspendedOnly, setSuspendedOnly] = useState(false);
+  const [summary, setSummary] = useState<UsersSummary | null>(null);
+  const [summaryFailed, setSummaryFailed] = useState(false);
   const filtersRef = useRef<HTMLDivElement>(null);
 
   // The search waits for a pause in typing.
@@ -46,10 +64,10 @@ export default function UsersPage() {
   }, [q]);
 
   const planKey = plans.join(",");
-  const key = JSON.stringify({ query, planKey, sort, page, nonce });
+  const key = JSON.stringify({ query, planKey, sort, page, nonce, gift, suspendedOnly });
   useEffect(() => {
     let live = true;
-    api.get<UserList>("/users", { q: query, plans: planKey, sort, page }).then(
+    api.get<UserList>("/users", { q: query, plans: planKey, sort, page, ...(gift ? { gift: 1 } : {}), ...(suspendedOnly ? { suspended: 1 } : {}) }).then(
       (d) => {
         if (!live) return;
         setStored({ key, data: d });
@@ -60,7 +78,19 @@ export default function UsersPage() {
     return () => {
       live = false;
     };
-  }, [api, key, query, planKey, sort, page]);
+  }, [api, key, query, planKey, sort, page, gift, suspendedOnly]);
+
+  useEffect(() => {
+    let live = true;
+    api.get<UsersSummary>("/users/summary").then(
+      // An answer without the numbers counts as a failure (the tiles say «Non disponibile»).
+      (d) => live && (isSummary(d) ? (setSummary(d), setSummaryFailed(false)) : setSummaryFailed(true)),
+      () => live && setSummaryFailed(true),
+    );
+    return () => {
+      live = false;
+    };
+  }, [api, nonce]);
 
   const data = stored?.key === key ? stored.data : null;
   const state: TableState = stored?.key !== key ? "loading" : !data ? "error" : data.users.length ? "default" : data.narrowed ? "filtered" : "empty";
@@ -83,6 +113,8 @@ export default function UsersPage() {
     setQ("");
     setQuery("");
     setPlans([]);
+    setGift(false);
+    setSuspendedOnly(false);
     setPage(1);
   };
   const applyPlans = () => {
@@ -110,6 +142,11 @@ export default function UsersPage() {
           ) : undefined
         }
       />
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 22 }}>
+        <SummaryTiles data={summary} failed={summaryFailed} onShowGifts={() => (setGift(true), setPage(1))} />
+        <PayingPies data={summary} loading={!summary && !summaryFailed} />
+      </div>
 
       <div ref={filtersRef} style={{ position: "relative", zIndex: 3, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 18 }}>
         <div style={{ position: "relative", flex: "1 1 280px", maxWidth: 420 }}>
@@ -164,21 +201,41 @@ export default function UsersPage() {
           ) : null}
         </div>
 
-        {query || plans.length ? (
-          <button type="button" className="link-btn" onClick={reset}>Reimposta i filtri</button>
+        <button type="button" className="btn" aria-pressed={gift} style={gift ? { color: "var(--accent)", boxShadow: "inset 0 0 0 1px var(--accent)" } : undefined} onClick={() => (setGift(!gift), setPage(1))}>
+          {gift ? <Icon name="check" size={16} /> : <UIcon name="gift" size={16} />} Con omaggio
+        </button>
+
+        {suspendedOnly ? (
+          <button type="button" className="btn" style={{ color: "var(--accent)", boxShadow: "inset 0 0 0 1px var(--accent)" }} aria-label="Togli il filtro Stato: Sospesi" onClick={() => (setSuspendedOnly(false), setPage(1))}>
+            Stato: Sospesi <Icon name="close" size={14} />
+          </button>
         ) : null}
 
-        {canExport ? (
-          <button type="button" className="btn users-desktop" style={{ marginLeft: "auto" }} disabled={state !== "default"} onClick={() => setDialog("csv")}>
-            <Icon name="download" size={17} /> Esporta CSV
-          </button>
+        {query || plans.length || gift || suspendedOnly ? (
+          <button type="button" className="link-btn" onClick={reset}>Reimposta i filtri</button>
         ) : null}
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <p style={{ margin: 0, minHeight: 20, fontSize: 14, fontWeight: 600, color: "var(--text-2)", fontVariantNumeric: "tabular-nums" }} aria-live="polite">
-          {data && state !== "filtered" ? countLine(data.total, data.narrowed) : state === "filtered" ? countLine(0, true) : ""}
-        </p>
+        <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", minHeight: 36 }}>
+          <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "var(--text-2)", fontVariantNumeric: "tabular-nums" }} aria-live="polite">
+            {data && state !== "filtered"
+              ? gift && !query && !plans.length && !suspendedOnly
+                ? data.total === 1 ? "1 utente con un omaggio attivo" : `${fmt(data.total)} utenti con un omaggio attivo`
+                : countLine(data.total, data.narrowed)
+              : state === "filtered" ? countLine(0, true) : ""}
+          </p>
+          {summary && summary.suspended > 0 && !suspendedOnly && !gift ? (
+            <button type="button" className="link-btn" style={{ fontSize: 14, display: "inline-flex", alignItems: "center", gap: 6 }} onClick={() => (setSuspendedOnly(true), setPage(1))}>
+              <UIcon name="ban" size={14} /> {summary.suspended === 1 ? "1 sospeso" : `${fmt(summary.suspended)} sospesi`}
+            </button>
+          ) : null}
+          {canExport ? (
+            <button type="button" className="btn users-desktop" style={{ marginLeft: "auto" }} disabled={state !== "default"} onClick={() => setDialog("csv")}>
+              <Icon name="download" size={17} /> Esporta CSV
+            </button>
+          ) : null}
+        </div>
         <div className="users-table">
         <Section pad="8px">
           <DataTable<UserRow>
@@ -193,7 +250,19 @@ export default function UsersPage() {
             errorText="Non è stato possibile caricare gli utenti"
             empty={<StateBlock kind="empty" title="Nessun utente" body="Gli utenti compariranno qui quando si iscrivono all’app." />}
             columns={[
-              { key: "u", label: "Utente", render: (u) => <UserCell name={u.name} email={u.email} /> },
+              {
+                key: "u",
+                label: "Utente",
+                render: (u) => (
+                  <span style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 0 }}>
+                    <UserCell name={u.name} email={u.email} />
+                    {/* Phone (ADM-UB-08): the row says last access and generations. */}
+                    <span className="sub users-phone-line" style={{ paddingLeft: 48 }}>
+                      Ultimo accesso: {lastAccess(u.last_access_at)}{u.generations_30d ? ` · ${u.generations_30d.total} generazioni` : ""}
+                    </span>
+                  </span>
+                ),
+              },
               {
                 key: "p",
                 label: "Piano",
@@ -202,30 +271,61 @@ export default function UsersPage() {
                   <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 4 }}>
                     <PlanPill plan={u.plan} small />
                     {u.plan_until ? <span className="sub" style={{ fontVariantNumeric: "tabular-nums" }}>fino al {dmy(u.plan_until)}</span> : null}
+                    {u.suspended_at ? <SuspendedPill small /> : null}
                   </span>
                 ),
               },
-              { key: "s", label: "Iscritto il", width: "130px", render: (u) => <span style={{ fontVariantNumeric: "tabular-nums" }}>{dmy(u.created_at)}</span> },
-              { key: "l", label: "Lingua", width: "80px", render: (u) => (u.lang ? LANG_SHORT[u.lang] ?? u.lang.toUpperCase() : <span className="muted">—</span>) },
+              { key: "s", label: "Iscritto il", width: "110px", render: (u) => <span style={{ fontVariantNumeric: "tabular-nums" }}>{dmy(u.created_at)}</span> },
+              { key: "a", label: "Ultimo accesso", width: "120px", render: (u) => <span className={u.last_access_at ? undefined : "muted"} style={{ fontVariantNumeric: "tabular-nums" }}>{lastAccess(u.last_access_at)}</span> },
+              { key: "t", label: "Termini accettati", width: "110px", render: (u) => <span className={u.terms_accepted_at ? undefined : "muted"} style={{ fontVariantNumeric: "tabular-nums" }}>{dmy(u.terms_accepted_at)}</span> },
+              { key: "v", label: "Privacy accettata", width: "110px", render: (u) => <span className={u.privacy_accepted_at ? undefined : "muted"} style={{ fontVariantNumeric: "tabular-nums" }}>{dmy(u.privacy_accepted_at)}</span> },
+              {
+                key: "g",
+                label: "Generazioni 30 gg",
+                width: "110px",
+                align: "right",
+                render: (u) => {
+                  const g = u.generations_30d;
+                  if (!g) return <span className="muted">—</span>;
+                  return (
+                    <span title={g.total ? generationsLine(g) : undefined} aria-label={g.total ? `${g.total} generazioni negli ultimi 30 giorni: ${generationsLine(g)}` : undefined} className={g.total ? undefined : "muted"} style={{ fontWeight: g.total ? 700 : 400, fontVariantNumeric: "tabular-nums" }}>
+                      {g.total}
+                    </span>
+                  );
+                },
+              },
               { key: "c", label: "", width: "32px", align: "right", render: () => <span className="muted" aria-hidden="true"><Icon name="chevron" size={16} /></span> },
             ]}
           />
         </Section>
         </div>
         {data && state === "default" ? <Pager page={data.page} perPage={data.per_page} total={data.total} label="utenti" onPage={(p) => setPage(p)} /> : null}
+        <div className="users-desktop" style={{ marginTop: 14 }}>
+          <Definitions />
+        </div>
       </div>
 
-      {dialog === "csv" && data ? <CsvDialog total={data.total} plans={plans} q={query} onCancel={() => setDialog(null)} /> : null}
+      {dialog === "csv" && data ? <CsvDialog total={data.total} plans={plans} q={query} gift={gift} suspended={suspendedOnly} onCancel={() => setDialog(null)} /> : null}
       {dialog === "new" ? <NewUserDialog onCancel={() => setDialog(null)} onDone={(id) => router.push(`/users/detail?id=${id}`)} /> : null}
       <style>{`.users-table table { table-layout: fixed; }
 .users-table td:first-child { overflow: hidden; }
+/* MOB-1462: Termini and Privacy only from 1440 up (design default); «Iscritto il» from 1024 up. */
+.users-phone-line { display: none; }
+@media (max-width: 1439px) {
+  .users-table th:nth-child(5), .users-table td:nth-child(5), .users-table th:nth-child(6), .users-table td:nth-child(6) { display: none; }
+}
+@media (max-width: 1023px) {
+  .users-table th:nth-child(3), .users-table td:nth-child(3) { display: none; }
+}
 @media (max-width: 599px) {
   .users-desktop { display: none !important; }
-  /* Phone (decision 7): the user and the plan; the dates and the language stay on the computer. */
-  .users-table th:nth-child(3), .users-table td:nth-child(3), .users-table th:nth-child(4), .users-table td:nth-child(4) { display: none; }
-  .users-table th:nth-child(5), .users-table td:nth-child(5) { display: none; }
+  /* Phone (decision 7): the user and the plan; the dates stay on the computer. */
+  .users-table th:nth-child(4), .users-table td:nth-child(4), .users-table th:nth-child(7), .users-table td:nth-child(7) { display: none; }
+  .users-phone-line { display: block; }
   .users-table th, .users-table td { padding-left: 8px; padding-right: 8px; }
-  .users-table th:nth-child(2), .users-table td:nth-child(2) { width: 118px; }
+  /* The column's own width is inline (180px): !important, or the user column shrinks to a sliver. */
+  .users-table th:nth-child(2), .users-table td:nth-child(2) { width: 118px !important; }
+  .users-table th:nth-child(8), .users-table td:nth-child(8) { width: 24px !important; }
 }`}</style>
     </AdminFrame>
   );
