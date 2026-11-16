@@ -225,6 +225,9 @@ export const CATEGORY: Record<string, { label: string; dative: string; colour: s
   commodities: { label: "Materie prime", dative: "alle materie prime", colour: "#F2C230" },
   forex: { label: "Forex", dative: "al forex", colour: "#21B36B" },
 };
+/** «1 strumento», «24 strumenti»; «1 classe», «4 classi». */
+export const instrumentCount = (n: number) => `${n} ${n === 1 ? "strumento" : "strumenti"}`;
+export const classCount = (n: number) => `${n} ${n === 1 ? "classe" : "classi"}`;
 export const categoryOf = (k: string) => CATEGORY[k] ?? { label: k, dative: k, colour: "rgba(236,244,241,0.4)" };
 
 export const RISK_WORD: Record<string, string> = { low: "Basso", medium: "Medio", high: "Alto" };

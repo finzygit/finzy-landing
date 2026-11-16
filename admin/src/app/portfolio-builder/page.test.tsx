@@ -81,6 +81,9 @@ describe("Generation", () => {
     expect(screen.getByText("100%")).toBeTruthy();
     expect(screen.getByText("The Sherwin-Williams Company")).toBeTruthy();
     expect(screen.getByText("Medio")).toBeTruthy();
+    // One instrument per class here: the group head says «1 strumento», not «1 strumenti».
+    expect(screen.getAllByText("1 strumento")).toHaveLength(2);
+    expect(screen.queryByText("1 strumenti")).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: /Forex/ }));
     expect(screen.queryByText("Euro - Singapore dollar")).toBeNull();
   });

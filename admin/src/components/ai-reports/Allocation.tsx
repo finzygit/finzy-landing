@@ -7,7 +7,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Icon } from "@/components/shell/Icon";
-import { RISK_WORD, STATUS_WORD, T, categoryOf, date, pct, type Allocation, type Instrument, type PortfolioCardData } from "@/lib/ai-reports";
+import { RISK_WORD, STATUS_WORD, T, categoryOf, date, instrumentCount, pct, type Allocation, type Instrument, type PortfolioCardData } from "@/lib/ai-reports";
 import { CatBar, Dot, NUM, ReportStatus, WeightBar } from "./parts";
 import { Status } from "@/components/shell/parts";
 
@@ -100,7 +100,7 @@ export function InstrumentsTable({ cats, instruments }: { cats: Allocation[]; in
                     <Icon name={open ? "up" : "down"} size={16} />
                     <Dot colour={cat.colour} />
                     <strong>{cat.label}</strong>
-                    <span style={{ fontSize: 13, color: "var(--text-3)" }}>{mine.length} strumenti</span>
+                    <span style={{ fontSize: 13, color: "var(--text-3)" }}>{instrumentCount(mine.length)}</span>
                     <span style={{ flex: 1 }} />
                     <strong style={NUM}>{pct(c.weight)}</strong>
                   </button>
@@ -132,7 +132,7 @@ export function PortfolioCard({ p }: { p: PortfolioCardData }) {
   const state = !p.enabled ? "off" : p.latest?.status === "failed" ? "gen_failed" : p.latest?.status === "running" || p.latest?.status === "pending" ? "running" : p.published ? "published" : "none";
   const weights = Object.entries(p.published?.categories ?? {});
   const meta = [
-    p.published ? `${p.published.instruments} strumenti` : null,
+    p.published ? instrumentCount(p.published.instruments) : null,
     p.published ? `prompt v${p.published.prompt_version}` : null,
     p.published?.published_at ? `pubblicato ${date(p.published.published_at)}` : null,
   ].filter(Boolean).join(" · ");

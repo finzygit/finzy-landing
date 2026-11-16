@@ -14,7 +14,7 @@ import { AdminFrame } from "@/components/shell/AdminFrame";
 import { PageHead, Section, StateBlock } from "@/components/shell/parts";
 import { ApiError } from "@/lib/api";
 import { useConsole } from "@/lib/console";
-import { T, dateTime, generationNext, listLabel, longPortfolioReason, time, type Generation } from "@/lib/ai-reports";
+import { T, classCount, dateTime, generationNext, instrumentCount, listLabel, longPortfolioReason, time, type Generation } from "@/lib/ai-reports";
 
 export default function GenerationPage() {
   const { api } = useConsole();
@@ -71,7 +71,7 @@ export default function GenerationPage() {
           <div style={{ display: "flex", alignItems: "center", gap: 18, flexWrap: "wrap", fontSize: 14, color: "var(--text-2)", ...NUM }}>
             <ReportStatus status="published" />
             <span>Pubblicata alle {time(g.published_at)}{g.in_app ? " · nell’app da allora" : ""}</span>
-            <span>{g.categories.length} classi · {g.instruments.length} strumenti</span>
+            <span>{classCount(g.categories.length)} · {instrumentCount(g.instruments.length)}</span>
           </div>
           <Section title={T.g_alloc} note={T.g_alloc_note}>
             <CatBar weights={weights} height={10} />
