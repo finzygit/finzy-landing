@@ -11,7 +11,8 @@
     "admin:test": "pnpm run admin:install && pnpm --dir admin test",
     "admin:check": "pnpm run admin:install && pnpm --dir admin check",
     "admin:build": "pnpm run admin:install && pnpm --dir admin build",
-    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test src/lib/news.test.ts src/lib/consent.test.ts src/lib/plans.test.ts src/lib/account-deletion.test.ts src/lib/redirects.test.ts src/lib/security-headers.test.ts src/lib/contact-form-removed.test.ts src/lib/footer-links.test.ts src/lib/backend-outage.test.ts src/lib/seo.test.ts src/lib/sources-strip.test.ts src/lib/admin-isolation.test.ts && pnpm run admin:test"
+    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test src/lib/news.test.ts src/lib/consent.test.ts src/lib/plans.test.ts src/lib/account-deletion.test.ts src/lib/redirects.test.ts src/lib/security-headers.test.ts src/lib/contact-form-removed.test.ts src/lib/footer-links.test.ts src/lib/backend-outage.test.ts src/lib/seo.test.ts src/lib/sources-strip.test.ts src/lib/admin-isolation.test.ts && pnpm run admin:test",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -23,6 +24,7 @@
     "three": "^0.185.1"
   },
   "devDependencies": {
+    "@playwright/test": "1.64.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

@@ -27,7 +27,11 @@ export default async function Home() {
   ]);
 
   return (
-    <>
+    <div className="flex flex-1 flex-col">
+      {/* Un solo blocco in cima alla pagina (MOB-1459): navigando da un'altra
+          pagina Next porta in vista i figli della pagina uno per uno, e con
+          più figli (navbar fixed, footer, QR fixed) la home finiva in fondo.
+          Con un solo blocco che parte da 0 la pagina si apre in cima. */}
       <JsonLd graph={[softwareApplicationJsonLd]} />
       <SmoothScroll />
       <StickyNav quotes={quotes} />
@@ -48,6 +52,6 @@ export default async function Home() {
       {/* MOB-492: giveaway disattivato. Togli il commento per riattivarlo. */}
       {/* <GiveawayPopup /> */}
       <QrDownloadFloat />
-    </>
+    </div>
   );
 }

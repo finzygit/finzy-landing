@@ -13,6 +13,9 @@ import { cn } from "@/lib/utils";
  * Navbar compatta che compare scorrendo: unisce in un'unica barra
  * logo + chip di mercato + hamburger. Nascosta in cima alla pagina.
  *
+ * Da nascosta è anche `inert`: il suo hamburger non si raggiunge col Tab e
+ * la pagina ha un solo pulsante «Apri menu» attivo alla volta (MOB-1447).
+ *
  * `alwaysVisible` la ancora in alto fin dal caricamento: serve sulle pagine
  * brevi (es. /contatti) dove non c'è abbastanza scroll per farla comparire.
  */
@@ -38,6 +41,7 @@ export function StickyNav({
   return (
     <div
       aria-hidden={!visible}
+      inert={!visible}
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-transform duration-300 ease-out",
         visible ? "translate-y-0" : "-translate-y-full pointer-events-none",

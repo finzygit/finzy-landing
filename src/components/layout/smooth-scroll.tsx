@@ -4,9 +4,14 @@ import { useEffect } from "react";
 
 /**
  * Rende fluido lo scroll verso le sezioni per tutti i link ad ancora (#id).
- * Intercetta in fase di cattura così vince sul routing di next/link, che
- * altrimenti salterebbe istantaneo. Rispetta prefers-reduced-motion e
- * l'offset della navbar (scroll-padding-top in globals.css).
+ * Intercetta in fase di cattura e chiama preventDefault: next/link vede
+ * `defaultPrevented` e non fa il suo salto istantaneo. Non ferma la
+ * propagazione (MOB-1447): gli onClick dei link devono girare lo stesso,
+ * per esempio quello che chiude il menu di navigazione. Rispetta
+ * prefers-reduced-motion e l'offset della navbar (scroll-padding-top in
+ * globals.css).
+ *
+ * Anche "/" dalla home: torna in cima con lo stesso scroll fluido.
  *
  * Gestisce anche i link in forma assoluta (/#id): dalle sottopagine (es.
  * /contatti) devono navigare davvero verso la home, dalla home invece si
@@ -39,22 +44,34 @@ export function SmoothScroll() {
       else if (href.startsWith("/#") && window.location.pathname === "/") {
         hash = href.slice(1);
       }
-      if (!hash || hash === "#") return;
+      // "/" dalla home (Home del menu, logo): torna in cima qui. Lasciato a
+      // next/link, in WebKit una volta su dieci la pagina restava giù
+      // (MOB-1447, anche prima della correzione del menu).
+      const toTop = href === "/" && window.location.pathname === "/";
+      if (!toTop && (!hash || hash === "#")) return;
 
-      const target = document.getElementById(hash.slice(1));
-      if (!target) return;
+      const target = toTop ? null : document.getElementById(hash!.slice(1));
+      if (!toTop && !target) return;
 
       e.preventDefault();
-      e.stopPropagation();
 
       const reduce = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
       ).matches;
-      target.scrollIntoView({
-        behavior: reduce ? "auto" : "smooth",
-        block: "start",
+      // Già su "/" senza hash: nessuna voce nuova nella cronologia (come
+      // next/link con lo stesso URL).
+      const url = toTop ? "/" : hash!;
+      const here = window.location.pathname + window.location.search + window.location.hash;
+      if (here !== url) history.pushState(null, "", url);
+      // Al frame dopo (MOB-1447): questo listener gira prima dell'onClick del
+      // link, e dal menu di navigazione il body ha ancora overflow: hidden.
+      // Chiudendo il menu React lo rimette a posto; nei test WebKit uno scroll
+      // fluido partito prima è rimasto fermo una volta su 48: difensivo.
+      requestAnimationFrame(() => {
+        const behavior = reduce ? "auto" : "smooth";
+        if (target) target.scrollIntoView({ behavior, block: "start" });
+        else window.scrollTo({ top: 0, behavior });
       });
-      history.pushState(null, "", hash);
     };
 
     document.addEventListener("click", onClick, true);

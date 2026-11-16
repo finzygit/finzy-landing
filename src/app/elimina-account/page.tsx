@@ -55,7 +55,11 @@ export default async function AccountDeletionPage() {
   const quotes = await getTickerQuotes();
 
   return (
-    <>
+    <div className="flex flex-1 flex-col">
+      {/* Un solo blocco in cima alla pagina (MOB-1459): navigando da un'altra
+          pagina Next porta in vista i figli della pagina uno per uno, e con
+          più figli (navbar fixed, footer, QR fixed) la home finiva in fondo.
+          Con un solo blocco che parte da 0 la pagina si apre in cima. */}
       <JsonLd graph={[pageJsonLd]} />
       <SmoothScroll />
       <StickyNav quotes={quotes} alwaysVisible />
@@ -63,6 +67,6 @@ export default async function AccountDeletionPage() {
         <AccountDeletionInfo />
       </main>
       <SiteFooter />
-    </>
+    </div>
   );
 }
