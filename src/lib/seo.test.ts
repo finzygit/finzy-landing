@@ -97,7 +97,9 @@ describe("titolo e descrizione del sito (MOB-1271)", () => {
 describe("nessuna recensione sul sito (MOB-1483)", () => {
   const src = new URL("../", import.meta.url);
   const read = (path: string) => readFileSync(new URL(path, src), "utf8");
-  const code = (text: string) => text.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+  // Toglie i commenti a blocco e le righe che sono solo un commento: un `//`
+  // dentro una stringa (un URL) non deve nascondere il resto della riga.
+  const code = (text: string) => text.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
   // Ogni file del sito in src/, tranne i test (che citano i nomi per cercarli).
   const files = (readdirSync(src, { recursive: true }) as string[])
     .filter((f) => /\.(tsx?|json)$/.test(f) && !/\.test\.tsx?$/.test(f));
@@ -124,10 +126,12 @@ describe("nessuna recensione sul sito (MOB-1483)", () => {
   });
 
   test("i dati strutturati non dichiarano recensioni né voti", () => {
+    // Sul testo intero, commenti compresi: qui un falso allarme costa meno di
+    // una recensione che passa.
     for (const f of files) {
-      const text = code(read(f));
+      const text = read(f);
       assert.doesNotMatch(text, /aggregateRating|ratingValue|reviewCount/, `${f}: voto medio`);
-      assert.doesNotMatch(text, /"@type":\s*"Review"|\breview:\s*[[{]/, `${f}: recensione`);
+      assert.doesNotMatch(text, /\bReview\b|["']?\breviews?["']?\s*:/, `${f}: recensione`);
     }
   });
 });
