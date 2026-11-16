@@ -1,0 +1,31 @@
+{
+  "name": "finzy-admin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Finzy admin console (MOB-1369, MOB-1372). Static export served by nginx under a hidden path on console.finzyapp.com, /api/admin forwarded to Laravel on the same origin.",
+  "scripts": {
+    "dev": "next dev --port 3200",
+    "build": "next build",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check": "pnpm test && pnpm typecheck && pnpm lint && pnpm build"
+  },
+  "dependencies": {
+    "next": "16.4.3",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "10.4.2",
+    "@testing-library/react": "16.3.3",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.4.3",
+    "jsdom": "30.1.3",
+    "typescript": "5.9.3",
+    "vitest": "5.0.5"
+  }
+}

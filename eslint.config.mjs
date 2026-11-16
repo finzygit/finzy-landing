@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // La console admin (MOB-1372) è un'app a parte con il suo eslint.
+    "admin/**",
   ]),
 ]);
 

@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* La console admin (MOB-1372) è un'app a parte: le sue classi non entrano nel CSS del sito. */
+@source not "../../admin";
 
 /*
   Design tokens finzy — tema dark.
