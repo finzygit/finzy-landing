@@ -7,7 +7,7 @@
 // with «Annulla» (decision 6); every verdict stores who and when (decision 7).
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import { AdminFrame } from "@/components/shell/AdminFrame";
 import { PageHead, Pager, StateBlock } from "@/components/shell/parts";
 import { NewsIcon } from "@/components/news/NewsIcon";
@@ -112,24 +112,29 @@ export default function QueuePage() {
     }
   };
 
+  // MOB-1451: an effect event always sees the list on screen. A listener
+  // re-added by a plain effect kept the previous render until that effect ran,
+  // which on a busy machine is after the list is drawn: J then chose row -1
+  // and G judged nothing.
+  const onKey = useEffectEvent((e: KeyboardEvent) => {
+    const t = e.target instanceof HTMLElement ? e.target : null;
+    // Typing in a field or working in a dialog is not a shortcut.
+    if (e.repeat || e.metaKey || e.ctrlKey || e.altKey || (t && (t.closest("input, textarea, select, [role=dialog], [role=alertdialog]") || t.isContentEditable))) return;
+    const k = e.key.toLowerCase();
+    if (k === "j") setSel((s) => Math.min(s + 1, rows.length - 1));
+    else if (k === "k") setSel((s) => Math.max(s - 1, 0));
+    else if (k === "g") judge("correct");
+    else if (k === "s") judge("wrong");
+    else if (k === "r") judge("remove");
+    else if (k === "o" && cur) window.open(`${BASE}/news/articles/detail?id=${cur.blog_id}`, "_blank", "noopener");
+    else return;
+    e.preventDefault();
+  });
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const t = e.target instanceof HTMLElement ? e.target : null;
-      // Typing in a field or working in a dialog is not a shortcut.
-      if (e.repeat || e.metaKey || e.ctrlKey || e.altKey || (t && (t.closest("input, textarea, select, [role=dialog], [role=alertdialog]") || t.isContentEditable))) return;
-      const k = e.key.toLowerCase();
-      if (k === "j") setSel((s) => Math.min(s + 1, rows.length - 1));
-      else if (k === "k") setSel((s) => Math.max(s - 1, 0));
-      else if (k === "g") judge("correct");
-      else if (k === "s") judge("wrong");
-      else if (k === "r") judge("remove");
-      else if (k === "o" && cur) window.open(`${BASE}/news/articles/detail?id=${cur.blog_id}`, "_blank", "noopener");
-      else return;
-      e.preventDefault();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [cur, judge, rows.length]);
+    const listener = (e: KeyboardEvent) => onKey(e);
+    window.addEventListener("keydown", listener);
+    return () => window.removeEventListener("keydown", listener);
+  }, []);
 
   const m = data?.meta;
 

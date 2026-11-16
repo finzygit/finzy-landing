@@ -249,6 +249,40 @@ describe("Collegamenti da verificare", () => {
     expect(api.post).not.toHaveBeenCalled();
   });
 
+  // MOB-1451: on a busy machine React uses up its 5 ms slice drawing the list
+  // and runs the effects in a later task, so a key can arrive in between. A
+  // clock that jumps 10 ms at every read makes that happen on every run.
+  const busyMachine = () => {
+    const now = performance.now.bind(performance);
+    let skew = 0;
+    vi.spyOn(performance, "now").mockImplementation(() => now() + (skew += 10));
+  };
+
+  it("J works as soon as the list is drawn, also on a busy machine", async () => {
+    nav.pathname = "/news/review";
+    busyMachine();
+    renderPage(<QueuePageView />, fakeApi(EDITOR, (p) => (p === "/news/links" ? q() : { rows: [] })));
+    await screen.findByRole("region", { name: "Collegamento JPM" });
+    fireEvent.keyDown(window, { key: "j" });
+    expect(screen.getByRole("region", { name: "Collegamento TSM" })).toBeTruthy();
+  });
+
+  it("G and S judge the link on screen right after the list or a verdict is drawn, also on a busy machine", async () => {
+    nav.pathname = "/news/review";
+    busyMachine();
+    const api = fakeApi(EDITOR, (p) => {
+      if (p.endsWith("/review")) return { ...ARTICLE.links[0], review: "correct" };
+      return p === "/news/links" ? q() : { rows: [] };
+    });
+    renderPage(<QueuePageView />, api);
+    await screen.findByRole("region", { name: "Collegamento JPM" });
+    fireEvent.keyDown(window, { key: "g" });
+    expect(api.post).toHaveBeenCalledWith("/news/articles/195702/instruments/11/review", { verdict: "correct" });
+    await screen.findByRole("region", { name: "Collegamento TSM" });
+    fireEvent.keyDown(window, { key: "s" });
+    expect(api.post).toHaveBeenLastCalledWith("/news/articles/195703/instruments/12/review", { verdict: "wrong" });
+  });
+
   it("a read-only role cannot judge, not even with the keys", async () => {
     nav.pathname = "/news/review";
     const api = fakeApi(READER, (p) => (p === "/news/links" ? q() : { rows: [] }));
