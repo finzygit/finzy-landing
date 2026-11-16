@@ -7,7 +7,37 @@ export type Plan = "free" | "trial" | "premium" | "unlimited";
 export const PLANS: Plan[] = ["free", "trial", "premium", "unlimited"];
 export const PLAN_LABEL: Record<Plan, string> = { free: "Free", trial: "In prova", premium: "Premium", unlimited: "Unlimited" };
 
-export type UserRow = { id: number; name: string | null; email: string; plan: Plan; plan_until: string | null; created_at: string | null; lang: string | null };
+export type Generations = { total: number; snapshot: number; report: number; portal: number };
+
+export type UserRow = {
+  id: number;
+  name: string | null;
+  email: string;
+  plan: Plan;
+  plan_until: string | null;
+  created_at: string | null;
+  lang: string | null;
+  // MOB-1462 (items 15–17, 19): consents, last access (ISO time, null before 16/11), generations, suspended since.
+  terms_accepted_at?: string | null;
+  privacy_accepted_at?: string | null;
+  last_access_at?: string | null;
+  generations_30d?: Generations;
+  suspended_at?: string | null;
+};
+
+/** MOB-1462: GET /users/summary (backend UserSegments). Filters do not change it. */
+export type Platform = "app_store" | "play_store" | "web" | "other";
+export type UsersSummary = {
+  total: number;
+  paying: { count: number; pct: number };
+  free: { count: number; pct: number };
+  gifts_active: number;
+  gifts_by_tier?: { premium: number; unlimited: number };
+  suspended: number;
+  conversions_90d: { total: number; premium: number; unlimited: number };
+  segments: { platform: { key: Platform; count: number }[]; country: { code: string | null; count: number }[] };
+  links?: { label: string; url: string }[];
+};
 export type UserList = {
   users: UserRow[];
   total: number;
@@ -52,7 +82,13 @@ export type UserPage = {
     privacy_version: string | null;
     marketing_accepted: boolean;
     staff: boolean;
+    // MOB-1462
+    last_access_at?: string | null;
+    generations_30d?: Generations;
+    suspended_at?: string | null;
   };
+  /** MOB-1462: who suspended the account and why; null when it is not suspended. */
+  suspension?: { at: string | null; by: string | null; reason: string | null } | null;
   plan: {
     plan: Plan;
     until: string | null;
@@ -135,4 +171,40 @@ export function csvName(plans: Plan[], now = new Date()): string {
 export function plansInWords(plans: Plan[]): string {
   const labels = PLANS.filter((p) => plans.includes(p)).map((p) => PLAN_LABEL[p]);
   return labels.length <= 1 ? (labels[0] ?? "") : `${labels.slice(0, -1).join(", ")} o ${labels[labels.length - 1]}`;
+}
+
+/** «12,5%» with the Italian comma; whole numbers keep no decimals (MOB-1462). */
+export function pct(n: number): string {
+  return `${Number.isInteger(n) ? n : n.toFixed(1).replace(".", ",")}%`;
+}
+
+/** «Oggi, 09:12», «Ieri, 22:05», else «16/11/2026», in Rome time; «—» when there is none (MOB-1462: kept since 16/11). */
+export function lastAccess(iso: string | null | undefined, now = new Date()): string {
+  if (!iso) return "—";
+  const at = new Date(iso);
+  if (Number.isNaN(at.getTime())) return "—";
+  const day = (d: Date) => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Rome", year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
+  const time = new Intl.DateTimeFormat("it-IT", { timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit", hour12: false }).format(at);
+  const yesterday = new Date(now.getTime() - 24 * 3600 * 1000);
+  if (day(at) === day(now)) return `Oggi, ${time}`;
+  if (day(at) === day(yesterday)) return `Ieri, ${time}`;
+  return dmy(day(at));
+}
+
+export const PLATFORM_LABEL: Record<Platform, string> = { app_store: "App Store", play_store: "Google Play", web: "Web", other: "Altro" };
+
+/** «IT» → «Italia»; null → «Non noto» (the store did not say). */
+export function countryName(code: string | null): string {
+  if (!code) return "Non noto";
+  try {
+    const name = new Intl.DisplayNames(["it"], { type: "region" }).of(code);
+    return name ? name.charAt(0).toUpperCase() + name.slice(1) : code;
+  } catch {
+    return code;
+  }
+}
+
+/** «Snapshot 4 · Report 1 · Portale 0» (design gen_tip). */
+export function generationsLine(g: Generations): string {
+  return `Snapshot ${g.snapshot} · Report ${g.report} · Portale ${g.portal}`;
 }

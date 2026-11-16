@@ -144,9 +144,28 @@ const PATHS: Record<string, ReactNode> = {
       <path d="M3 10h18M8 3v4M16 3v4" />
     </>
   ),
+  // MOB-1462: «Sospendi» / «Sospeso».
+  ban: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M5.6 5.6l12.8 12.8" />
+    </>
+  ),
 };
 
-/** Icons the shell's set has not got (gift, plus, trash, replay, calendar). */
+/** MOB-1462: the red «Sospeso» pill next to the plan (list row, page head). */
+export function SuspendedPill({ small = false }: { small?: boolean }) {
+  return (
+    <span
+      data-suspended="true"
+      style={{ display: "inline-flex", alignItems: "center", gap: 5, width: "fit-content", height: small ? 22 : 26, padding: "0 9px", borderRadius: 8, fontSize: small ? 12 : 13, fontWeight: 700, whiteSpace: "nowrap", background: "rgba(255,69,58,0.14)", color: "#ff8a80" }}
+    >
+      <UIcon name="ban" size={small ? 12 : 14} /> Sospeso
+    </span>
+  );
+}
+
+/** Icons the shell's set has not got (gift, plus, trash, replay, calendar, ban). */
 export function UIcon({ name, size = 18 }: { name: keyof typeof PATHS; size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

@@ -6,6 +6,9 @@
 // the role: «Regala piano» / «Revoca regalo» with console.users.plan,
 // «Modifica» with console.users.update, «Elimina account» with
 // console.users.delete. The id is in the query string (static export).
+// MOB-1462 (boards ADM-UB-03…07): last access and generations in the fact
+// strip, «Sospendi utente» / «Riattiva utente» with console.users.suspend, the
+// red strip of a suspended account.
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -14,13 +17,14 @@ import { AdminFrame } from "@/components/shell/AdminFrame";
 import { Icon } from "@/components/shell/Icon";
 import { Banner, Section, StateBlock, Status } from "@/components/shell/parts";
 import { DeleteDialog, EditDialog, GiftDialog, RevokeDialog } from "@/components/users/dialogs";
-import { dmy, LANG_LONG, type HistoryRow, type UserPage } from "@/components/users/model";
-import { CopyText, Fact, Kv, PlanPill, UIcon, UserAvatar } from "@/components/users/parts";
+import { dmy, generationsLine, LANG_LONG, lastAccess, type HistoryRow, type UserPage } from "@/components/users/model";
+import { CopyText, Fact, Kv, PlanPill, SuspendedPill, UIcon, UserAvatar } from "@/components/users/parts";
+import { ReactivateDialog, SuspendDialog, SuspendedStrip } from "@/components/users/suspend";
 import { ApiError } from "@/lib/api";
 import { useConsole } from "@/lib/console";
 
 type RoleOpt = { id: number; name: string; locked: boolean };
-type Dialog = "gift" | "revoke" | "edit" | "delete" | null;
+type Dialog = "gift" | "revoke" | "edit" | "delete" | "suspend" | "reactivate" | null;
 
 export default function UserPageRoute() {
   return (
@@ -95,9 +99,14 @@ function UserScreen() {
   const canEdit = can("console.users.update") && (!u.staff || isSuper);
   const canDelete = can("console.users.delete") && !u.staff && me?.user.id !== u.id;
   const readOnly = !can("console.users.update") && !canPlan;
+  // MOB-1462: «Sospendi utente» / «Riattiva utente»; never on a staff account or your own.
+  const canSuspend = can("console.users.suspend");
+  const suspended = Boolean(page.suspension);
+  const suspendBlocked = u.staff ? "Ha accesso al pannello: prima togli l’accesso da Persone con accesso." : me?.user.id === u.id ? "Non puoi sospendere il tuo account." : null;
 
   return (
     <AdminFrame title={u.name ?? "Utenti"}>
+      <SuspendedStrip page={page} canReactivate={canSuspend} onReactivate={() => setDialog("reactivate")} />
       {readOnly ? <Banner kind="info">Puoi solo vedere: per modificare serve «Utenti · Modifica», per regalare o revocare «Azioni sul piano».</Banner> : null}
 
       <header style={{ display: "flex", flexDirection: "column", gap: 18, marginBottom: 24 }}>
@@ -116,6 +125,7 @@ function UserScreen() {
                   <h1 className="muted" style={{ margin: 0, fontSize: 30, fontWeight: 600, fontStyle: "italic" }}>Senza nome</h1>
                 )}
                 <PlanPill plan={page.plan.plan} />
+                {suspended ? <SuspendedPill /> : null}
               </div>
               <CopyText text={u.email} />
             </div>
@@ -141,12 +151,32 @@ function UserScreen() {
                     <Icon name="external" size={16} /> Apri nel registro attività
                   </Link>
                 ) : null}
+                {canSuspend && !suspended ? (
+                  <button type="button" role="menuitem" disabled={Boolean(suspendBlocked)} title={suspendBlocked ?? undefined} style={suspendBlocked ? undefined : { color: "var(--down)" }} onClick={() => (setMenu(false), setDialog("suspend"))}>
+                    <UIcon name="ban" size={16} /> Sospendi utente
+                  </button>
+                ) : null}
+                {canSuspend && suspendBlocked && !suspended ? <p className="note" style={{ margin: 0, padding: "2px 14px 8px", maxWidth: 260 }}>{suspendBlocked}</p> : null}
+                {canSuspend && suspended ? (
+                  <button type="button" role="menuitem" onClick={() => (setMenu(false), setDialog("reactivate"))}>
+                    <UIcon name="replay" size={16} /> Riattiva utente
+                  </button>
+                ) : null}
               </div>
             ) : null}
           </div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 16, padding: "16px 20px", borderRadius: 18, background: "rgba(255,255,255,0.03)", border: "1px solid var(--hair)" }}>
           <Fact label="Iscritto il">{dmy(u.created_at)}</Fact>
+          <Fact label="Ultimo accesso" muted={!u.last_access_at}>{lastAccess(u.last_access_at)}</Fact>
+          {u.generations_30d ? (
+            <Fact label="Generazioni 30 gg">
+              <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                {u.generations_30d.total}
+                <span className="sub" style={{ fontWeight: 400 }}>{generationsLine(u.generations_30d)}</span>
+              </span>
+            </Fact>
+          ) : null}
           <Fact label="Lingua dell’app" muted={!u.lang}>{u.lang ? LANG_LONG[u.lang] ?? u.lang : "—"}</Fact>
           <Fact label="ID utente">{u.id}</Fact>
         </div>
@@ -184,6 +214,8 @@ function UserScreen() {
       {dialog === "gift" ? <GiftDialog page={page} onCancel={() => setDialog(null)} onDone={(p) => (setPage(p), setDialog(null))} /> : null}
       {dialog === "revoke" ? <RevokeDialog page={page} onCancel={() => setDialog(null)} onDone={(p) => (setPage(p), setDialog(null))} /> : null}
       {dialog === "edit" ? <EditDialog page={page} roles={roles} isSuper={isSuper} isSelf={me?.user.id === u.id} onCancel={() => setDialog(null)} onPage={setPage} onDone={(p) => (setPage(p), setDialog(null))} /> : null}
+      {dialog === "suspend" ? <SuspendDialog page={page} onCancel={() => setDialog(null)} onDone={(p) => (setPage(p), setDialog(null))} /> : null}
+      {dialog === "reactivate" ? <ReactivateDialog page={page} onCancel={() => setDialog(null)} onDone={(p) => (setPage(p), setDialog(null))} /> : null}
       {dialog === "delete" ? <DeleteDialog page={page} onCancel={() => setDialog(null)} onDone={() => router.push("/users")} /> : null}
       <style>{`.user-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 20px; align-items: start; }
 @media (max-width: 1199px) { .user-grid { grid-template-columns: minmax(0, 1fr); } }`}</style>
