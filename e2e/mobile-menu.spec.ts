@@ -190,12 +190,21 @@ test("Escape closes the menu", async ({ page }) => {
   await expectMenuClosed(page);
 });
 
-test("Back to another page closes the menu", async ({ page }) => {
+test("Back and Forward to another page keep the menu closed", async ({ page }) => {
+  // Reach the home by a client-side navigation, so the layout (and its menu
+  // state) survives the history moves, as on a real visit.
   await page.goto("/contatti");
-  await page.goto("/");
+  await openMenu(page);
+  await tapMenuLink(page, "Home");
+  await expect(page).toHaveURL(/\/$/);
+  await expectMenuClosed(page);
   await openMenu(page);
   await page.goBack();
   await expect(page).toHaveURL(/\/contatti$/);
+  await expectMenuClosed(page);
+  expect(await page.evaluate(() => document.body.style.overflow)).toBe("");
+  await page.goForward();
+  await expect(page).toHaveURL(/\/$/);
   await expectMenuClosed(page);
   expect(await page.evaluate(() => document.body.style.overflow)).toBe("");
 });

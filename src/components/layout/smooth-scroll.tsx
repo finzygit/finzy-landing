@@ -58,7 +58,11 @@ export function SmoothScroll() {
       const reduce = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
       ).matches;
-      history.pushState(null, "", toTop ? "/" : hash);
+      // Già su "/" senza hash: nessuna voce nuova nella cronologia (come
+      // next/link con lo stesso URL).
+      const url = toTop ? "/" : hash!;
+      const here = window.location.pathname + window.location.search + window.location.hash;
+      if (here !== url) history.pushState(null, "", url);
       // Al frame dopo (MOB-1447): questo listener gira prima dell'onClick del
       // link, e dal menu di navigazione il body ha ancora overflow: hidden.
       // Chiudendo il menu React lo rimette a posto; nei test WebKit uno scroll

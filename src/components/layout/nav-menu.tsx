@@ -43,6 +43,9 @@ export function NavMenuProvider({ children }: { children: ReactNode }) {
   // pagina si chiude da solo (e il body torna a scorrere).
   const pathname = usePathname();
   const [openOn, setOpenOn] = useState<string | null>(null);
+  // Cambio di pagina: si chiude e resta chiuso anche tornando con Avanti
+  // (stato aggiustato durante il render, come da guida React: niente effect).
+  if (openOn !== null && openOn !== pathname) setOpenOn(null);
   const open = openOn !== null && openOn === pathname;
   const openMenu = useCallback(() => setOpenOn(pathname), [pathname]);
   const close = useCallback(() => setOpenOn(null), []);
