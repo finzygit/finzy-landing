@@ -208,3 +208,37 @@ test("Back and Forward to another page keep the menu closed", async ({ page }) =
   await expectMenuClosed(page);
   expect(await page.evaluate(() => document.body.style.overflow)).toBe("");
 });
+
+// MOB-1459: a client-side navigation to another page must open it at the top.
+// Next scrolled the new page's children into view one by one (its top sits
+// under the root scroll-padding-top) and the home ended near its footer.
+async function expectAtTop(page: Page) {
+  await page.waitForTimeout(1_500); // let any smooth scroll run out
+  await expect.poll(() => page.evaluate(() => Math.round(window.scrollY)), { timeout: 5_000 }).toBeLessThan(5);
+}
+
+for (const from of ["/contatti", "/elimina-account"]) {
+  test(`from ${from} the logo opens the home at the top`, async ({ page }) => {
+    await page.goto(from);
+    await page.locator('a[aria-label="finzy — home"]').first().tap();
+    await expect(page).toHaveURL(/\/$/);
+    await expectAtTop(page);
+  });
+}
+
+test("from /contatti the menu's Home opens the home at the top", async ({ page }) => {
+  await page.goto("/contatti");
+  await openMenu(page);
+  await tapMenuLink(page, "Home");
+  await expect(page).toHaveURL(/\/$/);
+  await expectMenuClosed(page);
+  await expectAtTop(page);
+});
+
+test("from the home scrolled down, Contatti opens at the top", async ({ page }) => {
+  await page.goto("/#prezzi");
+  await openMenu(page);
+  await tapMenuLink(page, "Contatti");
+  await expect(page).toHaveURL(/\/contatti$/);
+  await expectAtTop(page);
+});
