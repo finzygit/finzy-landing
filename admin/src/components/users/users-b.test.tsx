@@ -4,7 +4,7 @@ import UsersPage from "@/app/users/page";
 import UserPageRoute from "@/app/users/detail/page";
 import { ApiError, type Api } from "@/lib/api";
 import { ConsoleProvider, type Me } from "@/lib/console";
-import type { UserList, UserPage, UsersSummary } from "./model";
+import { lastAccess, type UserList, type UserPage, type UsersSummary } from "./model";
 
 // MOB-1462 (D444, design PR #751): the Utenti numbers, the «solo abbonati»
 // donuts, the new columns and filters, and «Sospendi» / «Riattiva».
@@ -159,20 +159,48 @@ describe("Utenti list · numbers, donuts, columns (MOB-1462)", () => {
     mount(<UsersPage />, listApi(seen));
     await screen.findByText("Marco Bellini");
 
-    fireEvent.click(screen.getByRole("button", { name: /Con omaggio/ }));
-    await waitFor(() => expect(seen.at(-1)).toMatchObject({ gift: 1, page: 1 }));
-    expect(screen.getByRole("button", { name: /Con omaggio/ }).getAttribute("aria-pressed")).toBe("true");
-
     fireEvent.click(screen.getByRole("button", { name: "2 sospesi" }));
-    await waitFor(() => expect(seen.at(-1)).toMatchObject({ gift: 1, suspended: 1 }));
+    await waitFor(() => expect(seen.at(-1)).toMatchObject({ suspended: 1, page: 1 }));
     expect(screen.getByRole("button", { name: "Togli il filtro Stato: Sospesi" })).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: /Con omaggio/ }));
+    await waitFor(() => expect(seen.at(-1)).toMatchObject({ gift: 1, suspended: 1 }));
+    expect(screen.getByRole("button", { name: /Con omaggio/ }).getAttribute("aria-pressed")).toBe("true");
 
     fireEvent.click(screen.getByRole("button", { name: "Reimposta i filtri" }));
     await waitFor(() => expect(seen.at(-1)).not.toHaveProperty("gift"));
     expect(seen.at(-1)).not.toHaveProperty("suspended");
+    expect(screen.queryByRole("button", { name: "Togli il filtro Stato: Sospesi" })).toBeNull();
 
-    fireEvent.click(screen.getByRole("button", { name: /Mostra/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Mostra gli utenti con un omaggio attivo" }));
     await waitFor(() => expect(seen.at(-1)).toMatchObject({ gift: 1 }));
+    // Only «Con omaggio» on: the count line says what it counts (board ADM-UB-02).
+    await screen.findByText("1.490 utenti con un omaggio attivo");
+  });
+
+  it("the CSV takes «Con omaggio» and «Stato: Sospesi» too", async () => {
+    const blobs: unknown[] = [];
+    const api = listApi();
+    api.blob = vi.fn(async (_p: string, q?: unknown) => {
+      blobs.push(q);
+      return new Blob(["x"]);
+    }) as Api["blob"];
+    URL.createObjectURL = vi.fn(() => "blob:x");
+    URL.revokeObjectURL = vi.fn();
+    mount(<UsersPage />, api);
+    await screen.findByText("Marco Bellini");
+    fireEvent.click(screen.getByRole("button", { name: "2 sospesi" }));
+    fireEvent.click(screen.getByRole("button", { name: /Con omaggio/ }));
+    await waitFor(() => expect((screen.getByRole("button", { name: /Esporta CSV/ }) as HTMLButtonElement).disabled).toBe(false));
+    fireEvent.click(screen.getByRole("button", { name: /Esporta CSV/ }));
+    fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: /Scarica CSV/ }));
+    await waitFor(() => expect(blobs.at(-1)).toMatchObject({ gift: 1, suspended: 1 }));
+  });
+
+  it("an older backend's partial summary does not break the page", async () => {
+    mount(<UsersPage />, listApi([], { paying: { count: 1, pct: 1 }, free: { count: 1, pct: 1 } }));
+    await screen.findByText("Marco Bellini");
+    await waitFor(() => expect(screen.getAllByText("Non disponibile").length).toBe(4));
   });
 
   it("a failed summary says «Non disponibile» and leaves the list working", async () => {
@@ -234,6 +262,30 @@ describe("User page · Sospendi / Riattiva (MOB-1462)", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
+  it("no store warning when the subscription does not renew or there is none", async () => {
+    const off = userPage({ plan: { ...userPage().plan, store: { name: "App Store", plan: "premium", auto_renew: false, date: "2026-12-03" } } });
+    mount(<UserPageRoute />, fakeApi(me(ALL), () => off));
+    await screen.findByRole("heading", { name: "Marco Bellini" });
+    fireEvent.click(screen.getByRole("button", { name: "Altre azioni" }));
+    fireEvent.click(screen.getByRole("menuitem", { name: /Sospendi utente/ }));
+    expect(within(screen.getByRole("dialog")).queryByText("L’abbonamento dello store non si ferma")).toBeNull();
+  });
+
+  it("a refusal for a staff account says why and keeps the dialog open", async () => {
+    const api = fakeApi(me(ALL), (m) => {
+      if (m === "POST") throw new ApiError(409, "staff_account");
+      return userPage();
+    });
+    mount(<UserPageRoute />, api);
+    await screen.findByRole("heading", { name: "Marco Bellini" });
+    fireEvent.click(screen.getByRole("button", { name: "Altre azioni" }));
+    fireEvent.click(screen.getByRole("menuitem", { name: /Sospendi utente/ }));
+    const dialog = screen.getByRole("dialog");
+    fireEvent.change(within(dialog).getByLabelText(/Motivo/), { target: { value: "x" } });
+    fireEvent.click(within(dialog).getByRole("button", { name: /Sospendi/ }));
+    await within(dialog).findByText("Ha accesso al pannello: prima togli l’accesso da Persone con accesso.");
+  });
+
   it("a failed suspension keeps the dialog open and says the user can still sign in", async () => {
     const api = fakeApi(me(ALL), (m) => {
       if (m === "POST") throw new ApiError(500, null);
@@ -272,15 +324,19 @@ describe("User page · Sospendi / Riattiva (MOB-1462)", () => {
     mount(<UserPageRoute />, fakeApi(me(ALL), () => userPage({}, { staff: true })));
     await screen.findByRole("heading", { name: "Marco Bellini" });
     fireEvent.click(screen.getByRole("button", { name: "Altre azioni" }));
-    expect((screen.getByRole("menuitem", { name: /Sospendi utente/ }) as HTMLButtonElement).disabled).toBe(true);
+    const item = screen.getByRole("menuitem", { name: /Sospendi utente/ });
+    expect(item.getAttribute("aria-disabled")).toBe("true");
+    expect(item.getAttribute("aria-describedby")).toBe("suspend-why");
     expect(screen.getByText("Ha accesso al pannello: prima togli l’accesso da Persone con accesso.")).toBeTruthy();
+    fireEvent.click(item);
+    expect(screen.queryByRole("dialog")).toBeNull();
   });
 
   it("your own account", async () => {
     mount(<UserPageRoute />, fakeApi(me(ALL, 41377), () => userPage()));
     await screen.findByRole("heading", { name: "Marco Bellini" });
     fireEvent.click(screen.getByRole("button", { name: "Altre azioni" }));
-    expect((screen.getByRole("menuitem", { name: /Sospendi utente/ }) as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.getByRole("menuitem", { name: /Sospendi utente/ }).getAttribute("aria-disabled")).toBe("true");
     expect(screen.getByText("Non puoi sospendere il tuo account.")).toBeTruthy();
   });
 
@@ -291,5 +347,20 @@ describe("User page · Sospendi / Riattiva (MOB-1462)", () => {
     expect(screen.getByText("Puoi solo vedere: per riattivare serve «Utenti · Sospendi e riattiva».")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Altre azioni" }));
     expect(screen.queryByRole("menuitem", { name: /Sospendi utente|Riattiva utente/ })).toBeNull();
+  });
+});
+
+describe("lastAccess (Rome calendar, whatever the runner's time zone)", () => {
+  const now = new Date("2026-11-16T08:00:00+01:00");
+  it("today, yesterday across Rome's midnight, a date, none", () => {
+    expect(lastAccess("2026-11-15T23:30:00Z", now)).toBe("Oggi, 00:30");
+    expect(lastAccess("2026-11-15T22:30:00Z", now)).toBe("Ieri, 23:30");
+    expect(lastAccess("2026-11-13T10:00:00+01:00", now)).toBe("13/11/2026");
+    expect(lastAccess(null, now)).toBe("—");
+    expect(lastAccess("not a date", now)).toBe("—");
+  });
+  it("yesterday is right on the night the clocks go forward", () => {
+    const spring = new Date("2027-03-29T00:30:00+02:00");
+    expect(lastAccess("2027-03-28T12:00:00+02:00", spring)).toBe("Ieri, 12:00");
   });
 });

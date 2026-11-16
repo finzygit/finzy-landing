@@ -12,7 +12,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { AdminFrame } from "@/components/shell/AdminFrame";
 import { Icon } from "@/components/shell/Icon";
 import { Banner, Section, StateBlock, Status } from "@/components/shell/parts";
@@ -41,6 +41,12 @@ function UserScreen() {
   const [page, setPage] = useState<UserPage | null>(null);
   const [dialog, setDialog] = useState<Dialog>(null);
   const [menu, setMenu] = useState(false);
+  // MOB-1462: the dialogs opened from the menu give the focus back to «Altre azioni» (the item is gone).
+  const moreRef = useRef<HTMLButtonElement>(null);
+  const closeDialog = () => {
+    setDialog(null);
+    setTimeout(() => moreRef.current?.focus(), 0);
+  };
   const [roles, setRoles] = useState<RoleOpt[] | null>(null);
 
   const badId = !Number.isInteger(id) || id <= 0;
@@ -101,7 +107,7 @@ function UserScreen() {
   const readOnly = !can("console.users.update") && !canPlan;
   // MOB-1462: «Sospendi utente» / «Riattiva utente»; never on a staff account or your own.
   const canSuspend = can("console.users.suspend");
-  const suspended = Boolean(page.suspension);
+  const suspended = Boolean(page.suspension || u.suspended_at);
   const suspendBlocked = u.staff ? "Ha accesso al pannello: prima togli l’accesso da Persone con accesso." : me?.user.id === u.id ? "Non puoi sospendere il tuo account." : null;
 
   return (
@@ -138,7 +144,7 @@ function UserScreen() {
               </>
             ) : null}
             {canEdit ? <button type="button" className="btn" onClick={openEdit}><Icon name="edit" size={17} /> Modifica</button> : null}
-            <button type="button" className="icon-btn" style={{ width: 44, height: 44 }} aria-label="Altre azioni" aria-haspopup="menu" aria-expanded={menu} onClick={() => setMenu(!menu)}>
+            <button ref={moreRef} type="button" className="icon-btn" style={{ width: 44, height: 44 }} aria-label="Altre azioni" aria-haspopup="menu" aria-expanded={menu} onClick={() => setMenu(!menu)}>
               <Icon name="more" size={18} />
             </button>
             {menu ? (
@@ -152,11 +158,19 @@ function UserScreen() {
                   </Link>
                 ) : null}
                 {canSuspend && !suspended ? (
-                  <button type="button" role="menuitem" disabled={Boolean(suspendBlocked)} title={suspendBlocked ?? undefined} style={suspendBlocked ? undefined : { color: "var(--down)" }} onClick={() => (setMenu(false), setDialog("suspend"))}>
+                  // Blocked: still reachable by keyboard, greyed, with the reason read with it (aria-describedby).
+                  <button
+                    type="button"
+                    role="menuitem"
+                    aria-disabled={suspendBlocked ? true : undefined}
+                    aria-describedby={suspendBlocked ? "suspend-why" : undefined}
+                    style={suspendBlocked ? { color: "var(--text-3)", cursor: "default", height: "auto", minHeight: 44, flexWrap: "wrap", padding: "10px 14px" } : { color: "var(--down)" }}
+                    onClick={() => (suspendBlocked ? undefined : (setMenu(false), setDialog("suspend")))}
+                  >
                     <UIcon name="ban" size={16} /> Sospendi utente
+                    {suspendBlocked ? <span id="suspend-why" className="note" style={{ flexBasis: "100%", maxWidth: 240, fontWeight: 400, textAlign: "left" }}>{suspendBlocked}</span> : null}
                   </button>
                 ) : null}
-                {canSuspend && suspendBlocked && !suspended ? <p className="note" style={{ margin: 0, padding: "2px 14px 8px", maxWidth: 260 }}>{suspendBlocked}</p> : null}
                 {canSuspend && suspended ? (
                   <button type="button" role="menuitem" onClick={() => (setMenu(false), setDialog("reactivate"))}>
                     <UIcon name="replay" size={16} /> Riattiva utente
@@ -214,8 +228,8 @@ function UserScreen() {
       {dialog === "gift" ? <GiftDialog page={page} onCancel={() => setDialog(null)} onDone={(p) => (setPage(p), setDialog(null))} /> : null}
       {dialog === "revoke" ? <RevokeDialog page={page} onCancel={() => setDialog(null)} onDone={(p) => (setPage(p), setDialog(null))} /> : null}
       {dialog === "edit" ? <EditDialog page={page} roles={roles} isSuper={isSuper} isSelf={me?.user.id === u.id} onCancel={() => setDialog(null)} onPage={setPage} onDone={(p) => (setPage(p), setDialog(null))} /> : null}
-      {dialog === "suspend" ? <SuspendDialog page={page} onCancel={() => setDialog(null)} onDone={(p) => (setPage(p), setDialog(null))} /> : null}
-      {dialog === "reactivate" ? <ReactivateDialog page={page} onCancel={() => setDialog(null)} onDone={(p) => (setPage(p), setDialog(null))} /> : null}
+      {dialog === "suspend" ? <SuspendDialog page={page} onCancel={closeDialog} onDone={(p) => (setPage(p), closeDialog())} /> : null}
+      {dialog === "reactivate" ? <ReactivateDialog page={page} onCancel={closeDialog} onDone={(p) => (setPage(p), closeDialog())} /> : null}
       {dialog === "delete" ? <DeleteDialog page={page} onCancel={() => setDialog(null)} onDone={() => router.push("/users")} /> : null}
       <style>{`.user-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 20px; align-items: start; }
 @media (max-width: 1199px) { .user-grid { grid-template-columns: minmax(0, 1fr); } }`}</style>

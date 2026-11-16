@@ -24,6 +24,13 @@ import { PlanPill, SuspendedPill, UIcon, UserCell } from "@/components/users/par
 import { Definitions, PayingPies, SummaryTiles } from "@/components/users/summary";
 import { useConsole } from "@/lib/console";
 
+/** MOB-1462: an answer counts only with every part the tiles and donuts read (an older backend has none). */
+function isSummary(d: unknown): d is UsersSummary {
+  if (!d || typeof d !== "object") return false;
+  const x = d as Partial<UsersSummary>;
+  return !!x.paying && !!x.free && !!x.conversions_90d && typeof x.gifts_active === "number" && Array.isArray(x.segments?.platform) && Array.isArray(x.segments?.country);
+}
+
 export default function UsersPage() {
   const { api, can } = useConsole();
   const router = useRouter();
@@ -77,7 +84,7 @@ export default function UsersPage() {
     let live = true;
     api.get<UsersSummary>("/users/summary").then(
       // An answer without the numbers counts as a failure (the tiles say «Non disponibile»).
-      (d) => live && (d && typeof d === "object" && "paying" in d ? (setSummary(d), setSummaryFailed(false)) : setSummaryFailed(true)),
+      (d) => live && (isSummary(d) ? (setSummary(d), setSummaryFailed(false)) : setSummaryFailed(true)),
       () => live && setSummaryFailed(true),
     );
     return () => {
@@ -138,9 +145,7 @@ export default function UsersPage() {
 
       <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 22 }}>
         <SummaryTiles data={summary} failed={summaryFailed} onShowGifts={() => (setGift(true), setPage(1))} />
-        <div className="users-desktop">
-          <PayingPies data={summary} />
-        </div>
+        <PayingPies data={summary} loading={!summary && !summaryFailed} />
       </div>
 
       <div ref={filtersRef} style={{ position: "relative", zIndex: 3, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 18 }}>
@@ -197,7 +202,7 @@ export default function UsersPage() {
         </div>
 
         <button type="button" className="btn" aria-pressed={gift} style={gift ? { color: "var(--accent)", boxShadow: "inset 0 0 0 1px var(--accent)" } : undefined} onClick={() => (setGift(!gift), setPage(1))}>
-          <UIcon name="gift" size={16} /> Con omaggio
+          {gift ? <Icon name="check" size={16} /> : <UIcon name="gift" size={16} />} Con omaggio
         </button>
 
         {suspendedOnly ? (
@@ -214,9 +219,13 @@ export default function UsersPage() {
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", minHeight: 36 }}>
           <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "var(--text-2)", fontVariantNumeric: "tabular-nums" }} aria-live="polite">
-            {data && state !== "filtered" ? countLine(data.total, data.narrowed) : state === "filtered" ? countLine(0, true) : ""}
+            {data && state !== "filtered"
+              ? gift && !query && !plans.length && !suspendedOnly
+                ? data.total === 1 ? "1 utente con un omaggio attivo" : `${fmt(data.total)} utenti con un omaggio attivo`
+                : countLine(data.total, data.narrowed)
+              : state === "filtered" ? countLine(0, true) : ""}
           </p>
-          {summary && summary.suspended > 0 && !suspendedOnly ? (
+          {summary && summary.suspended > 0 && !suspendedOnly && !gift ? (
             <button type="button" className="link-btn" style={{ fontSize: 14, display: "inline-flex", alignItems: "center", gap: 6 }} onClick={() => (setSuspendedOnly(true), setPage(1))}>
               <UIcon name="ban" size={14} /> {summary.suspended === 1 ? "1 sospeso" : `${fmt(summary.suspended)} sospesi`}
             </button>
@@ -241,7 +250,19 @@ export default function UsersPage() {
             errorText="Non è stato possibile caricare gli utenti"
             empty={<StateBlock kind="empty" title="Nessun utente" body="Gli utenti compariranno qui quando si iscrivono all’app." />}
             columns={[
-              { key: "u", label: "Utente", render: (u) => <UserCell name={u.name} email={u.email} /> },
+              {
+                key: "u",
+                label: "Utente",
+                render: (u) => (
+                  <span style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 0 }}>
+                    <UserCell name={u.name} email={u.email} />
+                    {/* Phone (ADM-UB-08): the row says last access and generations. */}
+                    <span className="sub users-phone-line" style={{ paddingLeft: 48 }}>
+                      Ultimo accesso: {lastAccess(u.last_access_at)}{u.generations_30d ? ` · ${u.generations_30d.total} generazioni` : ""}
+                    </span>
+                  </span>
+                ),
+              },
               {
                 key: "p",
                 label: "Piano",
@@ -284,22 +305,23 @@ export default function UsersPage() {
         </div>
       </div>
 
-      {dialog === "csv" && data ? <CsvDialog total={data.total} plans={plans} q={query} onCancel={() => setDialog(null)} /> : null}
+      {dialog === "csv" && data ? <CsvDialog total={data.total} plans={plans} q={query} gift={gift} suspended={suspendedOnly} onCancel={() => setDialog(null)} /> : null}
       {dialog === "new" ? <NewUserDialog onCancel={() => setDialog(null)} onDone={(id) => router.push(`/users/detail?id=${id}`)} /> : null}
       <style>{`.users-table table { table-layout: fixed; }
 .users-table td:first-child { overflow: hidden; }
-/* MOB-1462: Termini and Privacy only from 1440 up (design default); the rest of the dates from 768. */
+/* MOB-1462: Termini and Privacy only from 1440 up (design default); «Iscritto il» from 1024 up. */
+.users-phone-line { display: none; }
 @media (max-width: 1439px) {
   .users-table th:nth-child(5), .users-table td:nth-child(5), .users-table th:nth-child(6), .users-table td:nth-child(6) { display: none; }
 }
 @media (max-width: 1023px) {
-  .users-table th:nth-child(3), .users-table td:nth-child(3), .users-table th:nth-child(7), .users-table td:nth-child(7) { display: none; }
+  .users-table th:nth-child(3), .users-table td:nth-child(3) { display: none; }
 }
 @media (max-width: 599px) {
   .users-desktop { display: none !important; }
   /* Phone (decision 7): the user and the plan; the dates stay on the computer. */
-  .users-table th:nth-child(3), .users-table td:nth-child(3), .users-table th:nth-child(4), .users-table td:nth-child(4) { display: none; }
-  .users-table th:nth-child(7), .users-table td:nth-child(7) { display: none; }
+  .users-table th:nth-child(4), .users-table td:nth-child(4), .users-table th:nth-child(7), .users-table td:nth-child(7) { display: none; }
+  .users-phone-line { display: block; }
   .users-table th, .users-table td { padding-left: 8px; padding-right: 8px; }
   .users-table th:nth-child(2), .users-table td:nth-child(2) { width: 118px; }
 }`}</style>

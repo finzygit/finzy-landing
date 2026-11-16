@@ -179,16 +179,22 @@ export function pct(n: number): string {
 }
 
 /** «Oggi, 09:12», «Ieri, 22:05», else «16/11/2026», in Rome time; «—» when there is none (MOB-1462: kept since 16/11). */
+const ROME_DAY = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Rome", year: "numeric", month: "2-digit", day: "2-digit" });
+const ROME_TIME = new Intl.DateTimeFormat("it-IT", { timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit", hour12: false });
+
 export function lastAccess(iso: string | null | undefined, now = new Date()): string {
   if (!iso) return "—";
   const at = new Date(iso);
   if (Number.isNaN(at.getTime())) return "—";
-  const day = (d: Date) => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Rome", year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
-  const time = new Intl.DateTimeFormat("it-IT", { timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit", hour12: false }).format(at);
-  const yesterday = new Date(now.getTime() - 24 * 3600 * 1000);
-  if (day(at) === day(now)) return `Oggi, ${time}`;
-  if (day(at) === day(yesterday)) return `Ieri, ${time}`;
-  return dmy(day(at));
+  const day = ROME_DAY.format(at);
+  const today = ROME_DAY.format(now);
+  // Yesterday from Rome's calendar, not now − 24 h (wrong on the night clocks change).
+  const [y, m, d] = today.split("-").map(Number);
+  const yesterday = new Date(Date.UTC(y, m - 1, d - 1)).toISOString().slice(0, 10);
+  const time = ROME_TIME.format(at);
+  if (day === today) return `Oggi, ${time}`;
+  if (day === yesterday) return `Ieri, ${time}`;
+  return dmy(day);
 }
 
 export const PLATFORM_LABEL: Record<Platform, string> = { app_store: "App Store", play_store: "Google Play", web: "Web", other: "Altro" };

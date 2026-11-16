@@ -42,6 +42,7 @@ export function SuspendDialog({ page, onDone, onCancel }: { page: UserPage; onDo
   const [touched, setTouched] = useState(false);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [refused, setRefused] = useState<string | null>(null);
   const empty = !reason.trim();
   const store = page.plan.store;
 
@@ -55,7 +56,13 @@ export function SuspendDialog({ page, onDone, onCancel }: { page: UserPage; onDo
       toast({ title: "Utente sospeso", body: "Sessioni chiuse su tutti i dispositivi." });
       onDone(next);
     } catch (e) {
-      if (e instanceof ApiError && e.status === 409) {
+      // The account got panel access meanwhile, or it is your own: say why, nothing changed.
+      if (e instanceof ApiError && (e.code === "staff_account" || e.code === "self")) {
+        setRefused(e.code === "self" ? "Non puoi sospendere il tuo account." : "Ha accesso al pannello: prima togli l’accesso da Persone con accesso.");
+        setBusy(false);
+        return;
+      }
+      if (e instanceof ApiError && e.status === 409 && e.code === "already_suspended") {
         // Already suspended by someone else a moment ago: show the page as it is now.
         try {
           onDone(await api.get<UserPage>(`/users/${page.user.id}`));
@@ -93,6 +100,7 @@ export function SuspendDialog({ page, onDone, onCancel }: { page: UserPage; onDo
         </Callout>
       ) : null}
       {failed ? <Callout alert title="Non è stato possibile sospendere">Riprova. L’utente può ancora accedere.</Callout> : null}
+      {refused ? <Callout alert title="Non è stato possibile sospendere">{refused}</Callout> : null}
       <Field id="suspend-reason" label="Motivo" required error={touched && empty ? "Scrivi il motivo." : null} hint={`${reason.length}/${MAX}`}>
         <textarea
           id="suspend-reason"
@@ -102,6 +110,7 @@ export function SuspendDialog({ page, onDone, onCancel }: { page: UserPage; onDo
           style={{ height: "auto", padding: "14px 18px", resize: "vertical", fontFamily: "inherit" }}
           placeholder="Per esempio: abuso, account condiviso, richiesta dell’utente"
           aria-invalid={(touched && empty) || undefined}
+          aria-describedby="suspend-reason-msg"
           value={reason}
           onChange={(e) => setReason(e.target.value)}
           onBlur={() => setTouched(true)}
@@ -125,7 +134,7 @@ export function ReactivateDialog({ page, onDone, onCancel }: { page: UserPage; o
       toast({ title: "Utente riattivato", body: "Può di nuovo accedere all’app." });
       onDone(next);
     } catch (e) {
-      if (e instanceof ApiError && e.status === 409) {
+      if (e instanceof ApiError && e.status === 409 && e.code === "not_suspended") {
         try {
           onDone(await api.get<UserPage>(`/users/${page.user.id}`));
         } catch {
@@ -160,7 +169,8 @@ export function ReactivateDialog({ page, onDone, onCancel }: { page: UserPage; o
 
 /** The red strip on top of a suspended user's page: when, who, why, and «Riattiva» (Zendesk on Mobbin). */
 export function SuspendedStrip({ page, canReactivate, onReactivate }: { page: UserPage; canReactivate: boolean; onReactivate: () => void }) {
-  const s = page.suspension;
+  // An answer with suspended_at but no suspension details still shows the strip, with the date only.
+  const s = page.suspension ?? (page.user.suspended_at ? { at: page.user.suspended_at, by: null, reason: null } : null);
   if (!s) return null;
   return (
     <div role="status" style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 18px", borderRadius: 20, background: "rgba(255,69,58,0.08)", border: "1px solid rgba(255,69,58,0.35)", marginBottom: 18 }}>

@@ -55,7 +55,7 @@ export function SummaryTiles({ data, failed, onShowGifts }: { data: UsersSummary
         sub={data?.gifts_by_tier ? `Premium ${fmt(data.gifts_by_tier.premium)} · Unlimited ${fmt(data.gifts_by_tier.unlimited)}` : failed ? na : ""}
         action={
           data && data.gifts_active > 0 && onShowGifts ? (
-            <button type="button" className="link-btn" style={{ fontSize: 13, padding: 0, display: "inline-flex", alignItems: "center", gap: 2 }} onClick={onShowGifts}>
+            <button type="button" className="link-btn" aria-label="Mostra gli utenti con un omaggio attivo" style={{ fontSize: 13, padding: 0, display: "inline-flex", alignItems: "center", gap: 2 }} onClick={onShowGifts}>
               Mostra <Icon name="chevron" size={14} />
             </button>
           ) : null
@@ -80,8 +80,10 @@ type Slice = { label: string; count: number; color: string };
 function Donut({ title, slices, total }: { title: string; slices: Slice[]; total: number }) {
   const r = 46;
   const c = 2 * Math.PI * r;
+  // The ring and the % share the slices' own sum, so a count that differs from the hole never leaves a gap.
+  const sum = slices.reduce((n, s) => n + s.count, 0) || 1;
   // Where each slice starts on the ring: the sum of the slices before it.
-  const arcs = slices.map((s, i) => ({ ...s, len: (s.count / (total || 1)) * c, start: slices.slice(0, i).reduce((n, p) => n + (p.count / (total || 1)) * c, 0) }));
+  const arcs = slices.map((s, i) => ({ ...s, len: (s.count / sum) * c, start: slices.slice(0, i).reduce((n, p) => n + (p.count / sum) * c, 0) }));
   return (
     <section aria-label={title} style={{ ...TILE, flex: "1 1 340px", gap: 14, padding: "18px 20px" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
@@ -92,12 +94,12 @@ function Donut({ title, slices, total }: { title: string; slices: Slice[]; total
         <p className="muted" style={{ margin: "18px 0", fontSize: 14 }}>Ancora nessun abbonato</p>
       ) : (
         <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
-          <svg width="120" height="120" viewBox="0 0 120 120" role="img" aria-label={`${total} abbonati`} style={{ flex: "none" }}>
+          <svg width="120" height="120" viewBox="0 0 120 120" role="img" aria-label={`${fmt(total)} abbonati`} style={{ flex: "none" }}>
             <circle cx="60" cy="60" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="14" />
             {arcs.map((s) => (
               <circle key={s.label} cx="60" cy="60" r={r} fill="none" stroke={s.color} strokeWidth="14" strokeDasharray={`${Math.max(s.len - 2, 0.5)} ${c}`} strokeDashoffset={-s.start} transform="rotate(-90 60 60)" />
             ))}
-            <text x="60" y="60" textAnchor="middle" fontSize="24" fontWeight="700" fill="var(--text)">{total}</text>
+            <text x="60" y="60" textAnchor="middle" fontSize="24" fontWeight="700" fill="var(--text)">{fmt(total)}</text>
             <text x="60" y="78" textAnchor="middle" fontSize="11" fill="var(--text-3)">abbonati</text>
           </svg>
           <ul style={{ flex: "1 1 160px", listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 8 }}>
@@ -106,7 +108,7 @@ function Donut({ title, slices, total }: { title: string; slices: Slice[]; total
                 <span aria-hidden="true" style={{ width: 10, height: 10, borderRadius: 3, background: s.color, flex: "none" }} />
                 <span style={{ flex: 1, minWidth: 0 }}>{s.label}</span>
                 <strong style={{ fontVariantNumeric: "tabular-nums" }}>{s.count}</strong>
-                <span className="muted" style={{ width: 44, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>{Math.round((s.count * 100) / total)}%</span>
+                <span className="muted" style={{ width: 44, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>{Math.round((s.count * 100) / sum)}%</span>
               </li>
             ))}
           </ul>
@@ -117,18 +119,24 @@ function Donut({ title, slices, total }: { title: string; slices: Slice[]; total
 }
 
 /** «Abbonati per piattaforma» and «Abbonati per Paese», then the AppsFlyer / Mixpanel line. */
-export function PayingPies({ data }: { data: UsersSummary | null }) {
-  if (!data) return null;
+export function PayingPies({ data, loading = false }: { data: UsersSummary | null; loading?: boolean }) {
+  if (!data) {
+    // While the numbers load, keep the donuts' room (no jump when they arrive).
+    return loading ? <div className="skeleton" aria-hidden="true" style={{ height: 190, borderRadius: 22 }} /> : null;
+  }
   const total = data.paying.count;
   const platform: Slice[] = data.segments.platform.map((p, i) => ({ label: PLATFORM_LABEL[p.key] ?? p.key, count: p.count, color: SLICES[i % SLICES.length] }));
   // «Non noto» last, in grey.
   const known = data.segments.country.filter((c) => c.code);
   const unknown = data.segments.country.filter((c) => !c.code).reduce((n, c) => n + c.count, 0);
+  // The five largest, then «Altri», then «Non noto» last in grey.
+  const others = known.slice(5).reduce((n, c) => n + c.count, 0);
   const country: Slice[] = [
-    ...known.map((c, i) => ({ label: countryName(c.code), count: c.count, color: SLICES[i % SLICES.length] })),
+    ...known.slice(0, 5).map((c, i) => ({ label: countryName(c.code), count: c.count, color: SLICES[i % SLICES.length] })),
+    ...(others ? [{ label: "Altri", count: others, color: SLICES[5] }] : []),
     ...(unknown ? [{ label: countryName(null), count: unknown, color: UNKNOWN }] : []),
   ];
-  const links = data.links ?? [];
+  const links = (data.links ?? []).filter((l) => l.url.startsWith("https://"));
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
