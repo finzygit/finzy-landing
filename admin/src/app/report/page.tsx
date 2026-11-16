@@ -108,7 +108,6 @@ function ReportsTab() {
 
 function UniverseTab({ pick, onPick }: { pick: CoveragePick; onPick: (p: CoveragePick) => void }) {
   const { api } = useConsole();
-  const router = useRouter();
   const [f, setF] = useState({ scope: "in_scope", q: "", page: 1 });
   const q = useDebounced(f.q);
   const [data, setData] = useState<UniversePage | null>(null);
@@ -131,9 +130,17 @@ function UniverseTab({ pick, onPick }: { pick: CoveragePick; onPick: (p: Coverag
   }, [load]);
 
   const setPick = (r: string, g: string) => {
-    onPick(r || g ? { region: r || "US", group: (g || "complete") as CoverageGroup } : null);
-    setF({ ...f, page: 1 });
+    onPick(r || g ? { region: r || undefined, group: (g || undefined) as CoverageGroup | undefined } : null);
   };
+
+  // A new coverage filter (from these selects or from a counter of the card
+  // above) starts again from page 1.
+  const pickKey = `${region}|${group}`;
+  const [seenPick, setSeenPick] = useState(pickKey);
+  if (seenPick !== pickKey) {
+    setSeenPick(pickKey);
+    setF({ ...f, page: 1 });
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -163,7 +170,6 @@ function UniverseTab({ pick, onPick }: { pick: CoveragePick; onPick: (p: Coverag
           state={state}
           rows={data?.rows ?? []}
           rowKey={(r) => `${r.region}-${r.azione_id}`}
-          onRowClick={(r) => (r.report_id ? router.push(`/report/detail?id=${r.report_id}`) : undefined)}
           onRetry={load}
           errorText={T.uni_error}
           onClearFilters={() => {
@@ -173,7 +179,7 @@ function UniverseTab({ pick, onPick }: { pick: CoveragePick; onPick: (p: Coverag
           empty={<StateBlock kind="empty" title={T.cov_empty_t} body={T.cov_empty_b} />}
           columns={[
             { key: "rank", label: "#", width: "44px", align: "right", render: (r) => <span className="muted" style={NUM}>{r.rank ?? "—"}</span> },
-            { key: "stock", label: "Titolo", render: (r) => (<div style={{ minWidth: 0 }}><strong>{r.symbol}</strong><span className="sub">{r.name ?? "—"}</span></div>) },
+            { key: "stock", label: "Titolo", render: (r) => (<div style={{ minWidth: 0 }}>{r.report_id ? <Link href={`/report/detail?id=${r.report_id}`}><strong>{r.symbol}</strong></Link> : <strong>{r.symbol}</strong>}<span className="sub">{r.name ?? "—"}</span></div>) },
             { key: "exchange", label: "Borsa", width: "80px", render: (r) => <span style={{ color: "var(--text-2)", fontSize: 14 }}>{r.exchange ?? "—"}</span> },
             { key: "cap", label: "Capitalizzazione", width: "140px", align: "right", render: (r) => <span style={{ fontWeight: 550, fontSize: 14, ...NUM }}>{marketCap(r.market_cap, r.region)}</span> },
             { key: "doc", label: "Documento", width: "130px", render: (r) => <span style={{ color: r.filing_period ? "var(--text-2)" : "var(--text-3)", fontSize: 14 }}>{r.filing_period ? `${r.filing_type ?? ""} · FY${r.filing_period.slice(0, 4)}` : "—"}</span> },
@@ -188,7 +194,7 @@ function UniverseTab({ pick, onPick }: { pick: CoveragePick; onPick: (p: Coverag
 }
 
 export default function ReportsPage() {
-  const { api } = useConsole();
+  const { api, can } = useConsole();
   const params = useSearchParams();
   const router = useRouter();
   const tab = params?.get("tab") === "universe" ? "universe" : "reports";
@@ -213,7 +219,7 @@ export default function ReportsPage() {
 
   return (
     <AdminFrame title={T.grp}>
-      <PageHead title={T.rep_title} sub={T.rep_sub} crumbs={[T.grp, T.rep_title]} actions={<Link href="/spend"><GoLink>{T.spend_link}</GoLink></Link>} />
+      <PageHead title={T.rep_title} sub={T.rep_sub} crumbs={[T.grp, T.rep_title]} actions={can("console.spend.view") ? <Link href="/spend"><GoLink>{T.spend_link}</GoLink></Link> : undefined} />
       <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
         <CoverageCard
           data={cov}

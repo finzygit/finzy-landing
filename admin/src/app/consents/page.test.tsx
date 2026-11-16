@@ -58,6 +58,19 @@ describe("Consensi", () => {
     expect(screen.getByText(/consensi-portfolio-\d{4}-\d{2}-\d{2}\.csv · 10 righe/)).toBeTruthy();
   });
 
+  it("the CSV follows the active filters", async () => {
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => undefined);
+    const { api, blob } = fakeApi({ "/portfolio-consents": register }, undefined, { "/portfolio-consents.csv": new Blob(["Email"]) });
+    renderPage(<ConsentsPage />, api);
+    await screen.findByText("giulia.bianchi@example.com");
+    fireEvent.change(screen.getByRole("combobox", { name: "Versione" }), { target: { value: "1" } });
+    fireEvent.change(screen.getByRole("combobox", { name: "Sistema" }), { target: { value: "android" } });
+    fireEvent.click(screen.getByRole("button", { name: "Esporta CSV" }));
+    fireEvent.click(screen.getByRole("button", { name: "Esporta" }));
+    await screen.findByText("File pronto");
+    expect(blob).toHaveBeenCalledWith("/portfolio-consents.csv", expect.objectContaining({ version: "1", os: "android" }));
+  });
+
   it("a failed export keeps the dialog with the error", async () => {
     const { api } = fakeApi({ "/portfolio-consents": register }, undefined, { "/portfolio-consents.csv": new ApiError(500, null) });
     renderPage(<ConsentsPage />, api);

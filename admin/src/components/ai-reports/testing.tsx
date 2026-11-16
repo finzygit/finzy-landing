@@ -35,7 +35,7 @@ export function fakeApi(routes: Record<string, unknown | Handler>, who: Me = me(
   const fail = vi.fn(async (path: string) => {
     throw new Error(`no write expected from the Report AI pages: ${path}`);
   });
-  const api: Api = { get: get as Api["get"], post: fail as Api["post"], put: fail as Api["put"], del: vi.fn(async () => null) as Api["del"], blob: blob as Api["blob"] };
+  const api: Api = { get: get as Api["get"], post: fail as Api["post"], put: fail as Api["put"], del: vi.fn(async (path: string) => (path === "/session" ? null : fail(path))) as Api["del"], blob: blob as Api["blob"] };
   return { api, get, blob, writes: fail };
 }
 

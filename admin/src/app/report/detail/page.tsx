@@ -17,7 +17,7 @@ import { useConsole } from "@/lib/console";
 import { REPORT_REASON, T, TYPE_LABEL, date, dateTime, languagesLabel, providerLabel, reportNext, type ReportDetail } from "@/lib/ai-reports";
 
 export default function ReportPage() {
-  const { api } = useConsole();
+  const { api, can } = useConsole();
   const id = Number(useSearchParams()?.get("id") ?? "");
   const [d, setD] = useState<ReportDetail | null>(null);
   const [state, setState] = useState<"loading" | "ready" | "missing" | "error">("loading");
@@ -64,7 +64,7 @@ export default function ReportPage() {
     const side = (
       <aside className="card" style={{ padding: "8px 20px 18px", display: "flex", flexDirection: "column", gap: 8, minWidth: 0 }}>
         <MetaList rows={meta} />
-        {d.azione_id ? <Link href={`/stocks/detail?id=${d.azione_id}`}><GoLink>{T.d_open_stock}</GoLink></Link> : null}
+        {d.azione_id && can("console.stocks.view") ? <Link href={`/stocks/detail?id=${d.azione_id}`}><GoLink>{T.d_open_stock}</GoLink></Link> : null}
       </aside>
     );
     const main = failed && d.failure ? (

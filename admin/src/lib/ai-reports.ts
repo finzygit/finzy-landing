@@ -21,7 +21,7 @@ export type ReportRow = {
   tried_at: string | null;
   reason: ReportReason | null;
 };
-export type ReportCounts = { all: number; completed: number; failed: number; archived: number; pending?: number };
+export type ReportCounts = { all: number; completed: number; failed: number; archived: number; pending: number };
 export type ReportPage = { rows: ReportRow[]; total: number; page: number; per_page: number; counts: ReportCounts };
 
 export type ReportDetail = ReportRow & {
@@ -75,15 +75,15 @@ export type PortfolioCardData = {
   risk_profile: string;
   enabled: boolean;
   latest: { id: number; status: GenerationRow["status"]; started_at: string | null; published_at: string | null } | null;
-  published: { id: number; published_at: string | null; prompt_version: number; categories: Record<string, number>; instruments: number } | null;
+  published: { id: number; published_at: string | null; prompt_version: number; categories: Record<string, number | null>; instruments: number } | null;
 };
 export type BuilderPage = {
   portfolios: PortfolioCardData[];
   next_run: string;
   history: { rows: GenerationRow[]; total: number; page: number; per_page: number };
 };
-export type Allocation = { category: string; weight: number; rationale: string };
-export type Instrument = { category: string; symbol: string; name: string; risk: "low" | "medium" | "high" | null; weight: number; rationale: string };
+export type Allocation = { category: string; weight: number | null; rationale: string };
+export type Instrument = { category: string; symbol: string; name: string; risk: "low" | "medium" | "high" | null; weight: number | null; rationale: string };
 export type Generation = GenerationRow & {
   risk_profile: string;
   in_app: boolean;

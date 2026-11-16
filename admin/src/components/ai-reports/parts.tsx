@@ -138,12 +138,14 @@ export function Dot({ colour, size = 8 }: { colour: string; size?: number }) {
 }
 
 /** The classes of a portfolio as one bar (weights in %). */
-export function CatBar({ weights, height = 8 }: { weights: [string, number][]; height?: number }) {
-  return <StackBar parts={weights.map(([k, w]) => [w, categoryOf(k).colour])} height={height} total={100} />;
+export function CatBar({ weights, height = 8 }: { weights: [string, number | null][]; height?: number }) {
+  // A class without a weight (the backend sends null) draws no segment.
+  return <StackBar parts={weights.map(([k, w]) => [w ?? 0, categoryOf(k).colour])} height={height} total={100} />;
 }
 
-/** A thin bar of one weight (0–100 %). */
-export function WeightBar({ value, colour, width = 120 }: { value: number; colour: string; width?: number }) {
+/** A thin bar of one weight (0–100 %); no bar for a missing weight. */
+export function WeightBar({ value, colour, width = 120 }: { value: number | null; colour: string; width?: number }) {
+  if (value == null) return <span aria-hidden="true" style={{ flex: "none", display: "inline-block", width }} />;
   return (
     <span aria-hidden="true" style={{ flex: "none", display: "inline-block", width, height: 6, borderRadius: 3, background: "rgba(255,255,255,0.07)", overflow: "hidden" }}>
       <span style={{ display: "block", width: `${Math.max(2, Math.min(100, value))}%`, height: "100%", borderRadius: 3, background: colour }} />

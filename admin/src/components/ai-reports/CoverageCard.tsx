@@ -15,7 +15,8 @@ const GROUPS: [CoverageGroup, string, string][] = [
   ["no_filing", T.cov_nofiling, "rgba(236,244,241,0.30)"],
 ];
 
-export type CoveragePick = { region: string; group: CoverageGroup } | null;
+/** A coverage filter: a region, a group or both (either may be left open). */
+export type CoveragePick = { region?: string; group?: CoverageGroup } | null;
 
 function Region({ region, counts, size, note, selected, onPick }: { region: string; counts: Record<CoverageGroup, number>; size: number; note?: string; selected: CoverageGroup | null; onPick: (g: CoverageGroup) => void }) {
   const tot = GROUPS.reduce((s, [g]) => s + counts[g], 0);
@@ -102,7 +103,7 @@ export function CoverageCard({ data, state, picked, onPick, onRetry }: { data: C
                 counts={c}
                 size={c.size}
                 note={euEmpty ? T.cov_eu_note : undefined}
-                selected={picked?.region === region ? picked.group : null}
+                selected={picked?.region === region ? (picked.group ?? null) : null}
                 onPick={(g) => onPick(picked?.region === region && picked.group === g ? null : { region, group: g })}
               />
             );

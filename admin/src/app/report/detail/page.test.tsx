@@ -1,6 +1,6 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fakeApi, renderPage } from "@/components/ai-reports/testing";
+import { REPORTS_ADMIN, fakeApi, me, renderPage } from "@/components/ai-reports/testing";
 import { ApiError } from "@/lib/api";
 import ReportPage from "./page";
 
@@ -25,7 +25,7 @@ describe("Report page", () => {
   });
 
   it("puts the 10-K analysis in a sandboxed frame with its own CSP, Italian first, with IT/EN", async () => {
-    const { api } = fakeApi({ "/reports/3": base });
+    const { api } = fakeApi({ "/reports/3": base }, me([...REPORTS_ADMIN, "console.stocks.view"]));
     renderPage(<ReportPage />, api);
     const frame = (await screen.findByTitle("Anteprima: Analisi NVDA")) as HTMLIFrameElement;
     expect(frame.getAttribute("sandbox")).toBe("");
@@ -89,5 +89,11 @@ describe("Report page", () => {
     renderPage(<ReportPage />, api);
     await screen.findByText("Report non trovato");
     expect(screen.getByText("Torna ai report").getAttribute("href")).toBe("/report");
+  });
+  it("«Scheda del titolo» shows only to who can open «Titoli»", async () => {
+    const { api } = fakeApi({ "/reports/3": base });
+    renderPage(<ReportPage />, api);
+    await screen.findByTitle("Anteprima: Analisi NVDA");
+    expect(screen.queryByText("Scheda del titolo")).toBeNull();
   });
 });
