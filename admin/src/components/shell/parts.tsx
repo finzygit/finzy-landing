@@ -34,7 +34,7 @@ export function Section({ title, note, action, children, pad = "20px 24px" }: { 
   return (
     <section className="card" style={{ padding: pad, display: "flex", flexDirection: "column", gap: 16 }}>
       {title ? (
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px 16px", flexWrap: "wrap" }}>
           <div>
             <h2 style={{ margin: 0, fontSize: 18 }}>{title}</h2>
             {note ? <p className="note" style={{ fontSize: 14 }}>{note}</p> : null}

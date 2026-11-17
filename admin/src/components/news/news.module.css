@@ -30,7 +30,7 @@
 .gridArticle > [data-area="pv"] { grid-area: pv; }
 .gridQueue { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 24px; align-items: start; }
 @media (max-width: 1199px) {
-  .gridToday { grid-template-columns: 1fr; }
+  .gridToday { grid-template-columns: minmax(0, 1fr); } /* MOB-1487: 1fr let the table widen the card past a phone */
   /* 1024 and under: one column, the preview right after the details (board ADM-NEWS-03-articolo-1024). */
   .gridArticle { grid-template-columns: minmax(0, 1fr); grid-template-areas: "det" "pv" "links" "text"; grid-template-rows: none; gap: 24px; }
   .gridArticle > [data-area="pv"] { max-width: 420px; width: 100%; justify-self: center; }

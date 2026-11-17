@@ -66,7 +66,7 @@ export function CoverageCard({ data, state, picked, onPick, onRetry }: { data: C
   let body;
   if (state === "loading") {
     body = (
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 28 }} aria-busy="true">
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))", gap: 28 }} aria-busy="true">
         {[0, 1].map((i) => (
           <div key={i} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <span className="skeleton" style={{ width: "40%", height: 16 }} />
@@ -93,7 +93,7 @@ export function CoverageCard({ data, state, picked, onPick, onRetry }: { data: C
   } else {
     body = (
       <>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 28 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))", gap: 28 }}>
           {Object.entries(data.regions).map(([region, c]) => {
             const euEmpty = region === "EU" && c.complete === 0 && c.incomplete === 0 && c.no_filing > 0;
             return (

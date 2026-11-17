@@ -11,18 +11,13 @@ import { Icon } from "@/components/shell/Icon";
 import { Drawer } from "@/components/shell/overlays";
 import { PageHead, Pager, Section, StateBlock, VerbChip } from "@/components/shell/parts";
 import { useConsole } from "@/lib/console";
+import { eventName, verbOf } from "@/lib/activity";
 import { AREA_LABEL } from "@/lib/labels";
 
 type Row = { id: number; at: string; who: { id: number; name: string } | null; event: string; kind: string; area: string; summary: string };
 type Detail = Row & { before: Record<string, unknown> | null; after: Record<string, unknown> | null; reason: string | null; ip: string | null; user_agent: string | null };
 type Page = { rows: Row[]; total: number; page: number; per_page: number };
 
-const VERB: Record<string, string> = {
-  create: "Ha creato", update: "Ha modificato", delete: "Ha eliminato", gift: "Ha regalato", revoke: "Ha revocato", remove: "Ha tolto",
-  signin: "Accesso", signout: "Uscita", failed: "Codice sbagliato", locked: "Accesso bloccato", reset: "Ha azzerato", enable: "Ha attivato",
-  regenerate: "Nuovi codici", export: "Ha esportato", hide: "Ha nascosto", show: "Ha mostrato",
-};
-const verbOf = (event: string) => VERB[event.split(".").pop() ?? ""] ?? event;
 const areaOf = (a: string) => (a === "access" ? "Accesso" : AREA_LABEL[a] ?? a);
 const when = (iso: string) => new Date(iso).toLocaleString("it-IT", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 const KINDS: [string, string][] = [["", "Tutte le azioni"], ["create", "Creazioni"], ["update", "Modifiche"], ["delete", "Eliminazioni"], ["plan", "Piani"], ["access", "Accessi"], ["security", "Sicurezza"]];
@@ -146,7 +141,7 @@ export default function LogPage() {
               <div>
                 <strong style={{ fontSize: 14, color: "var(--text-2)" }}>Dettagli tecnici</strong>
                 <div className="kv"><span>Area</span><span>{areaOf(open.area)}</span></div>
-                <div className="kv"><span>Evento</span><span>{open.event}</span></div>
+                <div className="kv"><span>Evento</span><span>{eventName(open.event)}</span></div>
                 <div className="kv"><span>Indirizzo IP</span><span>{open.ip ?? "—"}</span></div>
                 <div className="kv"><span>Browser</span><span style={{ maxWidth: 280, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{open.user_agent ?? "—"}</span></div>
               </div>

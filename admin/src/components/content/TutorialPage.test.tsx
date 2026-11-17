@@ -37,6 +37,14 @@ describe("Tutorial", () => {
     expect(screen.getByText("Questa pagina non ha un tutorial")).toBeTruthy();
   });
 
+  it("says «1 passo» for a page with one step (MOB-1487)", async () => {
+    const one: Tutorials = { ...DATA, pages: [{ key: "home", steps: [DATA.pages[0].steps[0]] }, DATA.pages[1]] };
+    renderPage(<TutorialPage />, fakeApi(EDITOR, { "GET /tutorial-steps": one }).api);
+    expect(await screen.findByRole("button", { name: /Home\s*1 passo$/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Mappa dei mercati\s*0 passi/ })).toBeTruthy();
+    expect(screen.queryByText("1 passi")).toBeNull();
+  });
+
   it("a new step needs its feature, and goes to the end of the page", async () => {
     const fake = fakeApi(EDITOR, { "GET /tutorial-steps": DATA, "POST /tutorial-steps": step(3, "home", 3, "Le notizie", null) });
     renderPage(<TutorialPage />, fake.api);

@@ -36,7 +36,7 @@
 .today { outline: 1px dashed rgba(236, 244, 241, 0.3); outline-offset: 1px; border-radius: 3px; }
 .xaxis { grid-column: 2; display: flex; gap: 4px; font-size: 12px; color: var(--text-3); }
 .xaxis span { flex: 1 1 0; min-width: 0; white-space: nowrap; overflow: visible; }
-.xaxis span:last-child { direction: rtl; }
+.xaxis span:last-child { display: flex; justify-content: flex-end; } /* grows to the left; MOB-1487: no right-to-left direction («nov 17») */
 
 /* generations per type */
 .scroll { overflow-x: auto; }
@@ -62,6 +62,11 @@
 .calls strong { font-size: 22px; font-variant-numeric: tabular-nums; }
 .facts { display: flex; flex-direction: column; gap: 3px; font-size: 14px; color: var(--text-2); font-variant-numeric: tabular-nums; }
 
+@media (max-width: 600px) {
+  .headRight { justify-content: flex-start; } /* MOB-1487: under the title, from the left */
+  .xaxis span[data-near-last="true"] { visibility: hidden; } /* MOB-1487: on a phone the day before today's label ran into it */
+  .failed { text-align: left; }
+}
 @media (max-width: 900px) {
   .card { padding: 18px 16px; }
   .source { grid-template-columns: 36px minmax(0, 1fr) auto; }
