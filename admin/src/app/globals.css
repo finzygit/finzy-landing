@@ -98,7 +98,7 @@ button { font: inherit; }
 /* MOB-1487: on a phone the actions (Aggiorna, the month picker) go under the title instead of past the screen edge */
 @media (max-width: 600px) {
   .page-head { flex-wrap: wrap; align-items: flex-start; }
-  .page-head > div:first-child { flex: 1 1 100%; min-width: 0; }
+  .page-head > div:first-child { flex: 1 1 260px; min-width: 0; } /* wraps only when the actions do not fit beside it (an empty actions box stays on the line) */
   .page-head > div:last-child:not(:first-child) { max-width: 100%; flex-wrap: wrap; }
 }
 
