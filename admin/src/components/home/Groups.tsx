@@ -238,7 +238,8 @@ export function UsersBody({ d }: { d: Users }) {
         </Block>
       ) : null}
       <Block title={T.byPlan} right={<span className="note">{T.registered(count(d.registered))}</span>}>
-        <div className={s.plans}>
+        {/* MOB-1487: a count longer than «999.999» does not fit four tiles in a row: they go two by two */}
+        <div className={s.plans} data-wide={PLANS.some((p) => count(d.per_plan[p.key] ?? 0).length > 7)}>
           {PLANS.map((p) => (
             <div key={p.key} className={s.plan}>
               <span className={s.planLabel}>

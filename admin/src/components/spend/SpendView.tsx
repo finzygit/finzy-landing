@@ -100,7 +100,9 @@ function ByType({ d }: { d: SpendData }) {
             </ol>
             <div className={s.xaxis} aria-hidden="true">
               {days.map((day, i) => (
-                <span key={day.day}>{tick(i, days.length, 5) ? dayShort(day.day) : ""}</span>
+                <span key={day.day} data-near-last={i < days.length - 1 && i > days.length - 6 && tick(i, days.length, 5) ? "true" : undefined}>
+                  {tick(i, days.length, 5) ? dayShort(day.day) : ""}
+                </span>
               ))}
             </div>
           </figure>

@@ -23,6 +23,8 @@ import "./content.css";
 type Edit = { step: TutorialStep | null; title_it: string; body_it: string; title_en: string; body_en: string; feature: string; files: Partial<Record<Lang, File>>; error: string | null };
 
 const missingEn = (s: TutorialStep) => !(s.title_en ?? "").trim() || !(s.body_en ?? "").trim();
+/** MOB-1487: «1 passo», «0 passi», «3 passi». */
+const stepsLabel = (n: number) => (n === 1 ? T.t_steps_one : fill(T.t_steps, { n }));
 const imageFor = (s: TutorialStep, l: Lang) => s.images[l] ?? s.images[l === "it" ? "en" : "it"] ?? s.images.legacy;
 
 export function TutorialPage() {
@@ -185,7 +187,7 @@ export function TutorialPage() {
                     {pageLabel(p.key)}
                     {p.steps.some(missingEn) ? <span className="cc-dot" aria-label={T.t_missing_en} /> : null}
                   </span>
-                  <small>{fill(T.t_steps, { n: p.steps.length })}</small>
+                  <small>{stepsLabel(p.steps.length)}</small>
                 </button>
               </li>
             ))}
@@ -196,7 +198,7 @@ export function TutorialPage() {
           title={
             <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
               {pageLabel(pageKey ?? "")}
-              <small className="note" style={{ fontWeight: 500, fontSize: 14 }}>{fill(T.t_steps, { n: steps.length })}</small>
+              <small className="note" style={{ fontWeight: 500, fontSize: 14 }}>{stepsLabel(steps.length)}</small>
             </span>
           }
           action={canEdit ? <button type="button" className="btn" onClick={() => openEdit(null)}><Glyph name="plus" size={16} />{T.t_add}</button> : undefined}

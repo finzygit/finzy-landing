@@ -34,8 +34,18 @@ export function RangePicker({ value, onChange, disabled = false }: { value: Rang
   );
 }
 
-function axisLabel(v: number): string {
-  return `$${num(v, v < 10 ? 2 : 0)}`;
+/**
+ * The five price lines' labels, top to bottom: whole dollars from $10 up, cents
+ * under $10. MOB-1487: a narrow range (a month of a $68 stock, a currency pair)
+ * gets decimals until no two lines carry the same label (at most 4).
+ */
+export function axisLabels(values: number[]): string[] {
+  let labels: string[] = [];
+  for (let d = Math.min(...values) < 10 ? 2 : 0; d <= 4; d++) {
+    labels = values.map((v) => `$${num(v, d)}`);
+    if (new Set(labels).size === labels.length) break;
+  }
+  return labels;
 }
 
 /** The drawing's real width, so the labels are never stretched (a callback ref: the box changes with the state). */
@@ -87,7 +97,7 @@ export function PriceChart({ points, state = "default", emptyText, height = 260 
       }
     });
     const up = closes[closes.length - 1] >= closes[0];
-    return { line, area, ticks, months, up };
+    return { line, area, ticks, labels: axisLabels(ticks.map((t) => t.v)), months, up };
   }, [points, H, W]);
 
   if (state === "loading") return <div ref={ref}><span className="skeleton" style={{ height, borderRadius: 16 }} aria-busy="true" /></div>;
@@ -108,10 +118,10 @@ export function PriceChart({ points, state = "default", emptyText, height = 260 
           <stop offset="1" stopColor={color} stopOpacity="0" />
         </linearGradient>
       </defs>
-      {geo.ticks.map((t) => (
+      {geo.ticks.map((t, i) => (
         <g key={t.y}>
           <line x1="0" x2={W - padR} y1={t.y} y2={t.y} stroke="rgba(255,255,255,0.06)" />
-          <text x={W - padR + 10} y={t.y + 4} fill="rgba(236,244,241,0.48)" fontSize="13">{axisLabel(t.v)}</text>
+          <text x={W - padR + 10} y={t.y + 4} fill="rgba(236,244,241,0.48)" fontSize="13">{geo.labels[i]}</text>
         </g>
       ))}
       <path d={geo.area} fill="url(#stock-fill)" />

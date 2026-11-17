@@ -117,6 +117,7 @@ export const T = {
   t_create: "Aggiungi passo",
   t_pages: "Pagine dell’app",
   t_steps: "{n} passi",
+  t_steps_one: "1 passo", // MOB-1487
   t_add: "Aggiungi passo",
   t_edit: "Modifica passo",
   t_title_f: "Titolo",

@@ -111,7 +111,10 @@ export default function RolesPage() {
         <Section pad="22px 8px 10px">
           <div role="table" aria-label="Ruoli e permessi" style={{ overflowX: "auto" }}>
             <div role="row" style={{ display: "grid", gridTemplateColumns: columns, gap: 16, padding: "0 16px 12px", borderBottom: "1px solid rgba(255,255,255,0.12)" }}>
-              <span role="columnheader" className="sr-only">Area</span>
+              {/* MOB-1487: a real grid cell for the corner; .sr-only alone is position:absolute and leaves the grid, which put each role over the next column */}
+              <span role="columnheader">
+                <span className="sr-only">Area</span>
+              </span>
               {roles.map((r) => (
                 <div role="columnheader" key={r.id}>
                   <strong style={{ display: "block", fontSize: 16 }}>{r.name}</strong>

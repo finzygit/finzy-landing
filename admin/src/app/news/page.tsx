@@ -73,7 +73,8 @@ export default function TodayPage() {
               {data.latest.length === 0 ? (
                 <p className="muted" style={{ margin: 0 }}>Ancora nessun articolo oggi.</p>
               ) : (
-                <table className="table">
+                <div style={{ overflowX: "auto" }}>
+                <table className="table" style={{ minWidth: 520 }}>
                   <thead>
                     <tr>
                       <th scope="col">Titolo</th>
@@ -99,6 +100,7 @@ export default function TodayPage() {
                     ))}
                   </tbody>
                 </table>
+                </div>
               )}
             </Section>
             <Section title="Riassunti e immagini AI di oggi">

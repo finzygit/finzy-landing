@@ -250,6 +250,8 @@ export function LessonsPage() {
           </div>
         ) : (
           <section className="card" style={{ padding: 8 }}>
+            {/* MOB-1487: the table scrolls inside its card on a phone, as the other tables do */}
+            <div style={{ overflowX: "auto" }}>
             <table className="table cc-lessons">
               <caption className="sr-only">{T.l_title}</caption>
               <thead>
@@ -306,6 +308,7 @@ export function LessonsPage() {
                   : null}
               </tbody>
             </table>
+            </div>
           </section>
         )}
         {order ? (
