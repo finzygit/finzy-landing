@@ -305,7 +305,7 @@ export function LessonPage() {
             <Card title={T.c_title}>
               <div className="cc-row" style={{ alignItems: "flex-start" }}>
                 <Thumb url={lesson.thumbnail_url} size={72} />
-                <div style={{ display: "flex", flexDirection: "column", gap: 10, minWidth: 0 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {lesson.thumbnail_url ? null : <p className="note" style={{ fontSize: 14 }}>{T.c_none}</p>}
                   {canEdit ? (
                     <span className="cc-row" style={{ flexWrap: "wrap" }}>
