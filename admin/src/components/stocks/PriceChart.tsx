@@ -36,12 +36,12 @@ export function RangePicker({ value, onChange, disabled = false }: { value: Rang
 
 /**
  * The five price lines' labels, top to bottom: whole dollars from $10 up, cents
- * under $10. MOB-1487: a narrow range (a month of a $68 stock) gets one or two
- * decimals more, so no two lines carry the same label.
+ * under $10. MOB-1487: a narrow range (a month of a $68 stock, a currency pair)
+ * gets decimals until no two lines carry the same label (at most 4).
  */
 export function axisLabels(values: number[]): string[] {
   let labels: string[] = [];
-  for (let d = Math.min(...values) < 10 ? 2 : 0; d <= 2; d++) {
+  for (let d = Math.min(...values) < 10 ? 2 : 0; d <= 4; d++) {
     labels = values.map((v) => `$${num(v, d)}`);
     if (new Set(labels).size === labels.length) break;
   }

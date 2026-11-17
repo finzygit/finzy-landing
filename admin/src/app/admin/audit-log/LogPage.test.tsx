@@ -40,7 +40,7 @@ describe("Registro attività", () => {
 
   it("falls back to words for an event it does not know", () => {
     expect(eventName("users.plan.gift")).toBe("Ha regalato un piano");
-    expect(eventName("admin.person.two_factor.reset")).toBe("Ha azzerato la verifica di una persona");
+    expect(eventName("admin.person.two_factor.reset")).toBe("Ha azzerato la verifica in due passaggi di una persona");
     expect(eventName("access.session.signin")).toBe("Accesso alla console");
     expect(eventName("stocks.something_new.update")).toBe("Ha modificato");
     expect(eventName("weird")).toBe("Altro");

@@ -15,13 +15,14 @@ const THING: Record<string, string> = {
   "users.plan": "un piano", "users.user": "un utente", "users.list": "l’elenco utenti", "users.avatar": "l’avatar di un utente",
   "promotions.promotion": "una promozione",
   "news.article": "un articolo", "news.link": "un collegamento", "news.source": "una fonte", "news.taxonomy": "una classificazione",
-  "stocks.stock": "un titolo", "stocks.alternative": "un ticker alternativo",
+  "stocks.stock": "un titolo", "stocks.alternative": "un ticker alternativo", "stocks.logo": "il logo di un titolo", "stocks.banner": "il banner di un titolo",
+  "revenue.payments": "i pagamenti",
   "reports.consents": "i consensi",
   "content.lesson": "una lezione", "content.lessons": "le lezioni", "content.lesson_cover": "la copertina di una lezione", "content.lesson_video": "il video di una lezione",
   "content.lesson_order": "l’ordine delle lezioni", "content.avatar": "un avatar", "content.avatar_image": "l’immagine di un avatar", "content.avatar_order": "l’ordine degli avatar",
   "content.tutorial_step": "un passo del tutorial", "content.tutorial_image": "l’immagine di un passo del tutorial", "content.tutorial_order": "l’ordine dei passi del tutorial",
   "content.maintenance": "la manutenzione", "content.setting": "un’impostazione",
-  "admin.role": "un ruolo", "admin.person": "l’accesso di una persona", "admin.person.two_factor": "la verifica di una persona", "admin.activity": "il registro attività",
+  "admin.role": "un ruolo", "admin.person": "l’accesso di una persona", "admin.person.two_factor": "la verifica in due passaggi di una persona", "admin.activity": "il registro attività",
 };
 
 /** Sign-ins and codes read better as a whole sentence. */
