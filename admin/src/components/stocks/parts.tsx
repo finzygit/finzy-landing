@@ -63,7 +63,7 @@ export function StockCell({ row, compact = false }: { row: Pick<StockRow, "symbo
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
       <StockLogo symbol={row.symbol} url={row.logo_url} />
-      <div style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: 3 }}>
+      <div style={{ flex: "1 1 auto", minWidth: 0, display: "flex", flexDirection: "column", gap: 3 }}>
         <strong style={{ fontSize: 15, ...ONE_LINE }}>{row.symbol}</strong>
         {/* MOB-1489: the chips wrap to a new line when the cell is too narrow for both, never cut */}
         <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6, minWidth: 0 }}>
