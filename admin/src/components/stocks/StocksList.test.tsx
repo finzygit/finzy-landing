@@ -126,5 +126,7 @@ describe("Titoli list chips (MOB-1489)", () => {
     expect(line.style.flexWrap).toBe("wrap");
     expect(line.style.overflow).not.toBe("hidden");
     expect(chip.style.flexShrink).toBe("0");
+    // the name stays beside the last chip and is cut there, rather than dropping to a line of its own
+    expect(screen.getByText("Alphabet Inc. Class C").style.flex).toBe("1 1 60px");
   });
 });

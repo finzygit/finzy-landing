@@ -15,12 +15,12 @@ import { Banner, PageHead, StateBlock, Status } from "@/components/shell/parts";
 import { useConsole } from "@/lib/console";
 import { fill, shortWhen } from "@/lib/content/format";
 import { T } from "@/lib/content/texts";
-
-/** MOB-1488: «1 lezione», «3 lezioni». */
-const counted = (n: number, one: string, many: string) => (n === 1 ? one : fill(many, { n }));
 import type { Library, LessonRow, LessonSection } from "@/lib/content/types";
 import { CRUMB, Glyph, Grip, SaveBar, Thumb, UploadsTray, VideoChip } from "./bits";
 import "./content.css";
+
+/** MOB-1488: «1 lezione», «3 lezioni». */
+const counted = (n: number, one: string, many: string) => (n === 1 ? one : fill(many, { n }));
 
 type Quick = "all" | "vis" | "noit" | "noen";
 const OPEN_FIRST = 2;

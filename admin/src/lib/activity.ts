@@ -71,14 +71,14 @@ export const FIELD: Record<string, string> = {
   // promotions
   code: "Codice", starts_at: "Inizio", ends_at: "Fine", countries: "Paesi", statuses: "Stato dell’utente", formulas: "Formule",
   // stocks
-  common_name: "Nome comune", common_name_locked: "Nome bloccato", alternatives: "Ticker alternativi", logo: "Logo", banner: "Banner",
+  common_name: "Nome comune", common_name_locked: "Nome bloccato", alternatives: "Ticker alternativi", logo: "Logo", banner: "Banner dello Stock Snapshot",
 };
 
 const LANG: Record<string, string> = { it: "in italiano", en: "in inglese" };
 
 /** «common_name_locked» → «Nome bloccato»; a key this page does not know yet reads as words («trial_days» → «Trial days»). */
 export function fieldName(key: string): string {
-  if (FIELD[key]) return FIELD[key];
+  if (Object.hasOwn(FIELD, key)) return FIELD[key];
   const lang = key.match(/^(.+)_(it|en)$/);
   if (lang) return `${fieldName(lang[1])} ${LANG[lang[2]]}`;
   const words = key.replace(/[_.]+/g, " ").trim();

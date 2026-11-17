@@ -69,7 +69,7 @@ export function StockCell({ row, compact = false }: { row: Pick<StockRow, "symbo
         <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6, minWidth: 0 }}>
           {row.hidden ? (compact ? <Tag kind="quiet" icon="eye" title="Nascosto nell’app" /> : <Tag kind="quiet" icon="eye">Nascosto nell’app</Tag>) : null}
           {row.secondary ? (compact ? <Tag kind="quiet" icon="layers" title="Quotazione secondaria" /> : <Tag kind="quiet" icon="layers">Secondaria</Tag>) : null}
-          <span className="muted" style={{ fontSize: 13, minWidth: 0, ...ONE_LINE }} title={name}>
+          <span className="muted" style={{ flex: "1 1 60px", fontSize: 13, minWidth: 0, ...ONE_LINE }} title={name}>
             {name}
           </span>
         </div>

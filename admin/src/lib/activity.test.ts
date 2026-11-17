@@ -1,7 +1,8 @@
 // MOB-1488: the activity detail's «Campo» column names each field in Italian.
 // KEYS is every before/after key the backend records today
 // (ActivityLog::record in app/Http/Controllers/Console and app/Services/Admin,
-// finzy-backend main on 17 Nov 2026), plus `plan` and `expires_at` named in the ticket.
+// finzy-backend main on 17 Nov 2026), plus `plan` and `expires_at`: the ticket's
+// examples, not recorded by the backend (it writes `piano` and `scadenza`).
 import { describe, expect, it } from "vitest";
 import { FIELD, fieldName } from "./activity";
 
@@ -51,5 +52,6 @@ describe("field names in the activity detail", () => {
     expect(fieldName("note_it")).toBe("Note in italiano");
     expect(fieldName("voto")).toBe("Voto");
     expect(fieldName("")).toBe("—");
+    expect(fieldName("constructor")).toBe("Constructor"); // never an inherited property of the table
   });
 });
