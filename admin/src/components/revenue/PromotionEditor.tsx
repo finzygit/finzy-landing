@@ -18,7 +18,7 @@ import { useConsole } from "@/lib/console";
 import { decimal, fullDayTime, priceForField, priceForServer, priceValue, toLocalInput, totalOf } from "./format";
 import { PaywallPreview } from "./PaywallPreview";
 import s from "./revenue.module.css";
-import { fill, T } from "./texts";
+import { fill, monthsN, T } from "./texts";
 import { COUNTRIES, CURRENCY, emptyDraft, FORMULAS, MONTHS, STATES, type Country, type FormulaKey, type PromoDetail, type PromoDraft, type UserState } from "./types";
 
 export type EditorMode = { kind: "new" } | { kind: "open"; id: number } | { kind: "duplicate"; id: number };
@@ -40,7 +40,7 @@ const F_TITLE: Record<FormulaKey, string> = { quarterly: T.fq, annual: T.fa };
 const F_SUB: Record<FormulaKey, string> = { quarterly: T.fq_sub, annual: T.fa_sub };
 /** «Ora di Roma» inside a sentence: «(ora di Roma)». */
 const romeLower = `${T.rome.slice(0, 1).toLowerCase()}${T.rome.slice(1)}`;
-const F_SHORT: Record<FormulaKey, string> = { quarterly: fill(T.months_n, { n: 3 }), annual: fill(T.months_n, { n: 12 }) };
+const F_SHORT: Record<FormulaKey, string> = { quarterly: monthsN(3), annual: monthsN(12) };
 const PRODUCT: Record<FormulaKey, string> = { quarterly: T.monthly, annual: T.annual };
 const STEPS = [
   [T.st1, T.st1_sub],

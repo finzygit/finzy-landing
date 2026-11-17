@@ -38,6 +38,7 @@ describe("Lezioni", () => {
     expect(screen.queryByText("Il rating spiegato semplice")).toBeNull();
     expect(screen.getByRole("button", { name: /Tutte\s*6/ })).toBeTruthy();
     expect(screen.getByText("3 lezioni · 2 visibili")).toBeTruthy();
+    expect(screen.getByText("1 lezione · 1 visibile")).toBeTruthy(); // MOB-1488: singular for one
     fireEvent.click(screen.getByRole("button", { name: /Sezioni non più nell’app/ }));
     expect(screen.getByText("Il rating spiegato semplice")).toBeTruthy();
     expect(screen.getByText(/Impara non mostra più queste sezioni/)).toBeTruthy();
@@ -62,7 +63,7 @@ describe("Lezioni", () => {
     renderPage(<LessonsPage />, fake.api);
     await screen.findByText("Il bilancio familiare");
     fireEvent.click(screen.getByLabelText("Seleziona Il bilancio familiare"));
-    const bar = screen.getByRole("region", { name: "1 selezionate" });
+    const bar = screen.getByRole("region", { name: "1 selezionata" }); // MOB-1488: singular for one
     expect(within(bar).getByText("1 senza video: in Impara compaiono come «Video in arrivo».")).toBeTruthy();
     fireEvent.click(within(bar).getByRole("button", { name: "Rendi visibili" }));
     await waitFor(() => expect(fake.writes()).toEqual([{ method: "POST", path: "/lessons/visibility", body: { ids: [3], active: true } }]));

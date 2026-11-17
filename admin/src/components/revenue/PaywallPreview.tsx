@@ -7,7 +7,7 @@
 import { useState } from "react";
 import { decimal, priceValue, totalOf } from "./format";
 import s from "./revenue.module.css";
-import { fill, T } from "./texts";
+import { fill, monthsN, T } from "./texts";
 import { COUNTRIES, CURRENCY, FORMULAS, MONTHS, type Country, type PromoDraft } from "./types";
 
 const SYM: Record<string, string> = { EUR: "€", GBP: "£" };
@@ -48,7 +48,7 @@ export function PaywallPreview({ draft }: { draft: PromoDraft }) {
               const monthly = priceValue(draft.formulas[f].prices[country] ?? "");
               return (
                 <div key={f} className={s.tile} data-first={i === 0}>
-                  <span>{fill(T.months_n, { n: MONTHS[f] })}</span>
+                  <span>{monthsN(MONTHS[f])}</span>
                   <strong>{monthly !== null ? `${sym} ${decimal(totalOf(monthly, MONTHS[f]))}` : "—"}</strong>
                   <small>{monthly !== null ? fill(T.per_month, { v: `${sym} ${decimal(monthly)}` }) : " "}</small>
                   <i aria-hidden="true" />

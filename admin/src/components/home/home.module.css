@@ -103,7 +103,7 @@
 .pill[data-tone="up"] { color: var(--up, #89f336); background: rgba(137, 243, 54, 0.14); }
 .pill[data-tone="down"] { color: var(--down, #ff453a); background: rgba(255, 69, 58, 0.14); }
 .pill[data-tone="flat"] { color: var(--text-2); background: rgba(255, 255, 255, 0.08); }
-.bars { margin: 0; display: grid; grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: 150px auto; column-gap: 8px; row-gap: 6px; }
+.bars { margin: 0; display: grid; grid-template-columns: minmax(36px, max-content) minmax(0, 1fr); grid-template-rows: 150px auto; column-gap: 8px; row-gap: 6px; } /* MOB-1489: the axis column grows with its longest label («10.000»), never past the card */
 .barsAxis { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; }
 .barsPlot { list-style: none; margin: 0; padding: 0; display: flex; align-items: flex-end; gap: 3px; border-bottom: 1px solid var(--hair); min-width: 0; }
 .barsPlot li { flex: 1 1 0; height: 100%; display: flex; align-items: flex-end; min-width: 0; }

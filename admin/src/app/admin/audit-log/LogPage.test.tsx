@@ -38,6 +38,16 @@ describe("Registro attività", () => {
     expect(drawer.textContent).not.toContain("users.plan.gift");
   });
 
+  it("MOB-1488: the detail names each field in words, never the backend key", async () => {
+    const stock = { ...row(9801, "stocks.stock.update", "update", "stocks", "GOOG · nome comune «Google»"), before: { common_name: null, common_name_locked: false, expires_at: "2026-12-01" }, after: { common_name: "Google", common_name_locked: true, expires_at: "2027-01-01" }, reason: null, ip: null, user_agent: null };
+    renderPage(<LogPage />, fakeApi(["console.home.view", "console.admin.view"], { "GET /activity": { rows: [stock], total: 1, page: 1, per_page: 50 }, "GET /activity/9801": stock }).api);
+    fireEvent.click(await screen.findByText(/GOOG · nome comune/, {}, { timeout: 2000 }));
+    const drawer = await screen.findByRole("dialog");
+    const fields = (await within(drawer).findAllByRole("row")).slice(1).map((r) => r.firstElementChild?.textContent);
+    expect(fields).toEqual(["Nome comune", "Nome bloccato", "Scadenza"]);
+    expect(drawer.textContent).not.toMatch(/common_name|expires_at/);
+  });
+
   it("falls back to words for an event it does not know", () => {
     expect(eventName("users.plan.gift")).toBe("Ha regalato un piano");
     expect(eventName("admin.person.two_factor.reset")).toBe("Ha azzerato la verifica in due passaggi di una persona");

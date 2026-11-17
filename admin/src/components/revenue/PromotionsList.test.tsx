@@ -43,6 +43,12 @@ describe("PromotionsList", () => {
     expect(screen.getByRole("button", { name: /Tutte\s*3/ })).toBeTruthy();
   });
 
+  it("MOB-1488: a running promotion with one day left says «finisce tra 1 giorno»", async () => {
+    const soon = { ...ROWS[1], ends_at: new Date(Date.now() + 3_600_000).toISOString() };
+    withConsole(fakeApi({ get: () => ({ ...LIST, rows: [soon] }) }), <PromotionsList />);
+    expect(await screen.findByText("finisce tra 1 giorno")).toBeTruthy();
+  });
+
   it("filters by state on the client", async () => {
     withConsole(fakeApi({ get: () => LIST }), <PromotionsList />);
     fireEvent.click(await screen.findByRole("button", { name: /Finite/ }));

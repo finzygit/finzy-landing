@@ -61,6 +61,7 @@ export const T = {
   s_sched: "Programmata",
   s_ended: "Finita",
   ends_in: "finisce tra {n} giorni",
+  ends_in_one: "finisce tra 1 giorno", // MOB-1488
   starts_on: "inizia il {d}",
   ended_on: "finita il {d}",
   f_all: "Tutte",
@@ -183,6 +184,7 @@ export const T = {
   monthly: "mensile",
   annual: "annuale",
   months_n: "{n} mesi",
+  months_n_one: "1 mese", // MOB-1488
   per_month: "{v}/mese",
   price_total: "{p}/mese → totale {t}",
   offer_code: "{o} · codice {c}",
@@ -201,3 +203,9 @@ export const T = {
 export function fill(s: string, vars: Record<string, string | number>): string {
   return s.replace(/\{(\w+)\}/g, (m, k: string) => (k in vars ? String(vars[k]) : m));
 }
+
+/** MOB-1488: «1 mese», «3 mesi». */
+export const monthsN = (n: number): string => (n === 1 ? T.months_n_one : fill(T.months_n, { n }));
+
+/** MOB-1488: «finisce tra 1 giorno», «finisce tra 4 giorni». */
+export const endsIn = (n: number): string => (n === 1 ? T.ends_in_one : fill(T.ends_in, { n }));

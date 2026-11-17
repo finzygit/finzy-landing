@@ -17,12 +17,12 @@ import { ApiError } from "@/lib/api";
 import { useConsole } from "@/lib/console";
 import { dayMonth, dayTime, daysUntil, romeParts } from "./format";
 import s from "./revenue.module.css";
-import { fill, T } from "./texts";
+import { endsIn, fill, monthsN, T } from "./texts";
 import type { PromoList, PromoRow, PromoState } from "./types";
 
 const COUNTRY_LABEL: Record<string, string> = { IT: T.it, GB: T.uk };
 const STATE_LABEL: Record<string, string> = { trial: T.trial, free: T.free, premium: T.premium };
-const FORMULA_LABEL: Record<string, string> = { quarterly: fill(T.months_n, { n: 3 }), annual: fill(T.months_n, { n: 12 }) };
+const FORMULA_LABEL: Record<string, string> = { quarterly: monthsN(3), annual: monthsN(12) };
 const STATE_WORD: Record<PromoState, string> = { active: T.s_active, scheduled: T.s_sched, ended: T.s_ended };
 const FILTERS: ["" | PromoState, string][] = [["", T.f_all], ["active", T.f_active], ["scheduled", T.f_sched], ["ended", T.f_ended]];
 
@@ -146,7 +146,7 @@ export function PromotionsList() {
                 <span>
                   <span className={s.state} data-state={r.state}>{STATE_WORD[r.state]}</span>
                   <span className={s.sub2}>
-                    {r.state === "active" ? fill(T.ends_in, { n: daysUntil(r.ends_at) }) : r.state === "scheduled" ? fill(T.starts_on, { d: dayMonth(r.starts_at) }) : fill(T.ended_on, { d: dayMonth(r.ends_at) })}
+                    {r.state === "active" ? endsIn(daysUntil(r.ends_at)) : r.state === "scheduled" ? fill(T.starts_on, { d: dayMonth(r.starts_at) }) : fill(T.ended_on, { d: dayMonth(r.ends_at) })}
                   </span>
                 </span>
               ),
