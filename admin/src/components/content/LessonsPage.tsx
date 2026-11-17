@@ -19,6 +19,9 @@ import type { Library, LessonRow, LessonSection } from "@/lib/content/types";
 import { CRUMB, Glyph, Grip, SaveBar, Thumb, UploadsTray, VideoChip } from "./bits";
 import "./content.css";
 
+/** MOB-1488: «1 lezione», «3 lezioni». */
+const counted = (n: number, one: string, many: string) => (n === 1 ? one : fill(many, { n }));
+
 type Quick = "all" | "vis" | "noit" | "noen";
 const OPEN_FIRST = 2;
 
@@ -192,7 +195,7 @@ export function LessonsPage() {
         <td colSpan={cols - (canEdit && !s.legacy ? 1 : 0)}>
           <button type="button" className="cc-band-toggle" aria-expanded={opened} onClick={() => (nested ? undefined : toggle(s, i))} disabled={nested}>
             {nested ? null : <Icon name={opened ? "down" : "chevron"} size={16} />}
-            {s.title} <small>{fill(T.band, { n: s.lessons.length, v: visible })}</small>
+            {s.title} <small>{fill(T.band, { n: counted(s.lessons.length, T.band_n_one, T.band_n), v: counted(visible, T.band_v_one, T.band_v) })}</small>
           </button>
         </td>
         {canEdit && !s.legacy ? (
@@ -224,8 +227,8 @@ export function LessonsPage() {
           ))}
         </div>
         {selected.size ? (
-          <div className="card cc-bulk" style={{ padding: "12px 18px", marginBottom: 16 }} role="region" aria-label={fill(T.bulk_n, { n: selected.size })}>
-            <strong>{fill(T.bulk_n, { n: selected.size })}</strong>
+          <div className="card cc-bulk" style={{ padding: "12px 18px", marginBottom: 16 }} role="region" aria-label={counted(selected.size, T.bulk_n_one, T.bulk_n)}>
+            <strong>{counted(selected.size, T.bulk_n_one, T.bulk_n)}</strong>
             {noVideo ? <span className="note" style={{ color: "var(--warn)" }}>{fill(T.bulk_note, { n: noVideo })}</span> : null}
             {bulkError ? <span className="error-line" role="alert">{bulkError}</span> : null}
             <span style={{ flex: 1 }} />

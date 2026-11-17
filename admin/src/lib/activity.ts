@@ -48,3 +48,46 @@ export function eventName(event: string): string {
   const thing = THING[event.split(".").slice(0, -1).join(".")];
   return verb !== "Altro" && thing ? `${verb} ${thing}` : verb;
 }
+
+/**
+ * MOB-1488: the detail's «Campo» column. The backend records English or Italian
+ * keys (ActivityLog::record before/after); a person reads these names instead.
+ * `_it` / `_en` at the end add «in italiano» / «in inglese».
+ */
+export const FIELD: Record<string, string> = {
+  // content
+  id: "Codice", attivo: "Attivo", name: "Nome", nome: "Nome", ordine: "Ordine", sezione: "Sezione", category: "Sezione",
+  visibile: "Visibile", active: "Visibile", titolo: "Titolo", title: "Titolo", lezioni: "Lezioni", summary: "Riassunto",
+  objectives: "Obiettivi", hashtags: "Hashtag", lingua: "Lingua", durata: "Durata (secondi)", pagina: "Pagina", funzione: "Funzione",
+  body: "Testo", testo: "Testo", descrizione: "Descrizione", immagine: "Immagine",
+  maintenance: "Manutenzione", ask_review: "Chiedi la recensione su iPhone", ask_review_android: "Chiedi la recensione su Android",
+  min_version: "Numero di build minimo", privacy_url: "Informativa privacy", terms_url: "Termini e condizioni",
+  // news
+  azione_id: "Titolo collegato (n.)", giudizio: "Giudizio", relation_source: "Origine del collegamento",
+  relation_confidence: "Affidabilità del collegamento", relation_type: "Tipo di collegamento",
+  // people, users, plans, exports
+  ruolo: "Ruolo", permessi: "Permessi", piano: "Piano", plan: "Piano", scadenza: "Scadenza", expires_at: "Scadenza", sospeso: "Sospeso",
+  campi: "Campi cambiati", righe: "Righe", piani: "Piani", ricerca: "Con una ricerca", filtri: "Filtri", mese: "Mese", tipo: "Tipo", piattaforma: "Piattaforma",
+  // promotions
+  code: "Codice", starts_at: "Inizio", ends_at: "Fine", countries: "Paesi", statuses: "Stato dell’utente", formulas: "Formule",
+  // stocks
+  common_name: "Nome comune", common_name_locked: "Nome bloccato", alternatives: "Ticker alternativi", logo: "Logo", banner: "Banner dello Stock Snapshot",
+};
+
+const LANG: Record<string, string> = { it: "in italiano", en: "in inglese" };
+
+/** «common_name_locked» → «Nome bloccato»; a key this page does not know yet reads as words («trial_days» → «Trial days»). */
+export function fieldName(key: string): string {
+  if (Object.hasOwn(FIELD, key)) return FIELD[key];
+  const lang = key.match(/^(.+)_(it|en)$/);
+  if (lang) return `${fieldName(lang[1])} ${LANG[lang[2]]}`;
+  const words = key.replace(/[_.]+/g, " ").trim();
+  return words ? words[0].toUpperCase() + words.slice(1) : "—";
+}
+
+/** A value in the detail: yes/no for a switch, «—» for nothing, the rest as stored. */
+export function fieldValue(v: unknown): string {
+  if (v === undefined || v === null) return "—";
+  if (typeof v === "boolean") return v ? "Sì" : "No";
+  return typeof v === "object" ? JSON.stringify(v) : String(v);
+}

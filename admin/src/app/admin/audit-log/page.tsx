@@ -11,7 +11,7 @@ import { Icon } from "@/components/shell/Icon";
 import { Drawer } from "@/components/shell/overlays";
 import { PageHead, Pager, Section, StateBlock, VerbChip } from "@/components/shell/parts";
 import { useConsole } from "@/lib/console";
-import { eventName, verbOf } from "@/lib/activity";
+import { eventName, fieldName, fieldValue, verbOf } from "@/lib/activity";
 import { AREA_LABEL } from "@/lib/labels";
 
 type Row = { id: number; at: string; who: { id: number; name: string } | null; event: string; kind: string; area: string; summary: string };
@@ -72,7 +72,6 @@ export default function LogPage() {
     }
   };
   const fields = open ? Array.from(new Set([...Object.keys(open.before ?? {}), ...Object.keys(open.after ?? {})])) : [];
-  const fmt = (v: unknown) => (v === undefined || v === null ? "—" : typeof v === "object" ? JSON.stringify(v) : String(v));
 
   return (
     <AdminFrame title="Registro attività">
@@ -132,7 +131,7 @@ export default function LogPage() {
                   <thead><tr><th>Campo</th><th>Prima</th><th>Dopo</th></tr></thead>
                   <tbody>
                     {fields.map((f) => (
-                      <tr key={f}><td className="muted">{f}</td><td>{fmt(open.before?.[f])}</td><td><strong>{fmt(open.after?.[f])}</strong></td></tr>
+                      <tr key={f}><td className="muted">{fieldName(f)}</td><td>{fieldValue(open.before?.[f])}</td><td><strong>{fieldValue(open.after?.[f])}</strong></td></tr>
                     ))}
                   </tbody>
                 </table>

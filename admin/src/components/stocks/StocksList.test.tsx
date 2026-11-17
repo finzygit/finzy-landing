@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError } from "@/lib/api";
 import { ConsoleProvider } from "@/lib/console";
+import { StockCell } from "./parts";
 import { StocksList } from "./StocksList";
 import { VIEW, fakeApi, list, row } from "./testing";
 
@@ -113,5 +114,19 @@ describe("Titoli list (MOB-1377)", () => {
     const cell = await screen.findByText("NVDA");
     fireEvent.click(cell.closest("tr") as HTMLElement);
     expect(nav.push).toHaveBeenCalledWith("/stocks/detail?id=7");
+  });
+});
+
+describe("Titoli list chips (MOB-1489)", () => {
+  it("two chips under the name wrap to a new line instead of being cut", () => {
+    render(<StockCell row={{ symbol: "GOOG", name: "Alphabet Inc. Class C", common_name: null, hidden: true, secondary: true, logo_url: null }} />);
+    const chip = screen.getByText("Secondaria");
+    const line = chip.parentElement as HTMLElement;
+    expect(screen.getByText("Nascosto nell’app").parentElement).toBe(line);
+    expect(line.style.flexWrap).toBe("wrap");
+    expect(line.style.overflow).not.toBe("hidden");
+    expect(chip.style.flexShrink).toBe("0");
+    // the name stays beside the last chip and is cut there, rather than dropping to a line of its own
+    expect(screen.getByText("Alphabet Inc. Class C").style.flex).toBe("1 1 60px");
   });
 });

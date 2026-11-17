@@ -28,7 +28,7 @@ export function Tag({ kind = "neutral", icon, title, children }: { kind?: "neutr
     <span
       title={title}
       aria-label={title}
-      style={{ display: "inline-flex", alignItems: "center", gap: 5, height: 24, padding: children ? "0 8px" : "0 5px", borderRadius: 8, fontSize: 12, fontWeight: 650, whiteSpace: "nowrap", ...look[kind] }}
+      style={{ display: "inline-flex", flexShrink: 0, alignItems: "center", gap: 5, height: 24, padding: children ? "0 8px" : "0 5px", borderRadius: 8, fontSize: 12, fontWeight: 650, whiteSpace: "nowrap", ...look[kind] }}
     >
       {icon ? <Icon name={icon} size={12} /> : null}
       {children}
@@ -57,18 +57,19 @@ function LogoImage({ symbol, url, size = 32 }: { symbol: string; url?: string | 
   );
 }
 
-/** Ticker bold, the tags and the name grey under it, cut on one line. Compact: the tags as glyphs, the word in the tooltip. */
+/** Ticker bold, the tags and the name grey under it (the name cut on its line, the tags wrap whole). Compact: the tags as glyphs, the word in the tooltip. */
 export function StockCell({ row, compact = false }: { row: Pick<StockRow, "symbol" | "name" | "common_name" | "hidden" | "secondary" | "logo_url">; compact?: boolean }) {
   const name = row.name || row.common_name || "";
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
       <StockLogo symbol={row.symbol} url={row.logo_url} />
-      <div style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: 3 }}>
+      <div style={{ flex: "1 1 auto", minWidth: 0, display: "flex", flexDirection: "column", gap: 3 }}>
         <strong style={{ fontSize: 15, ...ONE_LINE }}>{row.symbol}</strong>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, minWidth: 0, overflow: "hidden" }}>
+        {/* MOB-1489: the chips wrap to a new line when the cell is too narrow for both, never cut */}
+        <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6, minWidth: 0 }}>
           {row.hidden ? (compact ? <Tag kind="quiet" icon="eye" title="Nascosto nell’app" /> : <Tag kind="quiet" icon="eye">Nascosto nell’app</Tag>) : null}
           {row.secondary ? (compact ? <Tag kind="quiet" icon="layers" title="Quotazione secondaria" /> : <Tag kind="quiet" icon="layers">Secondaria</Tag>) : null}
-          <span className="muted" style={{ fontSize: 13, minWidth: 0, ...ONE_LINE }} title={name}>
+          <span className="muted" style={{ flex: "1 1 60px", fontSize: 13, minWidth: 0, ...ONE_LINE }} title={name}>
             {name}
           </span>
         </div>

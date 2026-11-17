@@ -18,7 +18,11 @@ export const T = {
   vis_on: "Visibile",
   vis_off: "Nascosta",
   missing: "manca",
-  band: "{n} lezioni · {v} visibili",
+  band: "{n} · {v}", // MOB-1488: «3 lezioni · 2 visibili», «1 lezione · 1 visibile»
+  band_n: "{n} lezioni",
+  band_n_one: "1 lezione",
+  band_v: "{n} visibili",
+  band_v_one: "1 visibile",
   band_of: "{n} di {t}",
   show_more: "Mostra le altre {n}",
   legacy_title: "Sezioni non più nell’app",
@@ -27,6 +31,7 @@ export const T = {
   legacy_note: "Impara non mostra più queste sezioni. Le loro lezioni restano nascoste finché non le sposti in una sezione di oggi.",
   add_here: "Aggiungi qui",
   bulk_n: "{n} selezionate",
+  bulk_n_one: "1 selezionata", // MOB-1488
   bulk_note: "{n} senza video: in Impara compaiono come «Video in arrivo».",
   bulk_show: "Rendi visibili",
   bulk_hide: "Nascondi",
